@@ -7806,6 +7806,43 @@ and the result object can be named
 if a \grammarterm{result-name-introducer}\iref{dcl.contract.res} has been specified.
 \end{note}
 
+\rSec2[basic.contract.control]{Control}
+
+\indextext{contract assertion!control}%
+
+\begin{bnf}
+\nontermdef{assertion-control-specifier}\br
+    \terminal{<} constant-expression \terminal{>}
+\end{bnf}
+
+\pnum
+%TODO: define assertion control facet
+
+\pnum
+%TODO: Define the trivial facet
+
+\pnum
+Every contract assertion $C$ has associated with it
+an \defn{assertion control object}
+that is a constexpr variable whose type and value
+are determined as follows:
+
+\begin{itemize}
+\item If $C$ has an \grammarterm{assertion-control-specifier}
+$S$ then the variable's type is deduced from
+$S$ and its initializer is $S$.
+\item Otherwise, the variable's type is
+participates in the trivial assertion-control facet
+and no other facets, and its value is unspecified.
+\end{itemize}
+
+\pnum
+Every assertion control object shall participate in the
+tirvial assertion-control facet.
+
+\pnum
+%TODO: define all other facets
+
 \rSec2[basic.contract.eval]{Evaluation}
 
 \pnum

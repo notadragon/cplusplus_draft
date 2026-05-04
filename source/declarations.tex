@@ -4613,12 +4613,12 @@ void m() {
 
 \begin{bnf}
 \nontermdef{precondition-specifier}\br
-  \terminal{pre} \opt{attribute-specifier-seq} \terminal{(} conditional-expression \terminal{)}
+  \terminal{pre} \opt{assertion-control-specifier} \opt{attribute-specifier-seq} \terminal{(} conditional-expression \terminal{)}
 \end{bnf}
 
 \begin{bnf}
 \nontermdef{postcondition-specifier}\br
-  \terminal{post} \opt{attribute-specifier-seq} \terminal{(} \opt{result-name-introducer} conditional-expression \terminal{)}
+  \terminal{post} \opt{assertion-control-specifier} \opt{attribute-specifier-seq} \terminal{(} \opt{result-name-introducer} conditional-expression \terminal{)}
 \end{bnf}
 
 \pnum
