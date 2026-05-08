@@ -11,6 +11,23 @@ Subclause \ref{diff.cpp26} lists the differences between \Cpp{} and
 ISO \CppXXVI{},
 by the chapters of this document.
 
+\rSec2[diff.cpp26.lex]{\ref*{lex}: lexical conventions}
+
+\diffref{lex.key}
+\change
+New keywords.
+\rationale
+Required for new features.
+\begin{itemize}
+\item
+The \keyword{contract_control} keyword
+is added to enable functionality specific to
+assertion-control expressions.
+\end{itemize}
+\effect
+Valid \CppXXVI{} code using \keyword{contract_control} as an identifier
+is not valid in this revision of \Cpp{}.
+
 \rSec2[diff.cpp26.basic]{\ref*{basic}: basics}
 
 \diffref{basic.stc.dynamic.deallocation}
