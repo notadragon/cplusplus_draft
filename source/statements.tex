@@ -1130,7 +1130,21 @@ a non-coroutine function with a \cv{}~\keyword{void} return type is
 equivalent to a \tcode{return} with no operand.
 Otherwise, flowing off the end of a function
 that is neither \tcode{main}\iref{basic.start.main} nor a coroutine\iref{dcl.fct.def.coroutine}
-results in undefined behavior.
+\begin{itemize}
+\item with a scalar return type
+returns an erroneous value
+with an implicit precondition assertion that this does not occur\iref{basic.contract.implicit};
+\item otherwise it results in undefined behavior\wordingcomment{\stdstablename{stmt.return.flow.off}}.
+%WORDINGNOTE: ubdef --- stmt.return.flow.off
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: Yes
+%
+%  checking: Insert \mbox{\tcode{contract_assert(false)}} at end of \emph{function-body}
+%
+%  replacement: Only for built-in return types: return erroneous value
+\end{itemize}
 
 \pnum
 The copy-initialization of the result of the call is sequenced before the
@@ -1226,7 +1240,20 @@ finds any declarations,
 flowing off the end of a coroutine's \grammarterm{function-body}
 is equivalent to a \keyword{co_return} with no operand;
 otherwise flowing off the end of a coroutine's \grammarterm{function-body}
-results in undefined behavior.
+results in undefined behavior\wordingcomment{\stdstablename{stmt.return.coroutine.flow.off}}.
+%WORDINGNOTE: ubdef --- stmt.return.coroutine.flow.off
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: Yes
+%
+%  checking: Insert \mbox{\tcode{contract_assert(false)}} at end of \emph{function-body} if no \tcode{return_void} function is provided
+%
+%  replacement: Only for built-in return types: return erroneous value.
+%
+%  note: This requires more careful specification work, as \tcode{return_value()}
+%        may be overloaded and there is no clear way to identify the type of
+%        erroneous value that could be produced.
 
 \rSec2[stmt.goto]{The \keyword{goto} statement}%
 \indextext{statement!\idxcode{goto}}
@@ -1366,7 +1393,16 @@ due to its own synchronization operations.
 \end{note}
 If control
 re-enters the declaration recursively while
-the variable is being initialized, the behavior is undefined.
+the variable is being initialized, the behavior is undefined\wordingcomment{\stdstablename{stmt.dcl.local.static.init.recursive}}.
+%WORDINGNOTE: ubdef --- stmt.dcl.local.static.init.recursive
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Insert a recursion counter into a guard for static and thread-local object construction
+%
+%  replacement: None
 \begin{example}
 \begin{codeblock}
 int foo(int i) {

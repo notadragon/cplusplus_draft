@@ -690,7 +690,19 @@ still active is called the
 Referring to any non-static member or base class of an object
 in the handler for a
 \grammarterm{function-try-block}
-of a constructor or destructor for that object results in undefined behavior.
+of a constructor or destructor for that object results in undefined behavior\wordingcomment{\stdstablename{except.handle.handler.ctor.dtor}}.
+
+%WORDINGNOTE: ubdef --- except.handle.handler.ctor.dtor
+%
+%  wording: [except.handle]/11: Referring to any non-static member or base class of an object in the handler for a \emph{function-try-block} of a constructor or destructor for that object results in undefined behavior.
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether objects are currently being constructed or destroyed
+%
+%  replacement: None
 
 \pnum
 Exceptions thrown in destructors of objects with static storage duration or in
@@ -887,7 +899,18 @@ polymorphic class type\iref{expr.typeid},
 or
 \item
 any of the immediate subexpressions\iref{intro.execution}
-of $E$ that is not an unevaluated operand is potentially-throwing.
+of $E$ that is not an unevaluated operand is potentially-throwing
+\begin{note}
+The evaluation of an expression
+that is not potentially-throwing
+can nevertheless exit via an exception
+if, as part of that evaluation,
+the violation of an implicit contract assertion
+([basic.contract.general]) causes
+a call to the contract-violation handler ([basic.contract.handler])
+and that handler exits via an exception.
+\end{note}
+.
 \end{itemize}
 
 \pnum

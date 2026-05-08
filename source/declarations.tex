@@ -1297,7 +1297,16 @@ subverted without casting\iref{expr.const.cast}.
 \indextext{const object!undefined change to}%
 Any attempt to modify\iref{expr.assign,expr.post.incr,expr.pre.incr} a
 const object\iref{basic.type.qualifier} during its
-lifetime\iref{basic.life} results in undefined behavior.
+lifetime\iref{basic.life} results in undefined behavior\wordingcomment{\stdstablename{dcl.type.cv.modify.const.obj}}.
+%WORDINGNOTE: ubdef --- dcl.type.cv.modify.const.obj
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether storage is associated with a \tcode{const} object
+%
+%  replacement: None
 \begin{example}
 \begin{codeblock}
 const int ci = 3;                       // cv-qualified (initialized as required)
@@ -1341,7 +1350,16 @@ The semantics of an access through a volatile glvalue are
 \impldef{semantics of an access through a volatile glvalue}.
 If an attempt is made to access an object defined with a
 volatile-qualified type through the use of a non-volatile glvalue,
-the behavior is undefined.
+the behavior is undefined\wordingcomment{\stdstablename{dcl.type.cv.access.volatile}}.
+%WORDINGNOTE: ubdef --- dcl.type.cv.access.volatile
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether storage is associated with a \tcode{volatile} object
+%
+%  replacement: None
 
 \pnum
 \indextext{type specifier!\idxcode{volatile}}%
@@ -3286,11 +3304,29 @@ Attempting to bind a reference to a function where
 the converted initializer is a glvalue whose
 type is not call-compatible\iref{expr.call}
 with the type of the function's definition
-results in undefined behavior.
+results in undefined behavior\wordingcomment{\stdstablename{dcl.ref.incompatible.function}}.
+%WORDINGNOTE: ubdef --- dcl.ref.incompatible.function
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track the types of all functions based on their addresses
+%
+%  replacement: None
 Attempting to bind a reference to an object where
 the converted initializer is a glvalue through which
 the object is not type-accessible\iref{basic.lval}
-results in undefined behavior.
+results in undefined behavior\wordingcomment{\stdstablename{dcl.ref.incompatible.type}}.
+%WORDINGNOTE: ubdef --- dcl.ref.incompatible.type
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether storage is associated with an object of correct type
+%
+%  replacement: None
 \begin{note}
 \indextext{reference!null}%
 The object designated by such a glvalue can be
@@ -3304,7 +3340,16 @@ to a bit-field.
 \end{note}
 The behavior of an evaluation of a reference\iref{expr.prim.id, expr.ref} that
 does not happen after\iref{intro.races} the initialization of the reference
-is undefined.
+is undefined\wordingcomment{\stdstablename{dcl.ref.uninitialized.reference}}.
+%WORDINGNOTE: ubdef --- dcl.ref.uninitialized.reference
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether references have been initialised
+%
+%  replacement: None
 \begin{example}
 \begin{codeblock}
 int &f(int&);
@@ -3320,6 +3365,8 @@ char x alignas(int);
 int &ir5 = *reinterpret_cast<int *>(&x);    // undefined behavior: initializer refers to char object
 \end{codeblock}
 \end{example}
+
+
 
 \pnum
 \indextext{reference collapsing}%
@@ -7399,7 +7446,16 @@ that refers to the coroutine.
 The evaluation that invoked a resumption member function is
 called the \defnx{resumer}{coroutine!resumer}.
 Invoking a resumption member function for a coroutine
-that is not suspended results in undefined behavior.
+that is not suspended results in undefined behavior\wordingcomment{\stdstablename{dcl.fct.def.coroutine.resume.not.suspended}}.
+%WORDINGNOTE: ubdef --- dcl.fct.def.coroutine.resume.not.suspended
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track the suspension state associated with every coroutine handle
+%
+%  replacement: None
 
 \pnum
 An implementation may need to allocate additional storage for a coroutine.
@@ -7493,7 +7549,16 @@ to be transferred out of the function\iref{stmt.dcl}.
 The storage for the coroutine state is released by calling a
 non-array deallocation function\iref{basic.stc.dynamic.deallocation}.
 If \tcode{destroy} is called for a coroutine that is not suspended, the
-program has undefined behavior.
+program has undefined behavior\wordingcomment{\stdstablename{dcl.fct.def.coroutine.destroy.not.suspended}}.
+%WORDINGNOTE: ubdef --- dcl.fct.def.coroutine.destroy.not.suspended
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track the suspension state associated with every coroutine handle
+%
+%  replacement: None
 
 \pnum
 The deallocation function's name is looked up by searching for it in the scope of the promise type.
@@ -9722,8 +9787,17 @@ The expression is not evaluated.
 If the converted expression would evaluate to \tcode{true}
 at the point where the assumption appears,
 the assumption has no effect.
-Otherwise,
-evaluation of the assumption has runtime-undefined behavior.
+There is an implicit precondition assertion
+that this does not occur\iref{basic.contract.implicit}\wordingcomment{\stdstablename{dcl.attr.assume.false}}.
+%WORDINGNOTE: ubdef --- dcl.attr.assume.false
+%
+%  runtime-checkable: No
+%
+%  locally-checkable: No
+%
+%  checking: No automatic checking strategy is possible because the predicate cannot be, in general, proven to be free of side effects; instead, the user has to change \tcode{[[assume(x)]]} to \mbox{\tcode{contract_assert<may_be_assumed>(x)}} and select an appropriate evaluation semantic
+%
+%  replacement: Ignore the assumption
 
 \pnum
 \begin{note}
@@ -10160,11 +10234,21 @@ translation unit, the program is ill-formed, no diagnostic required.
 \pnum
 If a function \tcode{f} is invoked where \tcode{f} was previously declared with the \tcode{noreturn}
 attribute and that invocation eventually returns,
-the behavior is runtime-undefined.
+the behavior is runtime-undefined\wordingcomment{\stdstablename{dcl.attr.noreturn.eventually.returns}}.
+%WORDINGNOTE: ubdef --- dcl.attr.noreturn.eventually.returns
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: Yes
+%
+%  checking: Insert \tcode{post(false)}
+%
+%  replacement: None
 \begin{note}
 The function can
 terminate by throwing an exception.
 \end{note}
+
 
 \pnum
 \recommended
