@@ -1130,7 +1130,25 @@ a non-coroutine function with a \cv{}~\keyword{void} return type is
 equivalent to a \tcode{return} with no operand.
 Otherwise, flowing off the end of a function
 that is neither \tcode{main}\iref{basic.start.main} nor a coroutine\iref{dcl.fct.def.coroutine}
-results in undefined behavior\ubdef{stmt.return.flow.off}.
+initializes the storage
+of the return value
+with unspecified erroneous values,
+with an implicit precondition assertion
+that this does not occur\iref{basic.contract.implicit}\ubdef{stmt.return.flow.off}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil stmt.return.flow.off\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] a value-returning function flowing off its end without a \tcode{return}.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] Yes
+%
+%  \item[\textbf{checking:}] Equivalent to implicitly inserting a \mbox{\tcode{contract_assert(false)}} at end of the \emph{function-body}.
+%
+%  \item[\textbf{replacement:}] As with automatic variables, we can initialize the storage for the return value with erroneous values.
+%
+%  \item[\textbf{implementations:}] exhaustively caught by UBSan's \tcode{return} check, constant evaluation, and the P3850 prototype (all available semantics, both compilers).
+%  \end{ubsummaryitemize}
 
 \pnum
 The copy-initialization of the result of the call is sequenced before the
@@ -1226,6 +1244,20 @@ flowing off the end of a coroutine's \grammarterm{function-body}
 is equivalent to a \keyword{co_return} with no operand;
 otherwise flowing off the end of a coroutine's \grammarterm{function-body}
 results in undefined behavior\ubdef{stmt.return.coroutine.flow.off}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil stmt.return.coroutine.flow.off\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] a value-returning coroutine flowing off its body without a \tcode{co_return}.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] Yes
+%
+%  \item[\textbf{checking:}] Insert \mbox{\tcode{contract_assert(false)}} at end of \emph{function-body} if no \tcode{return_void} function is provided
+%
+%  \item[\textbf{replacement:}] No, we cannot fabricate an argument of a type suitable to invoke one of possibly many overloads of \tcode{return_value} on the promise type.
+%
+%  \item[\textbf{implementations:}] Caught by the P3850 prototype.
+%  \end{ubsummaryitemize}
 
 \rSec2[stmt.goto]{The \keyword{goto} statement}%
 \indextext{statement!\idxcode{goto}}
@@ -1366,6 +1398,20 @@ due to its own synchronization operations.
 If control
 re-enters the declaration recursively while
 the variable is being initialized, the behavior is undefined\ubdef{stmt.dcl.local.static.init.recursive}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil stmt.dcl.local.static.init.recursive\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] recursively re-entering a block-scope \tcode{static} variable's initializer.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Insert a recursion counter into a guard for static and thread-local object construction
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] None
+%  \end{ubsummaryitemize}
 \begin{example}
 \begin{codeblock}
 int foo(int i) {

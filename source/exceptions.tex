@@ -691,6 +691,20 @@ Referring to any non-static member or base class of an object
 in the handler for a
 \grammarterm{function-try-block}
 of a constructor or destructor for that object results in undefined behavior\ubdef{except.handle.handler.ctor.dtor}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil except.handle.handler.ctor.dtor\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] referring to a member/base of an object from its ctor/dtor function-try-block handler.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether objects are currently being constructed or destroyed
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] Clang emits a compile-time warning for direct references in the handler, GCC does not, and there is no run-time or constant-evaluation detection.
+%  \end{ubsummaryitemize}
 
 \pnum
 Exceptions thrown in destructors of objects with static storage duration or in
@@ -890,6 +904,15 @@ or
 \item
 any of the immediate subexpressions\iref{intro.execution}
 of $E$ that is not an unevaluated operand is potentially-throwing.
+\begin{note}
+The evaluation of an expression
+that is not potentially-throwing
+can nevertheless exit via an exception
+if, as part of that evaluation,
+the violation of an implicit contract assertion\iref{basic.contract.general}
+causes a call to the contract-violation handler\iref{basic.contract.handler}
+and that handler exits via an exception.
+\end{note}
 \end{itemize}
 
 \pnum

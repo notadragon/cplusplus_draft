@@ -2336,6 +2336,22 @@ void g() {                      // rare, specialized use:
 \pnum
 Once a destructor is invoked for an object, the object's lifetime ends;
 the behavior is undefined\ubdef{class.dtor.no.longer.exists} if the destructor is invoked
+%WORDINGNOTE: \textbf{ubdef:} \hfil class.dtor.no.longer.exists\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] invoking a destructor on an object whose lifetime has already ended.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether storage is associated with an object of correct type within its lifetime
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] \tcode{.nonpolymorphic} caught only by constant evaluation
+%  (both compilers); \tcode{.polymorphic} caught at runtime by UBSan's \tcode{vptr} check
+%  on GCC only.
+%  \end{ubsummaryitemize}
 for an object whose lifetime has ended\iref{basic.life}.
 \begin{example}
 If the destructor for an object with automatic storage duration is explicitly invoked,
@@ -4239,6 +4255,21 @@ abstract class;
 the effect of making a virtual call\iref{class.virtual} to a pure
 virtual function directly or indirectly for the object being created (or
 destroyed) from such a constructor (or destructor) is undefined\ubdef{class.abstract.pure.virtual}.%
+%WORDINGNOTE: \textbf{ubdef:} \hfil class.abstract.pure.virtual\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] calling a pure virtual function from a constructor or destructor.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] Yes
+%
+%  \item[\textbf{checking:}] Insert a \tcode{pre(false)} into the pure virtual stub pointed to from the base-class vtable
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] rejected during constant evaluation on both
+%  compilers; and, in the P3850 prototype, checkable at run time on both compilers.
+%  \end{ubsummaryitemize}
 \indextext{derived class|)}
 
 \rSec1[class.access]{Member access control}%
@@ -5849,6 +5880,23 @@ a precondition assertion of a constructor, or
 a postcondition assertion of a destructor\iref{dcl.contract.func},
 \end{itemize}
 the program has undefined behavior\ubdef{class.base.init.mem.fun}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil class.base.init.mem.fun\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] calling a member function outside the base classes' constructed
+%  lifetime.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether objects are currently being constructed or destroyed
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] For polymorphic types, this can be caught
+%  by UBSan's \tcode{vptr}, generally consistently for GCC when nothing else
+%  has written to the object's storage.
+%  \end{ubsummaryitemize}
 \begin{example}
 \begin{codeblock}
 class A {
@@ -6046,9 +6094,44 @@ when the initialization of all subobjects is complete.%
 For an object with a non-trivial constructor, referring to any non-static member
 or base class of the object before the constructor begins execution results in
 undefined behavior\ubdef{class.cdtor.before.ctor}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil class.cdtor.before.ctor\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] referring to a member or base of an object before its
+%  constructor has begun.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether objects are currently being constructed or destroyed
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] Accesses in non-polymorphic objects are not
+%  generally caught.  Accesses in polymorphic types are caught, heuristically, by
+%  UBSan's \tcode{vptr} check on both compilers.  GCC accepts non-polymorphic
+%  cases at compile time while Clang does not.
+%  \end{ubsummaryitemize}
 For an object with a non-trivial destructor, referring to
 any non-static member or base class of the object after the destructor finishes
 execution results in undefined behavior\ubdef{class.cdtor.after.dtor}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil class.cdtor.after.dtor\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] referring to a member or base of an object after its destructor
+%  has run.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether objects are currently being constructed or destroyed
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] split by polymorphism -- \tcode{.polymorphic} caught by
+%  UBSan's \tcode{vptr} check on GCC only; \tcode{.nonpolymorphic} rejected during
+%  constant evaluation on both compilers.
+%  \end{ubsummaryitemize}
 \begin{example}
 \begin{codeblock}
 struct X { int i; };
@@ -6080,6 +6163,8 @@ struct Y {
 };
 \end{codeblock}
 \end{example}
+
+
 
 \pnum
 During the initialization of an object,
@@ -6134,6 +6219,21 @@ indirectly derive from
 \tcode{B}
 shall have started and the destruction of these classes shall not have
 completed, otherwise the conversion results in undefined behavior\ubdef{class.cdtor.convert.pointer}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil class.cdtor.convert.pointer\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] converting a pointer to a base class during that base's
+%  not-yet-constructed or already-destroyed window.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether objects are currently being constructed or destroyed
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] None
+%  \end{ubsummaryitemize}
 To form a pointer to (or access the value of) a direct non-static member of
 an object
 \tcode{obj},
@@ -6142,6 +6242,21 @@ the construction of
 shall have started and its destruction shall not have completed,
 otherwise the computation of the pointer value (or accessing the member
 value) results in undefined behavior\ubdef{class.cdtor.form.pointer}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil class.cdtor.form.pointer\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] forming a pointer to a member before construction starts or after
+%  destruction finishes.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether objects are currently being constructed or destroyed
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] For polymorphic objects, caught by UBSan's \tcode{vptr} check on Clang.
+%  \end{ubsummaryitemize}
 \begin{example}
 \begin{codeblock}
 struct A { };
@@ -6186,6 +6301,21 @@ and the object expression refers to
 the complete object of \tcode{x} or one of that object's base class subobjects
 but not \tcode{x} or one of its base class subobjects, the behavior
 is undefined\ubdef{class.cdtor.virtual.not.x}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil class.cdtor.virtual.not.x\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] explicit-member-access virtual call during construction or
+%  destruction, outside the executing class or its bases.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether objects are currently being constructed or destroyed
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] None
+%  \end{ubsummaryitemize}
 \begin{example}
 \begin{codeblock}
 struct V {
@@ -6243,6 +6373,21 @@ If the operand of
 refers to the object under construction or destruction and the static type of
 the operand is neither the constructor or destructor's class nor one of its
 bases, the behavior is undefined\ubdef{class.cdtor.typeid}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil class.cdtor.typeid\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] \tcode{typeid} on an object under construction or destruction, outside
+%  its own class or bases.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether objects are currently being constructed or destroyed
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] None
+%  \end{ubsummaryitemize}
 
 \pnum
 \indextext{construction!dynamic cast and}%
@@ -6268,6 +6413,21 @@ the operand is not a pointer to or object of the constructor or destructor's
 own class or one of its bases, the
 \keyword{dynamic_cast}
 results in undefined behavior\ubdef{class.cdtor.dynamic.cast}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil class.cdtor.dynamic.cast\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] \tcode{dynamic_cast} on an object under construction or destruction,
+%  outside its own class or bases.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether objects are currently being constructed or destroyed
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] None
+%  \end{ubsummaryitemize}
 \begin{example}
 \begin{codeblock}
 struct V {
@@ -6295,6 +6455,7 @@ B::B(V* v, A* a) {
 \end{example}
 \indextext{destruction|)}%
 \indextext{construction|)}%
+
 
 \rSec2[class.copy.elision]{Copy/move elision}%
 

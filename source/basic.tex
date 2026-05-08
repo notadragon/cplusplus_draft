@@ -3772,6 +3772,20 @@ zero or more objects of implicit-lifetime types\iref{term.implicit.lifetime.type
 in its specified region of storage
 if doing so would result in the program having defined behavior.
 If no such set of objects would give the program defined behavior\ubdef{intro.object.implicit.create},
+%WORDINGNOTE: \textbf{ubdef:} \hfil intro.object.implicit.create\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] using storage in a way no choice of implicitly-created object could make well-defined.
+%
+%  \item[\textbf{runtime-checkable:}] Not generally, requires predicting whether the object will be used correctly as a given type
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] None
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] None
+%  \end{ubsummaryitemize}
 the behavior of the program is undefined.
 If multiple such sets of objects would give the program defined behavior,
 it is unspecified which such set of objects is created.
@@ -3790,6 +3804,20 @@ and produce a pointer value that points to that object,
 if that value would result in the program having defined behavior.
 If no such pointer value would give the program defined behavior,
 the behavior of the program is undefined\ubdef{intro.object.implicit.pointer}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil intro.object.implicit.pointer\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] producing a pointer to an implicitly-created object when no pointer value into that storage is well-defined.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether storage can hold implicit lifetime objects
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] None
+%  \end{ubsummaryitemize}
 If multiple such pointer values would give the program defined behavior,
 it is unspecified which such pointer value is produced.
 
@@ -3844,6 +3872,20 @@ using the \grammarterm{alignment-specifier}\iref{dcl.align}.
 Attempting to create an object\iref{intro.object} in storage that
 does not meet the alignment requirements of the object's type
 is undefined behavior\ubdef{basic.align.object.alignment}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil basic.align.object.alignment\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] placing an object at a storage address misaligned for its type.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] Yes
+%
+%  \item[\textbf{checking:}] Insert alignment check when creating or reading objects.
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] UBSan's \tcode{alignment} check (stock and routed through the handler); and, in the P3850 prototype, a native middle-end check on both compilers.
+%  \end{ubsummaryitemize}
 
 \pnum
 A \defnadj{fundamental}{alignment} is represented by an alignment
@@ -4037,16 +4079,75 @@ program has undefined behavior if:
 \begin{itemize}
 \item
   the pointer is used as the operand of a \grammarterm{delete-expression}\ubdef{lifetime.outside.pointer.delete},
+%WORDINGNOTE: \textbf{ubdef:} \hfil lifetime.outside.pointer.delete\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] \tcode{delete}-ing a pointer to an object whose lifetime has already ended.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether storage is associated with an object of correct type within its lifetime
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] caught by constant evaluation on Clang.
+%  \end{ubsummaryitemize}
 \item
   the pointer is used to access a non-static data member or call a
   non-static member function of the object\ubdef{lifetime.outside.pointer.member}, or
+%WORDINGNOTE: \textbf{ubdef:} \hfil lifetime.outside.pointer.member\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] accessing a member through a pointer to an object outside its lifetime.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether storage is associated with an object of correct type within its lifetime
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] caught by constant evaluation on both GCC and Clang.
+%  \end{ubsummaryitemize}
 \item
   the pointer is converted\iref{conv.ptr,expr.static.cast} to a pointer
   to a virtual base class\ubdef{lifetime.outside.pointer.virtual} or
+%WORDINGNOTE: \textbf{ubdef:} \hfil lifetime.outside.pointer.virtual\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] converting a pointer outside its lifetime into a virtual base class pointer.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether storage is associated with an object of correct type within its lifetime
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] heuristically caught by UBSan's \tcode{vptr}
+%  check (detection relies on the ended object's vtable still being recognizably
+%  invalid) and exhaustively caught by constant evaluation, on both GCC and Clang.
+%  \end{ubsummaryitemize}
   to a base class thereof, or
 \item
   the pointer is used as the operand of a
   \keyword{dynamic_cast}\iref{expr.dynamic.cast}\ubdef{lifetime.outside.pointer.dynamic.cast}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil lifetime.outside.pointer.dynamic.cast\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] \tcode{dynamic_cast} through a pointer to an object outside its lifetime.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether storage is associated with an object of correct type within its lifetime
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] heuristically caught by UBSan's \tcode{vptr} check on Clang
+%  (detection relies on the ended object's vtable) and rejected in constant evaluation on Clang; GCC has no detection channel (it does not instrument \tcode{dynamic_cast} for \tcode{vptr}, and its constant evaluator accepts the cast).
+%  \end{ubsummaryitemize}
 \end{itemize}
 \begin{example}
 \begin{codeblock}
@@ -4092,11 +4193,69 @@ properties of the glvalue that do not depend on its value is
 well-defined. The program has undefined behavior if:
 \begin{itemize}
 \item the glvalue is used to access the object\ubdef{lifetime.outside.glvalue.access}, or
+%WORDINGNOTE: \textbf{ubdef:} \hfil lifetime.outside.glvalue.access\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] using a glvalue to read or write an object outside its lifetime (before construction completes or after it ends).
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether storage is associated with an object of correct type within its lifetime
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] heuristically caught by AddressSanitizer on both compilers (default heap-use-after-free; extra flags for stack/overflow variants) and exhaustively caught by constant evaluation.
+%  \end{ubsummaryitemize}
 \item the glvalue is used to call a non-static member function of the object\ubdef{lifetime.outside.glvalue.member}, or
+%WORDINGNOTE: \textbf{ubdef:} \hfil lifetime.outside.glvalue.member\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] calling a non-static member function through a glvalue outside its lifetime.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether storage is associated with an object of correct type within its lifetime
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] caught by constant evaluation on both GCC and Clang.
+%  \end{ubsummaryitemize}
 \item the glvalue is bound to a reference to a virtual base class\iref{dcl.init.ref}\ubdef{lifetime.outside.glvalue.virtual}, or
+%WORDINGNOTE: \textbf{ubdef:} \hfil lifetime.outside.glvalue.virtual\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] binding a glvalue outside its lifetime to a virtual base class reference.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether storage is associated with an object of correct type within its lifetime
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] heuristically caught by UBSan's \tcode{vptr}
+%  check (detection relies on the ended object's vtable still being recognizably
+%  invalid) and exhaustively caught by constant evaluation, on both GCC and Clang.
+%  \end{ubsummaryitemize}
 \item the glvalue is used as the operand of a
 \keyword{dynamic_cast}\iref{expr.dynamic.cast} or as the operand of
 \keyword{typeid}\ubdef{lifetime.outside.glvalue.dynamic.cast}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil lifetime.outside.glvalue.dynamic.cast\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] using a glvalue to a dead object as the operand of \tcode{dynamic_cast} or \tcode{typeid}.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether storage is associated with an object of correct type within its lifetime
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] Clang heuristically catches it at run time via UBSan's \tcode{vptr} check (both \tcode{noexcept}-enforce and \tcode{noexcept}-observe; detection relies on the ended object's vtable); GCC has no run-time channel.  Both compilers reject it in constant evaluation, though only incidentally -- the virtual base makes the class ineligible for a constexpr constructor/destructor, so evaluation fails before the offending \tcode{dynamic_cast} is reached.
+%  \end{ubsummaryitemize}
 \end{itemize}
 
 \begin{note}
@@ -4182,6 +4341,21 @@ with static storage duration.
 and another object of the original type does not occupy
 that same storage location when the implicit destructor call takes
 place, the behavior of the program is undefined\ubdef{original.type.implicit.destructor}. This is true
+%WORDINGNOTE: \textbf{ubdef:} \hfil original.type.implicit.destructor\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] an implicit destructor at scope exit running on storage reused for a different type.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Checking this would require maintaining type and lifetime information
+%  across an entire program.
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] None
+%  \end{ubsummaryitemize}
 even if the block is exited with an exception.
 \begin{example}
 \begin{codeblock}
@@ -4202,6 +4376,22 @@ Creating a new object within the storage that a const, complete
 object with static, thread, or automatic storage duration occupies,
 or within the storage that such a const object used to occupy before
 its lifetime ended, results in undefined behavior\ubdef{creating.within.const.complete.obj}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil creating.within.const.complete.obj\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] creating a new object in storage a \tcode{const} complete object
+%  occupies or used to occupy.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether storage is associated with a \tcode{const} object
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] Clang's constant evaluation catches both \tcode{.live} and
+%  \tcode{.reuse} subsets.
+%  \end{ubsummaryitemize}
 \begin{example}
 \begin{codeblock}
 struct B {
@@ -4258,13 +4448,32 @@ see~\ref{basic.start.static}.
 If any operand of a built-in operator that produces a prvalue
 is evaluated,
 is not a discarded-value expression\iref{expr.context}, and
-produces an erroneous value,
-then the value produced by that operator is erroneous.
+produces an erroneous or indeterminate value,
+then the value produced by that operator is
+erroneous or indeterminate respectively.
 Except in the following cases,
-if an indeterminate value is produced by an evaluation,
-the behavior is undefined\ubdef{basic.indet.value}, and
+all evaluations have an implicit precondition assertion
+that they will not produce an indeterminate value\ubdef{basic.indet.value},
+%WORDINGNOTE: \textbf{ubdef:} \hfil basic.indet.value\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] reading an uninitialized (indeterminate) value.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track whether storage has been initialized
+%
+%  \item[\textbf{replacement:}] Only for built-in types: initialise default-initialised variables with erroneous value
+%
+%  \item[\textbf{implementations:}] caught by MemorySanitizer on Clang; also
+%  rejected during constant evaluation.
+%  \end{ubsummaryitemize}
+and if they do then the result of the evaluation is
+an indeterminate value;
 if an erroneous value is produced by an evaluation,
-the behavior is erroneous and
+the behavior is erroneous
+and
 the result of the evaluation is that erroneous value:
 \begin{itemize}
 \item
@@ -4550,6 +4759,23 @@ does not satisfy the semantic constraints
 specified in~\ref{basic.stc.dynamic.allocation}
 and~\ref{basic.stc.dynamic.deallocation},
 the behavior is undefined\ubdef{basic.stc.alloc.dealloc.constraint}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil basic.stc.alloc.dealloc.constraint\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] a user-replaced allocation or deallocation function violating its
+%  semantic constraints.
+%
+%  \item[\textbf{runtime-checkable:}] Partially
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Add postcondition assertions to allocation functions, evaluate them.
+%  Some constraints can be expressed this way, some (such as global distinctness) are not
+%  locally verifiable.
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] Some caught by UBSan's \tcode{undefined} check on Clang.
+%  \end{ubsummaryitemize}
 
 \indextext{storage duration!dynamic|)}
 
@@ -4590,6 +4816,21 @@ in~\ref{new.delete.single} and~\ref{new.delete.array},
 for any other object accessible to the caller.
 The effect of indirecting through a pointer
 returned from a request for zero size is undefined\ubdef{basic.stc.alloc.zero.dereference}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil basic.stc.alloc.zero.dereference\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] dereferencing the non-null pointer returned by a zero-size
+%  allocation
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track pointer provenance, insert bounds check
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] caught by AddressSanitizer on both compilers.
+%  \end{ubsummaryitemize}
 \begin{footnote}
 The intent is
 to have \tcode{\keyword{operator} \keyword{new}()} implementable by
@@ -6085,6 +6326,22 @@ to or past the end of an object $O$ and
 happens before the beginning of the duration
 of the region of storage for $O$,
 the behavior is undefined\ubdef{basic.compound.pointer.before.storage.duration}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil basic.compound.pointer.before.storage.duration\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] forming a pointer to an object before its storage duration begins.
+%
+%  \item[\textbf{runtime-checkable:}] No, requires knowing that undefined behavior will or
+%  will not be encountered with any potential value a pointer might have.
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Would require properly identifying when angelic provenance is unable
+%  to apply.
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] None
+%  \end{ubsummaryitemize}
 \begin{note}
 Relaxed atomic operations\iref{atomics.order} can produce such values.
 Conversions from integers avoid producing them\iref{expr.reinterpret.cast}.
@@ -6103,6 +6360,22 @@ $P$ is not valid in the context of $E$:
 \begin{itemize}
 \item If $E$ is an indirection\iref{expr.unary.op},
 the behavior is undefined\ubdef{basic.compound.invalid.pointer}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil basic.compound.invalid.pointer\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] dereferencing a pointer to storage that has already been freed.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track object lifetimes across the entire program
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] heuristically caught by AddressSanitizer,
+%  on both compilers; also
+%  rejected during constant evaluation on both compilers.
+%  \end{ubsummaryitemize}
 \item If $E$ either
 \begin{itemize}
 \item is a boolean conversion\iref{conv.bool} or
@@ -6112,7 +6385,6 @@ operator\iref{expr.compound},
 \end{itemize}
 the behavior is \impldef{invalid pointer value in the context of an evaluation}.
 \end{itemize}
-
 \begin{note}
 $P$ can be valid in the context of $E$ even
 if it points to a type unrelated to that of $O$ or
@@ -6120,6 +6392,7 @@ if $O$ is not within its lifetime,
 although further restrictions apply
 to such pointer values\iref{basic.life, basic.lval, expr.add}.
 \end{note}
+
 
 \pnum
 Two objects \placeholder{a} and \placeholder{b} are \defn{pointer-interconvertible} if
@@ -6622,6 +6895,22 @@ The value computations of the operands of an
 operator are sequenced before the value computation of the result of the
 operator.
 The behavior is undefined\iref{intro.multithread}\ubdef{intro.execution.unsequenced.modification} if
+%WORDINGNOTE: \textbf{ubdef:} \hfil intro.execution.unsequenced.modification\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] unsequenced side effects (or a side effect and a read) on the same scalar object, single-threaded.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] Yes
+%
+%  \item[\textbf{checking:}] Identify all potential read operations that are not sequenced with respect to each given write operation; insert checks to identify if those operations are referencing the same address
+%
+%  \item[\textbf{replacement:}] Sequence operations in some unspecified order
+%
+%  \item[\textbf{note:}] Needs more careful specification work, defer to future paper.
+%
+%  \item[\textbf{implementations:}] None
+%  \end{ubsummaryitemize}
 \begin{itemize}
 \item
 \indextext{side effects}%
@@ -7033,6 +7322,20 @@ and neither happens before the other,
 except for the special case for signal handlers described below.
 Any such data race results in undefined
 behavior\ubdef{intro.races.data}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil intro.races.data\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] unsynchronized, potentially concurrent accesses to the same memory location, at least one a write.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track from which threads memory is accessed and when accesses synchronize with each other; only practical for a subset of cases
+%
+%  \item[\textbf{replacement:}] Could possibly make all primitive memory accesses implicitly atomic, but that is neither specified nor ready to propose
+%
+%  \item[\textbf{implementations:}] heuristically detected by ThreadSanitizer on both compilers.
+%  \end{ubsummaryitemize}
 \begin{note}
 It can be shown that programs that correctly use mutexes
 and \tcode{memory_order::seq_cst} operations to prevent all data races and use no
@@ -7092,6 +7395,20 @@ hardware race detection.
 
 \pnum
 The implementation may assume\ubdef{intro.progress.stops} that any thread
+%WORDINGNOTE: \textbf{ubdef:} \hfil intro.progress.stops\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] a non-terminated thread stops making progress -- e.g., a busy-wait whose loop condition is not a constant expression (a trivial infinite loop is not undefined).
+%
+%  \item[\textbf{runtime-checkable:}] No, requires (quite literally) solving the halting problem
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] No checking strategy exists as whether a thread will make progress is undecidable
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] None
+%  \end{ubsummaryitemize}
 will eventually do one of the following:
 \begin{itemize}
 \item terminate,
@@ -7397,6 +7714,21 @@ objects with automatic storage duration\iref{class.dtor}. If
 \tcode{std::exit} is invoked during the destruction of
 an object with static or thread storage duration, the program has undefined
 behavior\ubdef{basic.start.main.exit.during.destruction}.
+%WORDINGNOTE: \textbf{ubdef:} \hfil basic.start.main.exit.during.destruction\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] calling \tcode{std::exit} recursively during the destruction sequence
+%  it would restart.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No, needs new instrumentation of existing functionality
+%
+%  \item[\textbf{checking:}] Track whether static or thread-local objects are currently being destroyed
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] None
+%  \end{ubsummaryitemize}
 
 \pnum
 \indextext{termination!program}%
@@ -7735,6 +8067,21 @@ as each element of the array is destroyed\iref{class.temporary}.
 If a function contains a block variable of static or thread storage duration that has been
 destroyed and the function is called during the destruction of an object with static or
 thread storage duration, the program has undefined behavior\ubdef{basic.start.term.use.after.destruction} if the flow of control
+%WORDINGNOTE: \textbf{ubdef:} \hfil basic.start.term.use.after.destruction\hfil
+%  \begin{ubsummaryitemize}
+%  \item[\textbf{summary:}] using a static-storage-duration object after its destructor has
+%  run.
+%
+%  \item[\textbf{runtime-checkable:}] Yes
+%
+%  \item[\textbf{locally-checkable:}] No
+%
+%  \item[\textbf{checking:}] Track the lifetime of static objects
+%
+%  \item[\textbf{replacement:}] None
+%
+%  \item[\textbf{implementations:}] None
+%  \end{ubsummaryitemize}
 passes through the definition of the previously destroyed block variable.
 \begin{note}
 Likewise, the behavior is undefined
@@ -7789,22 +8136,35 @@ the functions passed to \tcode{std::atexit()} or \tcode{std::at_quick_exit()}.%
 
 \pnum
 \defnx{Contract assertions}{contract assertion}
-allow the programmer to specify
+specify
 properties of the state of the program
 that are expected to hold at
 certain points during execution.
-Contract assertions are introduced by
+\defnadj{Explicit}{contract assertions} are introduced by
 \grammarterm{precondition-specifier}s,
 \grammarterm{postcondition-specifier}s\iref{dcl.contract.func}, and
 \grammarterm{assertion-statement}s\iref{stmt.contract.assert}.
+\defnadj{Implicit}{contract assertions} are introduced
+as parts of other language constructs.
 
 \pnum
-Each contract assertion has a \defnadjx{contract-assertion}{predicate}{predicate},
+Each explicit contract assertion
+has a \defnadjx{contract-assertion}{predicate}{predicate},
 which is an expression of type \tcode{bool}.
 
+\pnum
+Each implicit contract assertion
+has a \defnadjx{contract-assertion}{condition}{condition}
+under which it is considered satisfied.
+
 \begin{note}
-The value of the predicate is used to identify program states that are
-expected.
+If it is determined
+during program execution
+that the predicate does not evaluate
+to \tcode{true},
+or that the condition of an implicit contract assertion
+indicates that the contract assertion is not satisfied,
+a contract violation occurs.
 \end{note}
 
 \pnum
@@ -7831,23 +8191,28 @@ if a \grammarterm{result-name-introducer}\iref{dcl.contract.res} has been specif
 \indexdefn{checking semantics|see{contract evaluation semantics, checking}}%
 \indexdefn{terminating semantics|see{contract evaluation semantics, terminating}}%
 An evaluation of a contract assertion
-uses one of the following four \defn{evaluation semantics}:
+uses one of the following five \defn{evaluation semantics}:
 \defnx{ignore}{contract evaluation semantics!ignore},
 \defnx{observe}{contract evaluation semantics!observe},
-\defnx{enforce}{contract evaluation semantics!enforce}, or
-\defnx{quick-enforce}{contract evaluation semantics!quick-enforce}.
+\defnx{enforce}{contract evaluation semantics!enforce},
+\defnx{quick-enforce}{contract evaluation semantics!quick-enforce}, or
+\defnx{assume}{contract evaluation semantics!assume}.
 Observe, enforce, and quick-enforce are \defnx{checking semantics}{contract evaluation semantics!checking};
 enforce and quick-enforce are \defnx{terminating semantics}{contract evaluation semantics!terminating}.
 
 \pnum
-It is
+Except that
+explicit contract assertions
+are never evaluated
+with the assume semantic,
+it is
 \impldef{evaluation semantic used for the evaluation of a contract assertion}
 which evaluation semantic is used
 for any given evaluation of a contract assertion.
 \begin{note}
 The range and flexibility of available choices of
 evaluation semantics depends on the implementation
-and need not allow all four evaluation semantics as possibilities.
+and need not allow all five evaluation semantics as possibilities.
 The evaluation semantics can differ
 for different evaluations of the same contract assertion,
 including evaluations during constant evaluation.
@@ -7866,13 +8231,29 @@ evaluations of contract assertions should use the enforce semantic.
 
 \pnum
 The evaluation of a contract assertion using the ignore semantic has no effect.
+
+\pnum
+If the predicate of
+a contract assertion evaluated with the assume semantic
+would not evaluate to \tcode{true},
+or the condition of such a contract assertion
+is not satisfied,
+the evaluation has unconstrained behavior\iref{intro.abstract};
+otherwise the evaluation has no effect.
+
+\pnum
 \begin{note}
-The predicate is potentially evaluated\iref{basic.def.odr},
+If a contract assertion has a predicate,
+and that contract assertion is
+evaluated with the ignore or assume semantic,
+the predicate
+is potentially evaluated\iref{basic.def.odr},
 but not evaluated.
 \end{note}
 
 \pnum
 The evaluation $A$ of a contract assertion
+with a predicate
 using a checking semantic
 determines the value of the predicate.
 It is unspecified
@@ -7911,6 +8292,9 @@ also happens before $C$.
 A \defn{contract violation} occurs when
 \begin{itemize}
 \item
+the contract assertion has a condition
+that is not satisfied,
+\item
 $B$ is \keyword{false},
 \item
 the evaluation of the predicate
@@ -7925,6 +8309,8 @@ is not a core constant expression.
 
 \begin{note}
 If $B$ is \keyword{true},
+or the contract assertion has a condition
+that is satisfied,
 no contract violation occurs and
 control flow continues normally
 after the point of evaluation of the contract assertion.
@@ -8173,6 +8559,56 @@ a specified number of repeated evaluations
 for contract assertions.
 By default,
 no repeated evaluations should be performed.
+
+\rSec2[basic.contract.implicit]{Implicit contract assertions}
+
+\pnum
+A built-in operation $O$
+may have an
+\defnadj{implicit}{precondition assertion} $C$ applied to it.
+If so,
+the evaluation in sequence of $C$
+is sequenced before
+the evaluation of $O$ and
+after the evaluation of
+all operands of $O$.
+
+\pnum
+All undefined behavior has a
+\defnadj{guarding}{contract assertion}
+that is an implicit contract assertion
+whose condition is never satisfied.
+
+\pnum
+\begin{note}
+If the guarding contract assertion
+of undefined behavior
+is
+\begin{itemize}
+\item evaluated with the ignore semantic,
+\item evaluated with the assume semantic, or
+\item evaluated with the observe semantic
+and the contract-violation handler returns normally
+\end{itemize}
+then the behavior is unconstrained\iref{intro.abstract}.
+\end{note}
+
+\pnum
+\begin{note}
+Behavior with
+an implicit precondition assertion that it does not occur
+results in unconstrained behavior
+when that assertion is evaluated with the
+assume semantic\iref{basic.contract.eval}
+but in all other cases has specified behavior.
+\end{note}
+
+%WORDINGNOTE: The above note's purpose is to  make it clear that the places where we
+% have replaced what was previously undefined behavior with
+% erroneous behavior that has an implicit precondition can be
+% implemented in a conforming manner by current compilers by
+% dictating that the associated guarding contract assertion is
+% evaluated with the assume semantic.
 
 \rSec2[basic.contract.handler]{Contract-violation handler}
 
