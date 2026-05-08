@@ -887,7 +887,18 @@ polymorphic class type\iref{expr.typeid},
 or
 \item
 any of the immediate subexpressions\iref{intro.execution}
-of $E$ that is not an unevaluated operand is potentially-throwing.
+of $E$ that is not an unevaluated operand is potentially-throwing
+\begin{note}
+The evaluation of an expression
+that is not potentially-throwing
+may nevertheless exit via an exception
+if, as part of that evaluation,
+the violation of an implicit contract assertion
+([basic.contract.general]) causes
+a call to the contract-violation handler ([basic.contract.handler])
+and that handler exits via an exception.
+\end{note}
+.
 \end{itemize}
 
 \pnum
