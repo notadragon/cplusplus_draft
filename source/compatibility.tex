@@ -1,6 +1,33 @@
 %!TEX root = std.tex
 \infannex{diff}{Compatibility}
 
+\rSec1[diff.cpp26]{\Cpp{} and ISO \CppXXVI{}}
+
+\rSec2[diff.cpp26.general]{General}
+
+\pnum
+\indextext{summary!compatibility with ISO \CppXXVI{}}%
+Subclause \ref{diff.cpp26} lists the differences between \Cpp{} and
+ISO \CppXXVI{},
+by the chapters of this document.
+
+\rSec2[diff.cpp26.lex]{\ref{lex}: lexical conventions}
+
+\diffref{lex.key}
+\change
+New keywords.
+\rationale
+Required for new features.
+\begin{itemize}
+\item
+The \keyword{contract_control} keyword
+is added to enable functionality specific to
+assertion-control expressions.
+\end{itemize}
+\effect
+Valid \CppXXVI{} code using \keyword{contract_control} as an identifier
+is not valid in this revision of \Cpp{}.
+
 \rSec1[diff.cpp23]{\Cpp{} and ISO \CppXXIII{}}
 
 \rSec2[diff.cpp23.general]{General}
