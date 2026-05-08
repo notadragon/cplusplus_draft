@@ -7771,22 +7771,29 @@ the functions passed to \tcode{std::atexit()} or \tcode{std::at_quick_exit()}.%
 
 \pnum
 \defnx{Contract assertions}{contract assertion}
-allow the programmer to specify
+specify
 properties of the state of the program
 that are expected to hold at
 certain points during execution.
-Contract assertions are introduced by
+\defnadj{Explicit}{contract assertions} are introduced by
 \grammarterm{precondition-specifier}s,
 \grammarterm{postcondition-specifier}s\iref{dcl.contract.func}, and
 \grammarterm{assertion-statement}s\iref{stmt.contract.assert}.
+\defnadj{Implicit}{contract assertions} are introduced 
+as components of other language contracts.
 
 \pnum
 Each contract assertion has a \defnadjx{contract-assertion}{predicate}{predicate},
 which is an expression of type \tcode{bool}.
 
 \begin{note}
-The value of the predicate is used to identify program states that are
-expected.
+If it is determined
+during program execution
+that the predicate does not evaluate
+to \tcode{true},
+a contract violation occurs.
+A contract violation is always
+the consequence of incorrect program code.
 \end{note}
 
 \pnum
@@ -7813,11 +7820,12 @@ if a \grammarterm{result-name-introducer}\iref{dcl.contract.res} has been specif
 \indexdefn{checking semantics|see{contract evaluation semantics!checking}}%
 \indexdefn{terminating semantics|see{contract evaluation semantics!terminating}}%
 An evaluation of a contract assertion
-uses one of the following four \defn{evaluation semantics}:
+uses one of the following five \defn{evaluation semantics}:
 \defnx{ignore}{contract evaluation semantics!ignore},
 \defnx{observe}{contract evaluation semantics!observe},
-\defnx{enforce}{contract evaluation semantics!enforce}, or
-\defnx{quick-enforce}{contract evaluation semantics!quick-enforce}.
+\defnx{enforce}{contract evaluation semantics!enforce},
+\defnx{quick-enforce}{contract evaluation semantics!quick-enforce}, or
+\defnx{assume}{contract evaluation semantics!assume}.
 Observe, enforce, and quick-enforce are \defnx{checking semantics}{contract evaluation semantics!checking};
 enforce and quick-enforce are \defnx{terminating semantics}{contract evaluation semantics!terminating}.
 
@@ -7826,6 +7834,7 @@ It is
 \impldef{evaluation semantic used for the evaluation of a contract assertion}
 which evaluation semantic is used
 for any given evaluation of a contract assertion.
+Explicit contract assertions are never evaluated with the assume semantic.
 \begin{note}
 The range and flexibility of available choices of
 evaluation semantics depends on the implementation
@@ -7848,8 +7857,20 @@ evaluations of contract assertions should use the enforce semantic.
 
 \pnum
 The evaluation of a contract assertion using the ignore semantic has no effect.
+
+\pnum
+If the predicate of
+a contract assertion evaluated with the assume semantic
+would evaluate to \tcode{true}
+the evaluation
+has no effect;
+otherwise, the evaluation has undefined behavior.
+
+\pnum
 \begin{note}
-The predicate is potentially evaluated\iref{basic.def.odr},
+The predicate of a contract assertion
+evaluated with the ignore or assume semantic
+is potentially evaluated\iref{basic.def.odr}
 but not evaluated.
 \end{note}
 
@@ -8155,6 +8176,26 @@ a specified number of repeated evaluations
 for contract assertions.
 By default,
 no repeated evaluations should be performed.
+
+\rSec2[basic.contract.implicit]{}
+
+A built-in operation $O$
+may have an
+\defn{implicit precondition assertion} $C$ applied to it.
+If so,
+the evaluation of $C$
+is sequenced before
+the evaluation of $O$ and
+after the evaluation of
+all operands of $O$.
+
+A built-in operation $O$
+may have an
+\defn{implicit postcondition assertion} $C$ applied to it.
+If so,
+the evaluation of $C$
+is sequenced after
+the evaluation of $O$.
 
 \rSec2[basic.contract.handler]{Contract-violation handler}
 
