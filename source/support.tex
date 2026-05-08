@@ -4372,7 +4372,8 @@ if (auto p = dynamic_cast<const nested_exception*>(addressof(e)))
 
 \pnum
 The header \libheader{contracts} defines types
-for reporting information about contract violations\iref{basic.contract.eval}.
+for reporting information about contract violations\iref{basic.contract.eval}
+and controlling the behavior of contract assertions\iref{basic.contract.control}.
 
 \indexheader{contracts}
 \indexlibraryglobal{contract_violation}%
@@ -4412,9 +4413,102 @@ namespace std::contracts {
     assertion_kind kind() const noexcept;
     source_location location() const noexcept;
     evaluation_semantic semantic() const noexcept;
+    void* query_control_object(const void* key,
+                               size_t index = 0) const;
   };
 
   void invoke_default_contract_violation_handler(const contract_violation&);
+
+  // \ref{support.contract.control.vhandled}, enum \tcode{violation_handled}
+  enum class violation_handled;
+
+  // \ref{support.contract.control.semset}, class \tcode{evaluation_semantic_set}
+  class evaluation_semantic_set;
+
+  // \ref{support.contract.control.semfun}, evaluation semantic classification
+  constexpr bool is_checked(evaluation_semantic s);
+  constexpr bool is_unchecked(evaluation_semantic s);
+  constexpr bool is_terminating(evaluation_semantic s);
+  constexpr bool is_continuing(evaluation_semantic s);
+
+  namespace labels {
+    // \ref{support.contract.control.aco}, concept \tcode{assertion_control_object}
+    template<class T>
+      concept @\deflibconcept{assertion_control_object}@ = @\seebelow@;
+
+    // \ref{support.contract.control.allowed}, concept \tcode{allowed_semantics_label}
+    template<class T>
+      concept @\deflibconcept{allowed_semantics_label}@ = @\seebelow@;
+
+    // \ref{support.contract.control.compute}, concept \tcode{semantic_computation_label}
+    template<class T>
+      concept @\deflibconcept{semantic_computation_label}@ = @\seebelow@;
+
+    // \ref{support.contract.control.dim}, concept \tcode{dimensioned_label}
+    template<class T>
+      concept @\deflibconcept{dimensioned_label}@ = @\seebelow@;
+
+    // \ref{support.contract.control.lvl}, concept \tcode{local_violation_label}
+    template<class T>
+      concept @\deflibconcept{local_violation_label}@ = @\seebelow@;
+
+    // \ref{support.contract.control.ident}, concept \tcode{identification_label}
+    template<class T>
+      concept @\deflibconcept{identification_label}@ = @\seebelow@;
+
+    // \ref{support.contract.control.comment}, concept \tcode{compute_comment_label}
+    template<class T>
+      concept @\deflibconcept{compute_comment_label}@ = @\seebelow@;
+
+    // \ref{support.contract.control.query}, concept \tcode{queryable_label}
+    template<class T>
+      concept @\deflibconcept{queryable_label}@ = @\seebelow@;
+
+    // \ref{support.contract.control.dimlist}, class template \tcode{dimension_list}
+    template<class... Dims>
+      struct dimension_list;
+
+    // \ref{support.contract.control.combine}, label combination
+    template<@\libconcept{assertion_control_object}@ LHS, @\libconcept{assertion_control_object}@ RHS>
+      constexpr @\libconcept{assertion_control_object}@ auto operator|(const LHS& lhs,
+                                                      const RHS& rhs);
+
+    // \ref{support.contract.labels.empty}, label \tcode{empty_label}
+    struct empty_label_t;
+    inline constexpr empty_label_t empty_label;
+
+    // \ref{support.contract.labels.allowed}, label template \tcode{allowed_semantics_t}
+    template<evaluation_semantic... Allowed>
+      struct allowed_semantics_t;
+
+    // \ref{support.contract.labels.sem}, semantic restriction labels
+    inline constexpr @\seebelow@ terminating;
+    inline constexpr @\seebelow@ symbolic;
+    inline constexpr @\seebelow@ always_enforce;
+    inline constexpr @\seebelow@ always_quick_enforce;
+    inline constexpr @\seebelow@ always_observe;
+    inline constexpr @\seebelow@ always_ignore;
+    inline constexpr @\seebelow@ never_enforce;
+    inline constexpr @\seebelow@ never_quick_enforce;
+    inline constexpr @\seebelow@ never_observe;
+    inline constexpr @\seebelow@ never_ignore;
+
+    // \ref{support.contract.labels.review}, label \tcode{review}
+    inline constexpr @\seebelow@ review;
+
+    // \ref{support.contract.labels.hardened}, label \tcode{hardened}
+    inline constexpr @\seebelow@ hardened;
+
+    // \ref{support.contract.labels.cost}, runtime-cost labels
+    inline constexpr @\seebelow@ opt;
+    inline constexpr @\seebelow@ audit;
+
+    // \ref{support.contract.labels.group}, label template \tcode{assertion_group_label}
+    template<int N>
+      struct assertion_group_label;
+    template<assertion_group_label Label>
+      constexpr auto operator""group();
+  }
 }
 \end{codeblock}
 
@@ -4497,6 +4591,16 @@ An
 \impldef{the contents provided in the \tcode{comment} field of \tcode{contract_violation}}
 \ntmbs{} in
 the ordinary literal encoding\iref{lex.charset}.
+
+\pnum
+If the contract violation
+is the result of a contract assertion
+that has an assertion-control object
+that is a computed-comment control type\iref{support.contract.control.comment}
+then the return value is instead the result of
+\tcode{o.compute_comment(r)} where
+\tcode{o} is the assertion-control object
+and \tcode{r} is the return value that would have been returned.
 
 \pnum
 \recommended
@@ -4597,6 +4701,20 @@ the violated contract assertion was evaluated.
 
 \end{itemdescr}
 
+\begin{itemdecl}
+void* query_control_object(const void* key, size_t index = 0) const;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+If the assertion-control object of the violated contract assertion
+satisfies \tcode{\libconcept{queryable_label}}\iref{support.contract.control.query},
+the result of invoking \tcode{query(key, index)}
+on the assertion-control object;
+otherwise, \tcode{nullptr}.
+\end{itemdescr}
+
 \rSec2[support.contract.invoke]{Invoke default handler}
 
 \begin{itemdecl}
@@ -4609,6 +4727,853 @@ void invoke_default_contract_violation_handler(const contract_violation& v);
 Invokes the default contract-violation handler\iref{basic.contract.handler}
 with the argument \tcode{v}.
 
+\end{itemdescr}
+
+\rSec2[support.contract.control]{Assertion-control concepts and utilities}
+
+%NOTE: This section defines a mix of concepts and langauge definitions for
+% library-only assertion control types.  Where the concept represents
+% a core-language assertion control type we reference back to \ref{basic.contract.control}
+
+\rSec3[support.contract.control.general]{General}
+
+\pnum
+This subclause defines concepts, types, and utilities
+related to controlling the behavior
+of contract assertions\iref{basic.contract.control}.
+All concepts and variable templates defined in this subclause
+are declared in the namespace \tcode{std::contracts::labels}.
+
+\pnum
+For each concept \tcode{C} defined in this subclause,
+a corresponding variable template is provided:
+\begin{codeblock}
+namespace std::contracts::labels {
+  template<auto control_object>
+    constexpr bool is_C = C<decltype(control_object)>;
+}
+\end{codeblock}
+
+\rSec3[support.contract.control.aco]{Concept \tcode{assertion_control_object}}
+
+\begin{itemdecl}
+template<class T>
+  concept @\deflibconcept{assertion_control_object}@ =
+    requires { typename T::assertion_control_object; };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+The \tcode{assertion_control_object} concept specifies
+the base requirement for all assertion-control objects.
+\begin{note}
+Every assertion-control object must satisfy this concept.
+As a general convention,
+label types name themselves with this member typedef.
+\end{note}
+\end{itemdescr}
+
+\rSec3[support.contract.control.allowed]{Concept \tcode{allowed_semantics_label}}
+
+\begin{itemdecl}
+template<class T>
+  concept @\deflibconcept{allowed_semantics_label}@ =
+    @\libconcept{assertion_control_object}@<T> &&
+    requires (const T t) {
+      requires is_const_v<decltype(T::allowed_semantics)>;
+      evaluation_semantic_set({t.allowed_semantics});
+    };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+A type \tcode{T} models \tcode{allowed_semantics_label}
+if it is an allowed-semantics control type\iref{basic.contract.control}.
+
+\pnum
+\begin{note}
+Combined assertion-control objects
+intersect the allowed semantics sets
+of their constituents.
+\end{note}
+\end{itemdescr}
+
+\rSec3[support.contract.control.compute]{Concept \tcode{semantic_computation_label}}
+
+\begin{itemdecl}
+template<class T>
+  concept @\deflibconcept{semantic_computation_label}@ =
+    @\libconcept{assertion_control_object}@<T> &&
+    requires (const T t, evaluation_semantic s) {
+      { t.compute_semantic(s) } -> @\libconcept{same_as}@<evaluation_semantic>;
+    };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+A type \tcode{T} models \tcode{semantic_computation_label}
+if it is a computed-semantics control type.\iref{basic.contract.control}.
+
+\pnum
+\begin{note}
+Combined assertion-control objects
+chain their \tcode{compute_semantic} functions
+from left to right.
+\end{note}
+\end{itemdescr}
+
+\rSec3[support.contract.control.dim]{Concept \tcode{dimensioned_label}}
+
+\begin{itemdecl}
+template<class T>
+  concept @\deflibconcept{dimensioned_label}@ =
+    @\libconcept{assertion_control_object}@<T> &&
+    @\exposconcept{is-specialization-of}@<typename T::dimensions, dimension_list>;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+A type \tcode{T} models \tcode{dimensioned_label}
+if it declares dimensions
+via a nested \tcode{dimensions} member
+that is a specialization of
+\tcode{dimension_list}.
+
+\pnum
+A type is a \defnadj{dimensioned}{control type}
+if it models \tcode{dimensioned_label}.
+
+\pnum
+\begin{note}
+Combined assertion-control objects have
+the union of the dimensions
+of their constituent objects,
+and it is ill-formed if the dimensions of
+their constituents have a non-empty intersection.
+\end{note}
+\end{itemdescr}
+
+\rSec3[support.contract.control.lvl]{Concept \tcode{local_violation_label}}
+
+\begin{itemdecl}
+template<class T>
+  concept @\deflibconcept{local_violation_label}@ =
+    @\libconcept{assertion_control_object}@<T> &&
+    requires (remove_const_t<T> t, const contract_violation& v) {
+      t.handle_contract_violation(v);
+      requires is_same_v<decltype(t.handle_contract_violation(v)), void>
+            || is_convertible_v<decltype(t.handle_contract_violation(v)),
+                                         violation_handled>;
+    };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+A type \tcode{T} models \tcode{local_violation_label}
+if it has a member function
+\tcode{handle_contract_violation}
+that accepts a \tcode{const contract_violation\&}.
+The return type shall be
+\tcode{void}
+or a type convertible to
+\tcode{violation_handled}.
+\pnum
+When a contract violation occurs
+for an assertion whose control object
+satisfies this concept,
+\tcode{handle_contract_violation} is invoked
+before the global contract-violation handler\iref{basic.contract.handler}.
+If the return type is not \tcode{void}
+and the return value converts to
+\tcode{violation_handled::handled},
+the global handler is not invoked.
+\begin{note}
+Combined assertion-control objects
+chain their \tcode{handle_contract_violation} members
+from right to left.
+\end{note}
+\end{itemdescr}
+
+\rSec3[support.contract.control.ident]{Concept \tcode{identification_label}}
+
+\begin{itemdecl}
+template<class T>
+  concept @\deflibconcept{identification_label}@ =
+    @\libconcept{assertion_control_object}@<T> &&
+    requires (const T t) {
+      { t.group_names } -> ranges::@\libconcept{range}@;
+      { *(ranges::begin(t.group_names)) }
+          -> @\libconcept{convertible_to}@<string_view>;
+    };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+A type \tcode{T} models \tcode{identification_label}
+if it has a \tcode{group_names} member
+that is a range of values convertible to \tcode{string_view}.
+
+\pnum
+A type is a \defnadj{identification}{control type}
+if it models \tcode{identification_label}.
+
+\pnum
+\begin{note}
+The value of an identification label's \tcode{group_names}
+can be used as input to the implementation-defined choice of
+evaluation semantic when
+evaluating a contract assertion.\iref{basic.contract.eval}.
+\end{note}
+
+\pnum
+\begin{note}
+Combined assertion-control objects produce
+the sorted, unique union
+of the group name sets of their constituents.
+\end{note}
+\end{itemdescr}
+
+\rSec3[support.contract.control.comment]{Concepts \tcode{compute_comment_label}}
+
+\begin{itemdecl}
+template<class T>
+  concept @\deflibconcept{compute_comment_label}@ =
+    @\libconcept{assertion_control_object}@<T> &&
+    requires (T t, const char* comment) {
+      { t.compute_comment(comment) } -> @\libconcept{convertible_to}@<const char*>;
+    };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+Types satisfying \tcode{compute_comment_label}
+have a \tcode{constexpr} member function \tcode{compute_comment}
+that are used to transform at compile time the \tcode{comment}
+fields of the \tcode{contract_violation} object\iref{support.contract.violation}
+before they are stored.
+
+\pnum
+A type is a \defnadj{computed-comment}{control type}
+if it models \tcode{computed_comment_label}.
+
+\begin{note}
+Combined assertion-control objects chain
+their \tcode{compute_comment} 
+functions from left to right.
+\end{note}
+\end{itemdescr}
+
+\rSec3[support.contract.control.query]{Concept \tcode{queryable_label}}
+
+\begin{itemdecl}
+template<class T>
+  concept @\deflibconcept{queryable_label}@ =
+    @\libconcept{assertion_control_object}@<T> &&
+    requires (const T t, const void* key, size_t index) {
+      { t.query(key, index) } -> @\libconcept{same_as}@<void*>;
+    };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+A type \tcode{T} models \tcode{queryable_label}
+if it has a \tcode{query} member function
+providing a type-erased interface
+for the contract-violation handler
+to query data from the assertion-control object
+at runtime.
+The \tcode{key} parameter identifies the data to query;
+the \tcode{index} parameter allows returning
+multiple results for the same key.
+\tcode{query} returns \tcode{nullptr}
+if no result is available for the given key and index.
+
+\pnum
+A type \tcode{T} is a \defnadj{quryable}{control type}
+if it models \tcode{quryable_label}.
+
+\pnum
+\begin{note}
+Combined assertion-control objects
+delegate \tcode{query} to their constituents,
+using index arithmetic to iterate
+through results from both.
+\end{note}
+\end{itemdescr}
+
+\rSec3[support.contract.control.vhandled]{Enum \tcode{violation_handled}}
+
+\begin{codeblock}
+namespace std::contracts {
+  enum class violation_handled {
+    not_handled,
+    handled
+  };
+}
+\end{codeblock}
+
+\pnum
+The type \tcode{violation_handled} is used as a return type
+by local violation handlers\iref{support.contract.control.lvl}
+to indicate whether a contract violation has been fully handled.
+
+\rSec3[support.contract.control.semset]{Class \tcode{evaluation_semantic_set}}
+
+\rSec4[support.contract.control.semset.general]{General}
+
+\begin{codeblock}
+namespace std::contracts {
+  class evaluation_semantic_set {
+  public:
+    // \ref{support.contract.control.semset.cons}, constructors
+    constexpr evaluation_semantic_set();
+    constexpr evaluation_semantic_set(const evaluation_semantic_set&);
+    constexpr evaluation_semantic_set(initializer_list<evaluation_semantic>);
+
+    // \ref{support.contract.control.semset.access}, accessors
+    constexpr bool contains(evaluation_semantic) const;
+
+    // \ref{support.contract.control.semset.mod}, modifiers
+    constexpr void insert(evaluation_semantic);
+
+    // \ref{support.contract.control.semset.setops}, set operations
+    constexpr evaluation_semantic_set& operator&=(const evaluation_semantic_set&);
+    constexpr evaluation_semantic_set& operator|=(const evaluation_semantic_set&);
+    constexpr evaluation_semantic_set operator~() const;
+
+    friend constexpr evaluation_semantic_set operator&(const evaluation_semantic_set&,
+                                                       const evaluation_semantic_set&);
+    friend constexpr evaluation_semantic_set operator|(const evaluation_semantic_set&,
+                                                       const evaluation_semantic_set&);
+
+    // \ref{support.contract.control.semset.cmp}, comparisons
+    friend constexpr bool operator==(const evaluation_semantic_set&,
+                                     const evaluation_semantic_set&);
+
+    // \ref{support.contract.control.semset.factory}, factory functions
+    static constexpr evaluation_semantic_set all();
+    static constexpr evaluation_semantic_set none();
+  };
+}
+\end{codeblock}
+
+\pnum
+An object of type \tcode{evaluation_semantic_set}
+represents a set of \tcode{evaluation_semantic} values.
+
+\rSec4[support.contract.control.semset.cons]{Constructors}
+
+\begin{itemdecl}
+constexpr evaluation_semantic_set();
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\ensures
+\tcode{contains(s)} is \tcode{false}
+for every enumerator \tcode{s}
+of \tcode{evaluation_semantic}.
+\end{itemdescr}
+
+\begin{itemdecl}
+constexpr evaluation_semantic_set(initializer_list<evaluation_semantic> ilist);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\ensures
+For each enumerator \tcode{s}
+of \tcode{evaluation_semantic},
+\tcode{contains(s)} is \tcode{true}
+if and only if \tcode{s} is
+an element of \tcode{ilist}.
+\end{itemdescr}
+
+\rSec4[support.contract.control.semset.access]{Accessors}
+
+\begin{itemdecl}
+constexpr bool contains(evaluation_semantic s) const;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{true} if \tcode{s}
+is an element of the set;
+otherwise, \tcode{false}.
+\end{itemdescr}
+
+\rSec4[support.contract.control.semset.mod]{Modifiers}
+
+\begin{itemdecl}
+constexpr void insert(evaluation_semantic s);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\ensures
+\tcode{contains(s)} is \tcode{true}.
+\end{itemdescr}
+
+\rSec4[support.contract.control.semset.setops]{Set operations}
+
+\begin{itemdecl}
+constexpr evaluation_semantic_set& operator&=(const evaluation_semantic_set& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\ensures
+For each enumerator \tcode{s}
+of \tcode{evaluation_semantic},
+\tcode{contains(s)} is \tcode{true}
+if and only if, immediately before the call,
+both \tcode{contains(s)} and \tcode{rhs.contains(s)}
+were \tcode{true}.
+\pnum
+\returns
+\tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+constexpr evaluation_semantic_set& operator|=(const evaluation_semantic_set& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\ensures
+For each enumerator \tcode{s}
+of \tcode{evaluation_semantic},
+\tcode{contains(s)} is \tcode{true}
+if and only if, immediately before the call,
+\tcode{contains(s)} or \tcode{rhs.contains(s)}
+was \tcode{true}.
+\pnum
+\returns
+\tcode{*this}.
+\end{itemdescr}
+
+\begin{itemdecl}
+constexpr evaluation_semantic_set operator~() const;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+An \tcode{evaluation_semantic_set} \tcode{r} such that,
+for each enumerator \tcode{s}
+of \tcode{evaluation_semantic},
+\tcode{r.contains(s)} is \tcode{true}
+if and only if \tcode{contains(s)} is \tcode{false}.
+\end{itemdescr}
+
+\begin{itemdecl}
+friend constexpr evaluation_semantic_set operator&(const evaluation_semantic_set& lhs,
+                                                   const evaluation_semantic_set& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{evaluation_semantic_set(lhs) \&= rhs}.
+\end{itemdescr}
+
+\begin{itemdecl}
+friend constexpr evaluation_semantic_set operator|(const evaluation_semantic_set& lhs,
+                                                   const evaluation_semantic_set& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{evaluation_semantic_set(lhs) |= rhs}.
+\end{itemdescr}
+
+\rSec4[support.contract.control.semset.cmp]{Comparisons}
+
+\begin{itemdecl}
+friend constexpr bool operator==(const evaluation_semantic_set& lhs,
+                                 const evaluation_semantic_set& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{true} if, for every enumerator \tcode{s}
+of \tcode{evaluation_semantic},
+\tcode{lhs.contains(s) == rhs.contains(s)};
+otherwise, \tcode{false}.
+\end{itemdescr}
+
+\rSec4[support.contract.control.semset.factory]{Factory functions}
+
+\begin{itemdecl}
+static constexpr evaluation_semantic_set all();
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+An \tcode{evaluation_semantic_set} \tcode{r} such that
+\tcode{r.contains(s)} is \tcode{true}
+for every enumerator \tcode{s}
+of \tcode{evaluation_semantic}.
+\end{itemdescr}
+
+\begin{itemdecl}
+static constexpr evaluation_semantic_set none();
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{evaluation_semantic_set()}.
+\end{itemdescr}
+
+\rSec3[support.contract.control.semfun]{Evaluation semantic classification}
+
+\begin{itemdecl}
+constexpr bool is_checked(evaluation_semantic s);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{true}
+if \tcode{s} is
+\tcode{evaluation_semantic::observe},
+\tcode{evaluation_semantic::enforce}, or
+\tcode{evaluation_semantic::quick_enforce};
+otherwise, \tcode{false}.
+\end{itemdescr}
+
+\begin{itemdecl}
+constexpr bool is_unchecked(evaluation_semantic s);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{!is_checked(s)}.
+\end{itemdescr}
+
+\begin{itemdecl}
+constexpr bool is_terminating(evaluation_semantic s);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{true}
+if \tcode{s} is
+\tcode{evaluation_semantic::enforce} or
+\tcode{evaluation_semantic::quick_enforce};
+otherwise, \tcode{false}.
+\end{itemdescr}
+
+\begin{itemdecl}
+constexpr bool is_continuing(evaluation_semantic s);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{!is_terminating(s)}.
+\end{itemdescr}
+
+\rSec3[support.contract.control.dimlist]{Class template \tcode{dimension_list}}
+
+\begin{codeblock}
+namespace std::contracts::labels {
+  template<class... Dims>
+    struct dimension_list {};
+}
+\end{codeblock}
+
+\pnum
+The class template \tcode{dimension_list}
+is used to declare the dimensions
+of an assertion-control object
+for mutual-exclusivity checking
+when combining labels\iref{support.contract.control.combine}.
+\begin{note}
+Each template argument represents a distinct dimension.
+Labels with overlapping dimensions
+cannot be combined.
+\end{note}
+
+\rSec3[support.contract.control.combine]{Label combination}
+
+\begin{itemdecl}
+template<@\libconcept{assertion_control_object}@ LHS,
+         @\libconcept{assertion_control_object}@ RHS>
+  constexpr @\libconcept{assertion_control_object}@ auto operator|(const LHS& lhs,
+                                                const RHS& rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+Let \tcode{C} be the type of the returned object.
+\pnum
+\constraints
+\begin{itemize}
+\item
+If both \tcode{LHS} and \tcode{RHS}
+model \tcode{\libconcept{dimensioned_label}},
+the intersection of their \tcode{dimensions} is empty.
+\end{itemize}
+\pnum
+\returns
+An object whose type \tcode{C}
+models \tcode{\libconcept{assertion_control_object}}
+and whose behavior is determined as follows:
+\begin{itemize}
+\item
+\tcode{C} models \tcode{\libconcept{allowed_semantics_label}}
+if \tcode{LHS} or \tcode{RHS} does.
+If both do, the \tcode{allowed_semantics} member
+is the intersection of those of \tcode{lhs} and \tcode{rhs}.
+\item
+\tcode{C} models \tcode{\libconcept{semantic_computation_label}}
+if \tcode{LHS} or \tcode{RHS} does.
+The \tcode{compute_semantic} member function
+chains the functions of the constituent objects
+from left to right.
+\item
+\tcode{C} models \tcode{\libconcept{dimensioned_label}}
+if \tcode{LHS} or \tcode{RHS} does.
+The \tcode{dimensions} member
+is the union of those of the constituent objects.
+\item
+\tcode{C} models \tcode{\libconcept{local_violation_label}}
+if \tcode{LHS} or \tcode{RHS} does.
+The \tcode{handle_contract_violation} member function
+chains the handlers of the constituent objects
+from right to left.
+If any handler returns
+\tcode{violation_handled::handled},
+subsequent handlers are not invoked.
+\item
+\tcode{C} models \tcode{\libconcept{identification_label}}
+if \tcode{LHS} or \tcode{RHS} does.
+The \tcode{group_names} member
+is the sorted, unique union
+of the group names of the constituent objects.
+\item
+\tcode{C} models \tcode{\libconcept{compute_comment_label}}
+if \tcode{LHS} or \tcode{RHS} does.
+The \tcode{compute_comment} member function
+chains the functions of the constituent objects
+from left to right.
+\item
+\tcode{C} models \tcode{\libconcept{queryable_label}}
+if \tcode{LHS} or \tcode{RHS} does.
+The \tcode{query} member function
+delegates to the constituent objects,
+using index arithmetic to iterate
+through results from both.
+\end{itemize}
+\end{itemdescr}
+
+\rSec2[support.contract.labels]{Standard labels}
+
+\rSec3[support.contract.labels.general]{General}
+
+\pnum
+This subclause describes assertion-control label objects
+and label type templates
+provided by the Standard Library
+in the namespace \tcode{std::contracts::labels}.
+
+\rSec3[support.contract.labels.empty]{Label \tcode{empty_label}}
+
+\begin{codeblock}
+namespace std::contracts::labels {
+  struct empty_label_t {
+    using assertion_control_object = empty_label_t;
+  };
+  inline constexpr empty_label_t empty_label;
+}
+\end{codeblock}
+
+\pnum
+The type \tcode{empty_label_t}
+models \tcode{\libconcept{assertion_control_object}}
+and no other facet concepts.
+\begin{note}
+\tcode{empty_label}
+serves as an identity element for \tcode{operator|}
+and as a base class for user-defined labels.
+\end{note}
+
+\rSec3[support.contract.labels.allowed]{Label template \tcode{allowed_semantics_t}}
+
+\begin{codeblock}
+namespace std::contracts::labels {
+  template<evaluation_semantic... Allowed>
+    struct allowed_semantics_t {
+      using assertion_control_object = allowed_semantics_t;
+      static constexpr evaluation_semantic_set allowed_semantics{Allowed...};
+    };
+}
+\end{codeblock}
+
+\pnum
+The type \tcode{allowed_semantics_t<Allowed...>}
+models \tcode{\libconcept{allowed_semantics_label}}.
+Its \tcode{allowed_semantics} member
+contains exactly the enumerators \tcode{Allowed...}.
+
+\rSec3[support.contract.labels.sem]{Semantic restriction labels}
+
+\begin{codeblock}
+namespace std::contracts::labels {
+  inline constexpr allowed_semantics_t<evaluation_semantic::enforce,
+                                       evaluation_semantic::quick_enforce> terminating;
+  inline constexpr allowed_semantics_t<evaluation_semantic::ignore> symbolic;
+
+  inline constexpr allowed_semantics_t<evaluation_semantic::enforce> always_enforce;
+  inline constexpr allowed_semantics_t<evaluation_semantic::quick_enforce> always_quick_enforce;
+  inline constexpr allowed_semantics_t<evaluation_semantic::observe> always_observe;
+  inline constexpr allowed_semantics_t<evaluation_semantic::ignore> always_ignore;
+
+  inline constexpr @\seebelow@ never_enforce;
+  inline constexpr @\seebelow@ never_quick_enforce;
+  inline constexpr @\seebelow@ never_observe;
+  inline constexpr @\seebelow@ never_ignore;
+}
+\end{codeblock}
+
+\pnum
+The type of each \tcode{never_}\textit{X} object
+models \tcode{\libconcept{allowed_semantics_label}}.
+Its \tcode{allowed_semantics} member
+contains all enumerators of \tcode{evaluation_semantic}
+except the one indicated by its name.
+
+\rSec3[support.contract.labels.review]{Label \tcode{review}}
+
+\begin{codeblock}
+namespace std::contracts::labels {
+  struct @\placeholder{review_t}@ {
+    using assertion_control_object = @\placeholder{review_t}@;
+    consteval evaluation_semantic compute_semantic(evaluation_semantic s) const;
+  };
+  inline constexpr @\placeholder{review_t}@ review;
+}
+\end{codeblock}
+
+\begin{itemdecl}
+consteval evaluation_semantic compute_semantic(evaluation_semantic s) const;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{evaluation_semantic::observe}
+if \tcode{is_terminating(s)} is \tcode{true};
+otherwise, \tcode{s}.
+\end{itemdescr}
+
+\rSec3[support.contract.labels.hardened]{Label \tcode{hardened}}
+
+\begin{codeblock}
+namespace std::contracts::labels {
+  inline constexpr @\unspec@ hardened;
+}
+\end{codeblock}
+
+\pnum
+The type of \tcode{hardened}
+models \tcode{\libconcept{semantic_computation_label}}.
+The behavior of its \tcode{compute_semantic}
+member function is
+\impldef{behavior of \tcode{hardened.compute_semantic}}.
+\begin{note}
+Implementations are encouraged to compute
+the evaluation semantic
+based on the Standard Library implementation's
+hardening configuration.
+\end{note}
+
+\rSec3[support.contract.labels.cost]{Runtime-cost labels}
+
+\begin{codeblock}
+namespace std::contracts::labels {
+  struct @\placeholder{runtime-cost-dimension}@;            // \expos
+  inline constexpr @\unspec@ opt;
+  inline constexpr @\unspec@ audit;
+}
+\end{codeblock}
+
+\pnum
+The types of \tcode{opt} and \tcode{audit} each model
+\tcode{\libconcept{identification_label}} and
+\tcode{\libconcept{dimensioned_label}}.
+Their \tcode{dimensions} members
+each contain \tcode{\placeholder{runtime-cost-dimension}},
+so they are mutually exclusive.
+
+\pnum
+The \tcode{group_names} member of \tcode{opt}
+is a range containing a single element
+with value \tcode{"opt"}.
+The \tcode{group_names} member of \tcode{audit}
+is a range containing a single element
+with value \tcode{"audit"}.
+\begin{note}
+Implementations are encouraged to default
+\tcode{opt} assertions
+to a checked semantic
+even in optimized builds,
+and to default
+\tcode{audit} assertions
+to an unchecked semantic.
+\end{note}
+
+\rSec3[support.contract.labels.group]{Label template \tcode{assertion_group_label}}
+
+\begin{codeblock}
+namespace std::contracts::labels {
+  template<int N>
+    struct assertion_group_label {
+      using assertion_control_object = assertion_group_label;
+      @\unspec@ group_names;
+      constexpr assertion_group_label(const char (&name)[N]);
+    };
+
+  template<assertion_group_label Label>
+    constexpr auto operator""group();
+}
+\end{codeblock}
+
+\pnum
+The type \tcode{assertion_group_label<N>}
+models \tcode{\libconcept{identification_label}}.
+
+\begin{itemdecl}
+constexpr assertion_group_label(const char (&name)[N]);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\ensures
+\tcode{group_names} is a range
+containing a single element
+whose value as a \tcode{string_view}
+compares equal to
+\tcode{string_view(name, N)}.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<assertion_group_label Label>
+  constexpr auto operator""group();
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{Label}.
 \end{itemdescr}
 
 \rSec1[support.initlist]{Initializer lists}

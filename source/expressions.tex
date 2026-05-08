@@ -6974,6 +6974,30 @@ constexpr std::meta::info f = ^^Z;              // OK, represents the type alias
 \end{codeblock}
 \end{example}
 
+\rSec3[expr.contract_control]{Contract-control expression}
+
+\begin{bnf}
+\nontermdef{assertion-control-expression}\br
+    \terminal{contract_control} \terminal{(} constant-expression \terminal{)}
+\end{bnf}
+
+\pnum
+An \grammarterm{assertion-control-exprsesion}
+yields the same value and has the same value category
+as its \grammarterm{constant-expression}.
+
+\begin{note}
+The \grammarterm{constant-expression} is
+manifestly constant-evaluated.
+Note that the \grammarterm{assertion-control-expression}
+introduces a new assertion-control scope\iref{basic.scope.contract.control}
+in which name lookup will search
+namespaces referred to by \grammarterm{using-directives}
+that have the optional \keyword{contrac_control} keyword\iref{namespace.udir,basic.lookup}.
+\end{note}
+
+\rSec1[expr.prim]{Primary expressions}%
+
 \rSec2[expr.cast]{Explicit type conversion (cast notation)}%
 \indextext{expression!cast|(}
 

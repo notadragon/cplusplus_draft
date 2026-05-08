@@ -4697,16 +4697,41 @@ on a function declaration $D_2$
 if
 \begin{itemize}
 \item
+both $C_1$ and $C_2$
+have \grammarterm{assertion-control-specifiers}
+or neither do,
+\item
+if present,
+their assertion-control specifiers $O_1$ and $O_2$
+would satisfy the one-definition rule\iref{basic.def.odr}
+if place as the arguments
+of contract-control expressions\iref{expr.contract.control}
+in function definitions on
+the declarations $D_1$ and $D_2$, respectively,
+except for
+\begin{itemize}
+\item
+renaming of the parameters of \placeholder{f}, and
+\item
+renaming of template parameters of
+a template enclosing \placeholder{f}
+\end{itemize}
+if $D_1$ and $D_2$ are in different translation units,
+corresponding entities defined within each predicate
+behave as if there is a single entity with a single definition, 
+and,
+\item
 their predicates $P_1$ and $P_2$ would
 satisfy the one-definition rule\iref{basic.def.odr}
 if placed in function definitions on
-the declarations $D_1$ and $D_2$, respectively, except for
+the declarations $D_1$ and $D_2$, respectively,
+except for
 \begin{itemize}
 \item
 renaming of the parameters of \placeholder{f},
 \item
 renaming of template parameters of
-a template enclosing \placeholder{}, and
+a template enclosing \placeholder{f}, and
 \item
 renaming of the result binding\iref{dcl.contract.res}, if any,
 \end{itemize}
@@ -8484,8 +8509,8 @@ considered, see~\ref{basic.lookup.udir}.
 
 \begin{bnf}
 \nontermdef{using-directive}\br
-    \opt{attribute-specifier-seq} \keyword{using} \keyword{namespace} \opt{nested-name-specifier} namespace-name \terminal{;}\br
-    \opt{attribute-specifier-seq} \keyword{using} \keyword{namespace} splice-specifier \terminal{;}
+    \opt{attribute-specifier-seq} \keyword{using} \opt{\keyword{contract_control}} \keyword{namespace} \opt{nested-name-specifier} namespace-name \terminal{;}\br
+    \opt{attribute-specifier-seq} \keyword{using} \opt{\keyword{contract_control}} \keyword{namespace} splice-specifier \terminal{;}
 \end{bnf}
 
 \pnum
@@ -8505,6 +8530,11 @@ When looking up a \grammarterm{namespace-name} in a
 see~\ref{basic.lookup.udir}.
 \end{note}
 The optional \grammarterm{attribute-specifier-seq} appertains to the \grammarterm{using-directive}.
+
+\pnum
+The optional \keyword{contract_control} keyword, if present,
+indicates a using directive that will be considered
+only within assertion-control scopes\iref{basic.scope.contract.control,basic.lookup}.
 
 \pnum
 \begin{note}

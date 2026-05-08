@@ -1623,7 +1623,7 @@ a template parameter scope as a parent scope.
 \pnum
 Each contract assertion\iref{basic.contract}
 $C$ introduces a \defnadj{contract-assertion}{scope}
-that includes $C$.
+that includes the predicate of $C$.
 
 \pnum
 If a \grammarterm{result-name-introducer}\iref{dcl.contract.res}
@@ -1641,6 +1641,25 @@ the nearest enclosing lambda scope
 of the postcondition assertion\iref{expr.prim.lambda},
 \end{itemize}
 the program is ill-formed.
+
+\rSec2[basic.scope.contract.control]{Assertion-control scope}%
+
+\pnum
+Each
+\grammarterm{assertion-control-specifier}\iref{basic.contract.control}
+and
+\grammarterm{assertion-control-expression}\iref{expr.contract_control}
+introduces a \defnadj{assertion-control}{scope}
+that includes
+its \grammarterm{constant-expression}.
+
+\begin{note}
+Within an assertion-control scope
+name lookup will search additional namespaces
+introduced by
+\grammarterm{using-directives}
+with the \keyword{contract_control} keyword\iref{namespace.udir,basic.lookup}.
+\end{note}
 
 \indextext{scope|)}
 
@@ -2005,11 +2024,16 @@ struct D: I1, I2, B2 {
 \indextext{name!unqualified}%
 
 \pnum
-A \grammarterm{using-directive} is
+A \grammarterm{using-directive} $U$ is
 \term{active} in a scope $S$ at a program point $P$
-if it precedes $P$ and inhabits either $S$ or
+\begin{itemize}
+\item if
+$U$ precedes $P$ and inhabits either $S$ or
 the scope of a namespace nominated by a \grammarterm{using-directive}
-that is active in $S$ at $P$.
+that is active in $S$ at $P$, and
+\item if $S$ has the \keyword{contract_control} keyword
+then $P$ is within an assertion-control scope.
+\end{itemize}
 
 \pnum
 An \term{unqualified search} in a scope $S$ from a program point $P$
@@ -7815,33 +7839,108 @@ if a \grammarterm{result-name-introducer}\iref{dcl.contract.res} has been specif
     \terminal{<} constant-expression \terminal{>}
 \end{bnf}
 
-\pnum
-%TODO: define assertion control facet
+%NOTE: Multiple strategies were considered for how to specify facets:
+%
+%  1. Define the concepts in the standard library and have the core wording
+%     reference them by name, saying "if the assertion control object models
+%     std;:contracts::labels::..." to identify when the assertion control
+%     object participates in a particular facet.
+%
+%  2. Define facet as a first-order term and describe the facets, and define
+%     what it means to participate in a facet.  Standard library concepts will
+%     refer back to that definition.
+%
+%  3. Define facets as a first-order term and include the satisfaction of the
+%     Standard library concept along with that definition, ensuring that we
+%     retain consistency between the core and library behavior.
+%
+%  4. Define new adjectives for each facet and do not use the term facet in the
+%     Standard.  Say things along the lines of "If the assertion control object
+%     is an allowed semantics control object..."   Standard library concepts
+%     refer back to these definitions.
+%
+%  5. Define the adjectives and include modeling the concept in that definition
+%     keeping the library dependency but in only one place.
+%
+%  For now, we are going with option 4 for certain reasons:
+%      
+%  1. This keeps the core wording from having to depend on the Standard library
+%     definitions, especially when
+%
+%  2. We can keep the library concept definitions sufficiently in synch as we
+%     update the Standard, we do not have to bake in that requirement.
+%
+%  3. We don't need to deliberate on introducing "facet" as a new term of art.
+%     If we change our mind on this last one, we could conceivably reuse it
+%     for things like variuos aspects of the coroutine promise object.
 
 \pnum
-%TODO: Define the trivial facet
+A type is an \defnadj{assertion}{control type} if the search for the name
+\tcode{assertion_control_object} in its scope finds a declaration of a type.
 
 \pnum
-Every contract assertion $C$ has associated with it
+Every contract assertion $C$ may have associated with it
 an \defn{assertion control object}
-that is a constexpr variable whose type and value
-are determined as follows:
-
+that is a constexpr variable.
 \begin{itemize}
-\item If $C$ has an \grammarterm{assertion-control-specifier}
-$S$ then the variable's type is deduced from
-$S$ and its initializer is $S$.
-\item Otherwise, the variable's type is
-participates in the trivial assertion-control facet
-and no other facets, and its value is unspecified.
+\item
+If $C$ has
+an \grammarterm{assertion-control-specifier} $S$
+then it has an assertion-control-object $O$
+whose type is deduced from $S$
+and which is initialized b $S$.
+The type of $O$ must be an assertion-control type.
+\item
+Otherwise, the contract assertion
+has no assertion-control object.
+\end{itemize}
+
+%NOTE:We are avoiding having a default assertion-control object because
+%to do so we would have to define all of the properties that its unspecified
+%type does not have.
+
+
+\pnum
+\begin{note}
+$S$ is manifestly constant-evaluated\iref{expr.const.defns},
+$O$ must have a literal type\iref{basic.types.general}, and
+$S$ is not part of the immediate conetxt\iref{temp.deduct.general}.
+\end{note}
+
+\pnum
+A type is an \defnadj{allowed-semantics}{control type} if
+\begin{itemize}
+\item it is an assertion-control type, and
+\item it has a static member named \tcode{allowed_semantics} that is 
+\begin{itemize}
+\item usable in constant expressions, and
+\item can be converted to the type \tcode{std::contracts::labels::evaluation_semantic_set}.
+\end{itemize}
 \end{itemize}
 
 \pnum
-Every assertion control object shall participate in the
-tirvial assertion-control facet.
+A type \placeholder{T} is an \defnadj{computed-semantics}{control type} if
+\begin{itemize}
+\item it is an assertion-control type, and
+\item the expression \tcode{o.compute_semantic(s)}
+has the type \tcode{std::contracts::evaluation_semantic}
+where \tcode{o} is an object of type \tcode{T}
+and \tcode{s} is a prvalue of type \tcode{std::contracts::evaluation_semantic}.
+\end{itemize}
 
 \pnum
-%TODO: define all other facets
+a type \placeholder{T} is a
+\defnadj{local-violation}{control type} if
+\begin{itemize}
+\item it is an assertion-control type, and
+\item the expression \tcode{o.handle_contract_violation(v)} is valid
+where \tcode{o} is an object of type \placeholder{T}
+and \tcode{v} is a \tcode{const} lvalue of
+type \tcode{std::contracts::contract_violation}
+and its type is \tcode{void}
+or is convertible to \tcode{std::contracts::violation_handled}.
+\end{itemize}
+
 
 \rSec2[basic.contract.eval]{Evaluation}
 
@@ -7859,18 +7958,60 @@ Observe, enforce, and quick-enforce are \defnx{checking semantics}{contract eval
 enforce and quick-enforce are \defnx{terminating semantics}{contract evaluation semantics!terminating}.
 
 \pnum
-It is
+A contract evaluation semantic is an
+\defnadj{alowed}{contract evaluation semantic}
+of a contract assertion $C$
+if
+\begin{itemize}
+\item $C$ does not have an assertion-control object, 
+\item the assertion-control object $O$ of $C$ is not
+an allowed-semantics control type\iref{basic.contract.control}, or
+\item the expression \tcode{o.allowed_semantics.contains(S)}
+is \tcode{True}
+where \tcode{S} is the corresponding enumerator for the evaluation semantic
+in \tcode{std::contracts::evaluation_semantic}.
+\end{itemize}
+
+\pnum
+If a contract assertion has no allowed evaluation semantics
+the program is ill-formed.
+The \defnadj{configured}{contract evaluation semantic}
+for an evaluation of a contract assertion
+is an allowed contract evaluation semantic
+chosen in an 
 \impldef{evaluation semantic used for the evaluation of a contract assertion}
-which evaluation semantic is used
-for any given evaluation of a contract assertion.
+manner.
+
+\item
 \begin{note}
 The range and flexibility of available choices of
-evaluation semantics depends on the implementation
+configured evaluation semantics depends on the implementation
 and need not allow all four evaluation semantics as possibilities.
 The evaluation semantics can differ
 for different evaluations of the same contract assertion,
 including evaluations during constant evaluation.
 \end{note}
+
+\pnum
+The \defnadj{effective}{contract evaluation semantic}
+for an evaluation $E$ of a contract assertion $C$ is
+\begin{itemize}
+\item the configured contract evaluation semantic
+of $E$ if
+\begin{itemize}
+\item $C$ has no assertion-control object, or
+\item if the assertion control object $O$ of $C$
+is not a computed-semantics control type\iref{basic.contract.control},
+\end{itemize}
+or
+\item the contract evaluation semantic corresponding
+to the value of the expression \tcode{o.compute_semantic(S)}
+where \tcode{o} is the assertion control object of $C$ and
+\tcode{S} is the enumerator corresponding to
+the configured contract evaluation semantic of $E$.
+\end{itemize}
+The effective contract evaluation semantic
+shall be an allowed contract evaluation semantic.
 
 \pnum
 \recommended
@@ -8033,39 +8174,57 @@ the program is contract-terminated.
 If a contract violation occurs
 in a context that is not manifestly constant-evaluated
 and the evaluation semantic is enforce or observe,
-the contract-violation handler\iref{basic.contract.handler}
-is invoked with an lvalue referring to
-an object \tcode{v}
-of type \tcode{const std::contracts::contract_violation}\iref{support.contract.violation}
-containing information about the contract violation.
-Storage for \tcode{v}
+then the contract-violation handling occurs.
+
+\pnum
+Contract-violation handling consists of a number of steps evaluated in order.
+\begin{itemize}
+\item An object \tcode{V}
+of type \tcode{std::contracts::contract_violation}\iref{support.contract.violation}
+is created with
+information about the contract assertion and evaluation
+that triggered the violation.
+Storage for \tcode{V}
 is allocated in an unspecified manner
 except as noted in \ref{basic.stc.dynamic.allocation}.
-The lifetime of \tcode{v}
-persists for the duration
-of the invocation of the contract-violation handler.
+The lifetime of \tcode{v} persists until
+contract-violation handling completes.
+\item
+If the contract assertion
+has an assertion-control object $o$
+whose type is a local-violation control type,
+the expression \tcode{o.handle_contract_violation(v)} is evaluated
+where \tcode{v} is a \tcode{const} lvalue referring to \tcode{V}.
+If the this expression has a value
+equivalent to \tcode{std::contracts::violation_handled::handled}
+then contract-violation handling is complete.
+\item
+The contract-violation handler is invoked
+with a \tcode{const} lvalue referring to \tcode{v}.
+\end{itemize}
 
 \pnum
 If the contract violation occurred
 because the evaluation of the predicate
 exited via an exception,
-the contract-violation handler is invoked
-from within an active implicit handler
+the contract-violation handling occurs
+within an active implicit handler
 for that exception\iref{except.handle}.
-If the contract-violation handler
-returns normally
+If contract-violation handling
+completes normally
 and the evaluation semantic is observe,
 that implicit handler
 is no longer considered active.
 
 \begin{note}
-The exception can be inspected or rethrown within the contract-violation handler.
+The exception can be inspected or rethrown
+within the contract-violation handler.
 \end{note}
 
 \pnum
 \indextext{contract evaluation semantics!enforce}%
-If the contract-violation handler
-returns normally
+If contract-violation handling
+completes normally
 and the evaluation semantic is enforce,
 the program is contract-terminated;
 if violation occurred
@@ -8077,8 +8236,8 @@ remains active when contract termination occurs.
 \pnum
 \indextext{contract evaluation semantics!observe}%
 \begin{note}
-If the contract-violation handler
-returns normally
+If contract-violation handling
+completes normally
 and the evaluation semantic is observe,
 control flow continues normally
 after the point of evaluation of the contract assertion.
@@ -8086,7 +8245,7 @@ after the point of evaluation of the contract assertion.
 
 \pnum
 There is an observable checkpoint\iref{intro.abstract} $C$
-that happens after the contract-violation handler returns normally
+that happens after contract-violation handling completes normally
 such that any other evaluation
 that happens after the contract-violation handler returns
 also happens after $C$.
@@ -8113,8 +8272,8 @@ without having to terminate the program.
 \end{note}
 
 \pnum
-If a contract-violation handler
-invoked from the evaluation of a function contract assertion\iref{dcl.contract.func}
+If contract-violation handling
+during  the evaluation of a function contract assertion\iref{dcl.contract.func}
 exits via an exception,
 the behavior is as if
 the function body exits via that same exception.
@@ -8129,8 +8288,8 @@ the function \tcode{std::terminate} is invoked\iref{except.terminate}.
 \end{note}
 
 \begin{note}
-If a contract-violation handler
-invoked from an \grammarterm{assertion-statement}\iref{stmt.contract.assert}
+If contract-violation handling
+during the evaluation of an \grammarterm{assertion-statement}\iref{stmt.contract.assert}
 exits via an exception,
 the search for a handler
 continues from the execution of that statement.
