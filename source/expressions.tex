@@ -356,6 +356,7 @@ the behavior is undefined.
 %  checking: Track whether storage is associated with an object of correct type within its lifetime
 %
 %  replacement: None
+
 \begin{footnote}
 The intent of this list is to specify those circumstances in which an
 object can or cannot be aliased.
@@ -370,9 +371,6 @@ In C, an entire object of structure type can be accessed, e.g., using assignment
 By contrast, \Cpp{} has no notion of accessing an object of class type
 through an lvalue of class type.
 \end{note}
-
-
-
 
 \rSec2[expr.type]{Type}
 
@@ -403,7 +401,6 @@ the behavior is undefined (see~\ref{basic.life}).
 %  checking: Track whether storage has been allocated and freed
 %
 %  replacement: None
-
 
 \pnum
 If a prvalue initially has the type ``\cv{}~\tcode{T}'', where
@@ -715,7 +712,6 @@ int m = g(false);   // undefined behavior: access of \tcode{x.n} outside its lif
 int n = g(true);    // OK, does not access \tcode{y.n}
 \end{codeblock}
 \end{example}
-
 
 \pnum
 The result of the conversion is determined according to the
@@ -1050,7 +1046,6 @@ with a greater or equal conversion rank\iref{conv.rank}.
 A prvalue of standard floating-point type can be converted to
 a prvalue of another standard floating-point type.
 
-
 \pnum
 If the source value can be exactly
 represented in the destination type, the result of the conversion is
@@ -1096,11 +1091,11 @@ The behavior is undefined if the truncated value cannot be represented
 %  checking: Insert a check of whether the value is valid
 %
 %  replacement: Coerce into erroneous value
+
 in the destination type.
 \begin{note}
 If the destination type is \keyword{bool}, see~\ref{conv.bool}.
 \end{note}
-
 
 \pnum
 \indextext{conversion!integral to floating}%
@@ -1164,7 +1159,6 @@ is an object type, can be converted to a prvalue of type ``pointer to
 \cv{} \keyword{void}''.
 The pointer value\iref{basic.compound} is unchanged by this conversion.
 
-
 \pnum
 A prvalue \tcode{v} of type ``pointer to \cv{} \tcode{D}'', where \tcode{D}
 is a complete class type, can be converted to a prvalue of type ``pointer to
@@ -1216,7 +1210,6 @@ The conversion of a null pointer
 constant to a pointer to member of cv-qualified type is a single
 conversion, and not the sequence of a pointer-to-member conversion
 followed by a qualification conversion\iref{conv.qual}.
-
 
 \pnum
 A prvalue of type ``pointer to member of \tcode{B} of type \cv{}
@@ -3979,7 +3972,6 @@ the object of scalar type
 denoted by the object expression
 of the class member access\iref{expr.ref,basic.life}.
 
-
 \pnum
 A type $\tcode{T}_\text{call}$ is
 \defn{call-compatible} with a function type $\tcode{T}_\text{func}$
@@ -4518,7 +4510,6 @@ static_assert(f() == 110);
 Otherwise, the program is ill-formed.
 \end{itemize}
 
-
 \pnum
 If \tcode{E2} designates a non-static member
 (possibly after overload resolution),
@@ -4669,7 +4660,6 @@ type\iref{class.virtual}.
 
 \pnum
 If \tcode{v} is a null pointer value, the result is a null pointer value.
-
 
 \pnum
 If \tcode{v} has type ``pointer to \cv{}~\tcode{U}'' and
@@ -4896,7 +4886,6 @@ or an rvalue reference to function type, the result is an lvalue;
 if \tcode{T} is an rvalue reference to object type, the result is an xvalue;
 otherwise, the result is a prvalue.
 
-
 \pnum
 \indextext{cast!static!reference}%
 \indextext{cast!reference}%
@@ -5045,7 +5034,6 @@ the enumeration type.
 %
 %  replacement: Coerce into erroneous value
 
-
 \pnum
 A prvalue of floating-point type can be explicitly converted to
 any other floating-point type.
@@ -5068,7 +5056,6 @@ Otherwise, the behavior is undefined.
 %  checking: Insert a check of whether the value is valid
 %
 %  replacement: Coerce into erroneous value
-
 
 \pnum
 \indextext{cast!base class}%
@@ -5102,7 +5089,6 @@ behavior is undefined.
 %  checking: Track whether storage is associated with an object of correct type within its lifetime or an object currently being constructed or destroyed; insert a null pointer check
 %
 %  replacement: None
-
 
 \pnum
 \indextext{cast!pointer-to-member}%
@@ -5144,7 +5130,6 @@ see~\ref{expr.mptr.oper}.
 %  checking: Track which type the pointer to member originated from
 %
 %  replacement: None
-
 
 \pnum
 A prvalue of type ``pointer to \cvqual{cv1} \keyword{void}'' can be
@@ -6528,7 +6513,6 @@ The amount of overhead may vary from one
 invocation of \keyword{new} to another.
 \end{example}
 
-
 \pnum
 \begin{note}
 Unless an allocation function has a non-throwing
@@ -6791,7 +6775,6 @@ Otherwise, it shall be a prvalue of pointer to object type.
 The \grammarterm{delete-expression} has type
 \keyword{void}.
 
-
 \pnum
 \indextext{\idxcode{delete}!single-object}%
 In a single-object delete expression, the value of the operand of
@@ -6825,6 +6808,7 @@ If not, the behavior is undefined.
 %  checking: Track pointer provenance, insert bounds check
 %
 %  replacement: None
+
 \indextext{array!\idxcode{delete}}%
 In an array delete expression, the value of the operand of \keyword{delete}
 may be a null pointer value or a pointer value that resulted from
@@ -6849,7 +6833,6 @@ constness\iref{expr.const.cast} of the pointer expression before it is
 used as the operand of the \grammarterm{delete-expression}.
 \end{note}
 
-
 \pnum
 \indextext{\idxcode{delete}!undefined}%
 In a single-object delete expression, if the static type of the object to be
@@ -6871,6 +6854,7 @@ have a virtual destructor or the behavior is undefined. In an array delete
 %  checking: Track dynamic type of non-polymorphic objects
 %
 %  replacement: None
+
 expression, if the dynamic type of the object to be deleted is not similar to
 its static type, the behavior is undefined.
 
@@ -7442,7 +7426,6 @@ is an unambiguous and accessible base class.
 The expression \tcode{E1->*E2} is converted into the equivalent form
 \tcode{(*(E1)).*E2}.
 
-
 \pnum
 Abbreviating \grammarterm{pm-expression}\tcode{.*}\grammarterm{cast-expression} as \tcode{E1.*E2}, \tcode{E1}
 is called the \defn{object expression}.
@@ -7463,6 +7446,7 @@ contain the member to which
 %  checking: Track which type the pointer to member originated from and the dynamic type of non-polymorphic objects
 %
 %  replacement: None
+
 The expression \tcode{E1} is sequenced before the expression \tcode{E2}.
 
 \pnum
@@ -7487,7 +7471,6 @@ void f()
 }
 \end{codeblock}
 \end{note}
-
 
 \pnum
 \indextext{function!pointer to member}%
@@ -7561,7 +7544,6 @@ operands and determine the type of the result.
 
 \pnum
 The binary \tcode{*} operator indicates multiplication.
-
 
 \pnum
 The binary \tcode{/} operator yields the quotient, and the binary
@@ -7655,7 +7637,6 @@ The result of the binary \tcode{+} operator is the sum of the operands.
 The result of the binary \tcode{-} operator is the difference resulting
 from the subtraction of the second operand from the first.
 
-
 \pnum
 \indextext{arithmetic!pointer}%
 When an expression \tcode{J} that has integral type
@@ -7694,6 +7675,7 @@ $i - j$ of \tcode{x} if $0 \le i - j \le n$.
 %  checking: Track pointer provenance, insert bounds check
 %
 %  replacement: None
+
 \end{itemize}
 \begin{note}
 Adding a value other than $0$ or $1$
@@ -7733,7 +7715,6 @@ the behavior is undefined\iref{expr.pre}.
 %  checking: Track pointer provenance, insert bounds check
 %
 %  replacement: None
-
 
 \pnum
 For addition or subtraction, if the expressions \tcode{P} or \tcode{Q} have
@@ -7800,8 +7781,8 @@ The behavior is undefined if the right operand is negative, or greater
 %  checking: Insert check whether right operand is valid
 %
 %  replacement: Coerce into erroneous value
-than or equal to the width of the promoted left operand.
 
+than or equal to the width of the promoted left operand.
 
 \pnum
 The value of \tcode{E1 << E2} is the unique value congruent to
@@ -8706,7 +8687,6 @@ For \tcode{+=} and \tcode{-=},
 \tcode{E1} shall either have arithmetic type or be a pointer to a
 possibly cv-qualified completely-defined object type. In all other
 cases, \tcode{E1} shall have arithmetic type.
-
 
 \pnum
 If the value being stored in an object is read via another object that

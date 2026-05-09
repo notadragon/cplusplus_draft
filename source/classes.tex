@@ -2333,7 +2333,6 @@ void g() {                      // rare, specialized use:
 \end{example}
 \end{note}
 
-
 \pnum
 Once a destructor is invoked for an object, the object's lifetime ends;
 the behavior is undefined if the destructor is invoked
@@ -2349,6 +2348,7 @@ the behavior is undefined if the destructor is invoked
 %  checking: Track whether storage is associated with an object of correct type within its lifetime
 %
 %  replacement: None
+
 for an object whose lifetime has ended\iref{basic.life}.
 \begin{example}
 If the destructor for an object with automatic storage duration is explicitly invoked,
@@ -4246,7 +4246,6 @@ a pure virtual function can override a virtual function which is not
 pure.
 \end{note}
 
-
 \pnum
 \indextext{class!constructor and abstract}%
 Member functions can be called from a constructor (or destructor) of an
@@ -4267,6 +4266,7 @@ destroyed) from such a constructor (or destructor) is undefined.%
 %  checking: Insert a \tcode{pre(false)} into the pure virtual stub pointed to from the base-class vtable
 %
 %  replacement: None
+
 \indextext{derived class|)}
 
 \rSec1[class.access]{Member access control}%
@@ -5843,7 +5843,6 @@ this takes place each time an object of class
 is created.
 \end{example}
 
-
 \pnum
 \indextext{initialization!member function call during}%
 Member functions (including virtual member functions, \ref{class.virtual}) can be
@@ -6135,7 +6134,6 @@ struct Y {
 %
 %  replacement: None
 
-
 \pnum
 During the construction of an object,
 if the value of any of its subobjects
@@ -6172,7 +6170,6 @@ D d = D(1);                     // value of \tcode{d.b} is unspecified
 \end{codeblock}
 \end{example}
 
-
 \pnum
 \indextext{construction!pointer to member or base}%
 \indextext{destruction!pointer to member or base}%
@@ -6202,6 +6199,7 @@ completed, otherwise the conversion results in undefined behavior.
 %  checking: Track whether objects are currently being constructed or destroyed
 %
 %  replacement: None
+
 To form a pointer to (or access the value of) a direct non-static member of
 an object
 \tcode{obj},
@@ -6241,7 +6239,6 @@ struct E : C, D, X {
 %  checking: Track whether objects are currently being constructed or destroyed
 %
 %  replacement: None
-
 
 \pnum
 \indextext{virtual function call!constructor and}%
@@ -6310,7 +6307,6 @@ B::B(V* v, A* a) {
 %
 %  replacement: None
 
-
 \pnum
 \indextext{construction!\idxcode{typeid} operator}%
 \indextext{destruction!\idxcode{typeid} operator}%
@@ -6349,7 +6345,6 @@ bases, the behavior is undefined.
 %  checking: Track whether objects are currently being constructed or destroyed
 %
 %  replacement: None
-
 
 \pnum
 \indextext{construction!dynamic cast and}%
