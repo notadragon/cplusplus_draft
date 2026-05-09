@@ -685,6 +685,12 @@ catch clause exits.
 The exception with the most recently activated handler that is
 still active is called the
 \defnx{currently handled exception}{exception handling!currently handled exception}.
+%TODO: ubdef{except.handle.handler.ctor.dtor}
+%  wording: [except.handle]/11: Referring to any non-static member or base class of an object in the handler for a \emph{function-try-block} of a constructor or destructor for that object results in undefined behavior.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether objects are currently being constructed or destroyed
+%  replacement: None
 
 \pnum
 Referring to any non-static member or base class of an object
