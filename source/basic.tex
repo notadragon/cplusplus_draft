@@ -3692,6 +3692,18 @@ const bool b5 = r != &test1;            // always \tcode{true}
 The address of a subobject of zero size is
 the address of an unspecified byte of storage
 occupied by the complete object of that subobject.
+%TODO: ubdef{intro.object.implicit.create}
+%  wording: [intro.object]/11: For each operation that is specified as implicitly creating objects, that operation implicitly creates and starts the lifetime of zero or more objects of implicit-lifetime types ([basic.types.general]) in its specified region of storage if doing so would result in the program having defined behavior. If no such set of objects would give the program defined behavior, the behavior of the program is undefined.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage can hold implicit lifetime objects
+%  replacement: None
+%TODO: ubdef{intro.object.implicit.pointer}
+%  wording: [intro.object]/11: Further, after implicitly creating objects within a specified region of storage, some operations are described as producing a pointer to a suitable created object. These operations select one of the implicitly-created objects whose address is the address of the start of the region of storage, and produce a pointer value that points to that object, if that value would result in the program having defined behavior. If no such pointer value would give the program defined behavior, the behavior of the program is undefined.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage can hold implicit lifetime objects
+%  replacement: None
 
 \pnum
 A \defnadj{union elemental}{subobject}
@@ -3841,6 +3853,12 @@ using the \grammarterm{alignment-specifier}\iref{dcl.align}.
 Attempting to create an object\iref{intro.object} in storage that
 does not meet the alignment requirements of the object's type
 is undefined behavior.
+%TODO: ubdef{basic.align.object.alignment}
+%  wording: [basic.align]/1: Attempting to create an object ([intro.object]) in storage that does not meet the alignment requirements of the object's type is undefined behavior.
+%  runtime-checkable: Yes
+%  locally-checkable: Yes
+%  checking: Insert alignment check
+%  replacement: None
 
 \pnum
 A \defnadj{fundamental}{alignment} is represented by an alignment
@@ -4010,6 +4028,36 @@ In this case, the destructor is not implicitly invoked.
 The correct behavior of a program often depends on
 the destructor being invoked for each object of class type.
 \end{note}
+%TODO: ubdef{lifetime.outside.pointer.delete}
+%  wording: [basic.life]/7: Before the lifetime of an object has started but after the storage which the object will occupy has been allocated or, after the lifetime of an object has ended and before the storage which the object occupied is reused or released, any pointer that represents the address of the storage location where the object will be or was located may be used but only in limited ways. [...] The program has undefined behavior if the pointer is used as the operand of a \emph{delete-expression} [...]
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%  replacement: None
+%TODO: ubdef{lifetime.outside.pointer.member}
+%  wording: [basic.life]/7: [...] The program has undefined behavior if [...] the pointer is used to access a non-static data member or call a non-static member function of the object, [...]
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%  replacement: None
+%TODO: ubdef{lifetime.outside.pointer.virtual}
+%  wording: [basic.life]/7: [...] The program has undefined behavior if [...] the pointer is implicitly converted ([conv.ptr]) to a pointer to a virtual base class [...]
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%  replacement: None
+%TODO: ubdef{lifetime.outside.pointer.static.cast}
+%  wording: [basic.life]/7: [...] The program has undefined behavior if [...] the pointer is used as the operand of a \tcode{static_cast} ([expr.static.cast]), except when the conversion is to pointer to $cv$ \tcode{void}, or to pointer to $cv$ \tcode{void} and subsequently to pointer to $cv$ \tcode{char}, $cv$ \tcode{unsigned char}, or $cv$ \tcode{std::byte} ([cstddef.syn]) [...]
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%  replacement: None
+%TODO: ubdef{lifetime.outside.pointer.dynamic.cast}
+%  wording: [basic.life]/7: [...] The program has undefined behavior if [...] the pointer is used as the operand of a \tcode{dynamic_cast} ([expr.dynamic.cast]).
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%  replacement: None
 
 \pnum
 Before the lifetime of an object has started but after the storage which
@@ -4072,6 +4120,30 @@ void g() {
 }
 \end{codeblock}
 \end{example}
+%TODO: ubdef{lifetime.outside.glvalue.access}
+%  wording: [basic.life]/8: Similarly, before the lifetime of an object has started but after the storage which the object will occupy has been allocated or, after the lifetime of an object has ended and before the storage which the object occupied is reused or released, any glvalue that refers to the original object may be used but only in limited ways. [...] The program has undefined behavior if the glvalue is used to access the object [...]
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%  replacement: None
+%TODO: ubdef{lifetime.outside.glvalue.member}
+%  wording: [basic.life]/8: [...] The program has undefined behavior if [...] the glvalue is used to call a non-static member function of the object [...]
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%  replacement: None
+%TODO: ubdef{lifetime.outside.glvalue.virtual}
+%  wording: [basic.life]/8: [...] The program has undefined behavior if [...] the glvalue is bound to a reference to a virtual base class ([dcl.init.ref]) [...]
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%  replacement: None
+%TODO: ubdef{lifetime.outside.glvalue.dynamic.cast}
+%  wording: [basic.life]/8: [...] The program has undefined behavior if [...] the glvalue is used as the operand of a \tcode{dynamic_cast} ([expr.dynamic.cast]) or as the operand of \tcode{typeid}.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%  replacement: None
 
 \pnum
 Similarly, before the lifetime of an object has started but after the
@@ -4160,6 +4232,12 @@ a pointer to the new object can be obtained from
 a pointer that represents the address of its storage
 by calling \tcode{std::launder}\iref{ptr.launder}.
 \end{note}
+%TODO: ubdef{original.type.implicit.destructor}
+%  wording: [basic.life]/11: If a program ends the lifetime of an object of type \tcode{T} with static ([basic.stc.static]), thread ([basic.stc.thread]), or automatic ([basic.stc.auto]) storage duration and if \tcode{T} has a non-trivial destructor, and another object of the original type does not occupy that same storage location when the implicit destructor call takes place, the behavior of the program is undefined.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%  replacement: None
 
 \pnum
 If a program ends the lifetime of an object of type \tcode{T} with
@@ -4191,6 +4269,12 @@ void h() {
 }                               // undefined behavior at block exit
 \end{codeblock}
 \end{example}
+%TODO: ubdef{creating.within.const.complete.obj}
+%  wording: [basic.life]/12: Creating a new object within the storage that a const, complete object with static, thread, or automatic storage duration occupies, or within the storage that such a const object used to occupy before its lifetime ended, results in undefined behavior.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with a \tcode{const} object
+%  replacement: None
 
 \pnum
 Creating a new object within the storage that a const, complete
@@ -4248,6 +4332,12 @@ if the erroneous value of an object is not valid for its type\iref{conv.lval}.
 Objects with static or thread storage duration are zero-initialized,
 see~\ref{basic.start.static}.
 \end{note}
+%TODO: ubdef{basic.indet.value}
+%  wording: [basic.indet]/2: Except in the following cases, if an indeterminate value is produced by an evaluation, the behavior is undefined, [...]
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage has been initialized
+%  replacement: Only for built-in types: initialise default-initialised variables with erroneous value
 
 \pnum
 If any operand of a built-in operator that produces a prvalue
@@ -4538,6 +4628,12 @@ of that name precedes\iref{basic.lookup.general} the use of that name.
 Allocation and/or
 deallocation functions may also be declared and defined for any
 class\iref{class.free}.
+%TODO: ubdef{basic.stc.alloc.dealloc.constraint}
+%  wording: [basic.stc.dynamic.general]/3: If the behavior of an allocation or deallocation function does not satisfy the semantic constraints specified in [basic.stc.dynamic.allocation] and [basic.stc.dynamic.deallocation], the behavior is undefined.
+%  runtime-checkable: Partially: some constraints can be checked locally (e.g., allocation function does not return null); others cannot be checked at all.
+%  locally-checkable: Partially
+%  checking: Insert checks where possible
+%  replacement: None
 
 \pnum
 If the behavior of an allocation or deallocation function
@@ -4563,6 +4659,12 @@ function can be a function template. Such a template shall declare its
 return type and first parameter as specified above (that is, template
 parameter types shall not be used in the return type and first parameter
 type). Allocation function templates shall have two or more parameters.
+%TODO: ubdef{basic.stc.alloc.zero.dereference}
+%  wording: [basic.stc.dynamic.allocation]/2: The effect of indirecting through a pointer returned from a request for zero size is undefined.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track pointer provenance, insert bounds check
+%  replacement: None
 
 \pnum
 An allocation function attempts to allocate the requested amount of
@@ -4705,6 +4807,12 @@ A deallocation
 function template shall have two or more function parameters. A template
 instance is never a usual deallocation function, regardless of its
 signature.
+%TODO: ubdef{basic.stc.alloc.dealloc.throw}
+%  wording: [basic.stc.dynamic.deallocation]/4: If a deallocation function terminates by throwing an exception, the behavior is undefined.
+%  runtime-checkable: Make ill-formed via \cite{P3424R0}
+%  locally-checkable: ---
+%  checking: ---
+%  replacement: 
 
 \pnum
 If a deallocation function terminates by throwing an exception, the behavior is undefined.
@@ -6053,6 +6161,12 @@ Pointers to over-aligned types\iref{basic.align} have no special
 representation, but their range of valid values is restricted by the extended
 alignment requirement.
 \end{note}
+%TODO: ubdef{basic.compound.invalid.pointer}
+%  wording: [basic.compound]/4: If a pointer value $P$ is used in an evaluation $E$ and $P$ is not valid in the context of $E$, then the behavior is undefined if $E$ is an indirection ([expr.unary.op]) or an invocation of a deallocation function ([basic.stc.dynamic.deallocation]) [...]
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage has been allocated and freed
+%  replacement: None
 
 \pnum
 A pointer value
@@ -6593,6 +6707,12 @@ in~\ref{class.temporary}, after a full-expression is evaluated, a sequence of
 zero or more invocations of destructor functions for temporary objects takes
 place, usually in reverse order of the construction of each temporary object.
 \end{footnote}
+%TODO: ubdef{intro.execution.unsequenced.modification}
+%  wording: [conv.rank]/10: The behavior is undefined if a side effect on a memory location ([intro.memory]) or starting or ending the lifetime of an object in a memory location is unsequenced relative to another side effect on the same memory location, starting or ending the lifetime of an object occupying storage that overlaps with the memory location, or a value computation using the value of any object in the same memory location, and the two evaluations are not potentially concurrent ([intro.multithread]).
+%  runtime-checkable: Yes
+%  locally-checkable: Yes
+%  checking: Identify all potential read operations that are not sequenced with respect to each given write operation; insert checks to identify if those operations are referencing the same address
+%  replacement: Sequence operations in some unspecified order
 
 \pnum
 \indextext{evaluation!unspecified order of}%
@@ -7002,6 +7122,12 @@ association of atomic loads with modifications they observe that, together with
 suitably chosen modification orders and the ``happens before'' relation derived
 as described above, satisfy the resulting constraints as imposed here.
 \end{note}
+%TODO: ubdef{intro.races.data}
+%  wording: [intro.races]/17: Any such data race results in undefined behavior.
+%  runtime-checkable: Partially
+%  locally-checkable: No
+%  checking: Track from which threads memory is accessed and when accesses synchronise with each other; only practical for a subset of cases (see TSan)
+%  replacement: Make all primitive memory accesses implicitly atomic
 
 \pnum
 Two actions are \defn{potentially concurrent} if
@@ -7092,6 +7218,12 @@ even when termination cannot be proven.
 An affordance is made for trivial infinite loops,
 which cannot be removed nor reordered.
 \end{note}
+%TODO: ubdef{intro.progress.stops}
+%  wording: [intro.progress]/1: The implementation may assume that any thread will eventually do one of the following: terminate, invoke the function \tcode{std::this_thread::yield} ([thread.thread.this]), make a call to a library I/O function, perform an access through a volatile glvalue, perform an atomic or synchronization operation other than an atomic modify-write operation ([atomics.order]), or continue execution of a trivial infinite loop ([stmt.iter.general]).
+%  runtime-checkable: No
+%  locally-checkable: No
+%  checking: No checking strategy exists as whether a thread will make progress is undecidable
+%  replacement: Do nothing
 
 \pnum
 Executions of atomic functions
@@ -7368,6 +7500,12 @@ Member functions, classes, and
 enumerations can be called \tcode{main}, as can entities in other
 namespaces.
 \end{example}
+%TODO: ubdef{basic.start.main.exit.during.destruction}
+%  wording: [basic.start.main]/4: If \tcode{std::exit} is invoked during the destruction of an object with static or thread storage duration, the program has undefined behavior.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether static or thread-local objects are currently being destroyed
+%  replacement: None
 
 \pnum
 \indextext{\idxcode{exit}}%
@@ -7671,6 +7809,12 @@ with static storage duration
 and after any call to a function passed to \tcode{std::atexit}.
 The sequencing rules in the remainder of this subclause
 apply only to complete objects not having constant destruction.
+%TODO: ubdef{basic.start.term.use.after.destruction}
+%  wording: [basic.start.term]/4: If a function contains a block variable of static or thread storage duration that has been destroyed and the function is called during the destruction of an object with static or thread storage duration, the program has undefined behavior if the flow of control passes through the definition of the previously destroyed block variable.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track the lifetime of static objects
+%  replacement: None
 
 \pnum
 If the deemed construction\iref{dcl.init.general} of a complete object with static

@@ -1292,6 +1292,12 @@ some other access path.
 Cv-qualifiers are supported by the type system so that they cannot be
 subverted without casting\iref{expr.const.cast}.
 \end{note}
+%TODO: ubdef{dcl.type.cv.modify.const.obj}
+%  wording: [dcl.type.cv]/4: Any attempt to modify ([expr.assign], [expr.post.incr], [expr.pre.incr]) a const object ([basic.type.qualifier]) during its lifetime ([basic.life]) results in undefined behavior.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with a \tcode{const} object
+%  replacement: None
 
 \pnum
 \indextext{const object!undefined change to}%
@@ -1335,6 +1341,12 @@ p->x.i = 99;                            // well-formed: \keyword{mutable} member
 p->x.j = 99;                            // undefined behavior: modifies a const subobject
 \end{codeblock}
 \end{example}
+%TODO: ubdef{dcl.type.cv.access.volatile}
+%  wording: [dcl.type.cv]/5: If an attempt is made to access an object defined with a volatile-qualified type through the use of a non-volatile glvalue, the behavior is undefined.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with a \tcode{volatile} object
+%  replacement: None
 
 \pnum
 The semantics of an access through a volatile glvalue are
@@ -3280,6 +3292,24 @@ except when the declaration contains an explicit
 specifier\iref{dcl.stc},
 is a class member\iref{class.mem} declaration within a class definition,
 or is the declaration of a parameter or a return type\iref{dcl.fct}; see~\ref{basic.def}.
+%TODO: ubdef{dcl.ref.incompatible.function}
+%  wording: [dcl.ref]/6: Attempting to bind a reference to a function where the converted initializer is a glvalue whose type is not call-compatible ([expr.call]) with the type of the function's definition results in undefined behavior.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track the types of all functions based on their addresses
+%  replacement: None
+%TODO: ubdef{dcl.ref.incompatible.type}
+%  wording: [dcl.ref]/6: Attempting to bind a reference to an object where the converted initializer is a glvalue through which the object is not type-accessible ([basic.lval]) results in undefined behavior.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether storage is associated with an object of correct type
+%  replacement: None
+%TODO: ubdef{dcl.ref.uninitialized.reference}
+%  wording: [dcl.ref]/6: The behavior of an evaluation of a reference ([expr.prim.id], [expr.ref]) that does not happen after ([intro.races]) the initialization of the reference is undefined.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track whether references have been initialised
+%  replacement: None
 
 \pnum
 Attempting to bind a reference to a function where
@@ -7390,6 +7420,12 @@ The call to \tcode{get_return_object}
 is sequenced before
 the call to \tcode{initial_suspend}
 and is invoked at most once.
+%TODO: ubdef{dcl.fct.def.coroutine.resume.not.suspended}
+%  wording: [dcl.fct.def.coroutine]/9: Invoking a resumption member function for a coroutine that is not suspended results in undefined behavior.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track the suspension state associated with every coroutine handle
+%  replacement: None
 
 \pnum
 A suspended coroutine can be resumed to continue execution by invoking
@@ -7479,6 +7515,12 @@ int main() {
 }
 \end{codeblock}
 \end{example}
+%TODO: ubdef{dcl.fct.def.coroutine.destroy.not.suspended}
+%  wording: [dcl.fct.def.coroutine/12: If \tcode{destroy} is called for a coroutine that is not suspended, the program has undefined behavior.
+%  runtime-checkable: Yes
+%  locally-checkable: No
+%  checking: Track the suspension state associated with every coroutine handle
+%  replacement: None
 
 \pnum
 The coroutine state is destroyed when control flows off the end of the
@@ -9724,6 +9766,12 @@ at the point where the assumption appears,
 the assumption has no effect.
 Otherwise,
 evaluation of the assumption has runtime-undefined behavior.
+%TODO: ubdef{dcl.attr.assume.false}
+%  wording: [dcl.attr.assume]/1: If the converted expression would evaluate to true at the point where the assumption appears, the assumption has no effect. Otherwise, evaluation of the assumption has runtime undefined behavior.
+%  runtime-checkable: No
+%  locally-checkable: No
+%  checking: No automatic checking strategy is possible because the predicate cannot be, in general, proven to be free of side effects; instead, the user has to change \tcode{[[assume(x)]]} to \mbox{\tcode{contract_assert<may_be_assumed>(x)}} and select an appropriate evaluation semantic
+%  replacement: Ignore the assumption
 
 \pnum
 \begin{note}
@@ -10156,6 +10204,12 @@ specify the \tcode{noreturn} attribute if any declaration of that function speci
 \tcode{noreturn} attribute. If a function is declared with the \tcode{noreturn} attribute in one
 translation unit and the same function is declared without the \tcode{noreturn} attribute in another
 translation unit, the program is ill-formed, no diagnostic required.
+%TODO: ubdef{dcl.attr.noreturn.eventually.returns}
+%  wording: [dcl.attr.noreturn]/2: If a function \tcode{f} is invoked where \tcode{f} was previously declared with the \tcode{noreturn} attribute and that invocation eventually returns, the behavior is runtime-undefined.
+%  runtime-checkable: Yes
+%  locally-checkable: Yes
+%  checking: Insert \tcode{post(false)}
+%  replacement: None
 
 \pnum
 If a function \tcode{f} is invoked where \tcode{f} was previously declared with the \tcode{noreturn}
