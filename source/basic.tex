@@ -3770,7 +3770,7 @@ in its specified region of storage
 if doing so would result in the program having defined behavior.
 If no such set of objects would give the program defined behavior,
 
-%TODO: ubdef --- intro.object.implicit.create
+%NOTE: ubdef --- intro.object.implicit.create
 %
 %  wording: [intro.object]/11: For each operation that is specified as implicitly creating objects, that operation implicitly creates and starts the lifetime of zero or more objects of implicit-lifetime types ([basic.types.general]) in its specified region of storage if doing so would result in the program having defined behavior. If no such set of objects would give the program defined behavior, the behavior of the program is undefined.
 %
@@ -3803,7 +3803,7 @@ the behavior of the program is undefined.
 If multiple such pointer values would give the program defined behavior,
 it is unspecified which such pointer value is produced.
 
-%TODO: ubdef --- intro.object.implicit.pointer
+%NOTE: ubdef --- intro.object.implicit.pointer
 %
 %  wording: [intro.object]/11: Further, after implicitly creating objects within a specified region of storage, some operations are described as producing a pointer to a suitable created object. These operations select one of the implicitly-created objects whose address is the address of the start of the region of storage, and produce a pointer value that points to that object, if that value would result in the program having defined behavior. If no such pointer value would give the program defined behavior, the behavior of the program is undefined.
 %
@@ -3867,7 +3867,7 @@ Attempting to create an object\iref{intro.object} in storage that
 does not meet the alignment requirements of the object's type
 is undefined behavior.
 
-%TODO: ubdef --- basic.align.object.alignment
+%NOTE: ubdef --- basic.align.object.alignment
 %
 %  wording: [basic.align]/1: Attempting to create an object ([intro.object]) in storage that does not meet the alignment requirements of the object's type is undefined behavior.
 %
@@ -4071,7 +4071,7 @@ program has undefined behavior if
 \item
   the pointer is used as the operand of a \grammarterm{delete-expression},
 
-%TODO: ubdef --- lifetime.outside.pointer.delete
+%NOTE: ubdef --- lifetime.outside.pointer.delete
 %
 %  wording: [basic.life]/7: Before the lifetime of an object has started but after the storage which the object will occupy has been allocated or, after the lifetime of an object has ended and before the storage which the object occupied is reused or released, any pointer that represents the address of the storage location where the object will be or was located may be used but only in limited ways. [...] The program has undefined behavior if the pointer is used as the operand of a \emph{delete-expression} [...]
 %
@@ -4087,7 +4087,7 @@ program has undefined behavior if
   the pointer is used to access a non-static data member or call a
   non-static member function of the object, or
 
-%TODO: ubdef --- lifetime.outside.pointer.member
+%NOTE: ubdef --- lifetime.outside.pointer.member
 %
 %  wording: [basic.life]/7: [...] The program has undefined behavior if [...] the pointer is used to access a non-static data member or call a non-static member function of the object, [...]
 %
@@ -4103,7 +4103,7 @@ program has undefined behavior if
   the pointer is converted\iref{conv.ptr,expr.static.cast} to a pointer
   to a virtual base class or to a base class thereof, or
 
-%TODO: ubdef --- lifetime.outside.pointer.static.cast
+%NOTE: ubdef --- lifetime.outside.pointer.static.cast
 %
 %  wording: [basic.life]/7: [...] The program has undefined behavior if [...] the pointer is used as the operand of a \tcode{static_cast} ([expr.static.cast]), except when the conversion is to pointer to $cv$ \tcode{void}, or to pointer to $cv$ \tcode{void} and subsequently to pointer to $cv$ \tcode{char}, $cv$ \tcode{unsigned char}, or $cv$ \tcode{std::byte} ([cstddef.syn]) [...]
 %
@@ -4115,7 +4115,7 @@ program has undefined behavior if
 %
 %  replacement: None
 
-%TODO: ubdef --- lifetime.outside.pointer.virtual
+%NOTE: ubdef --- lifetime.outside.pointer.virtual
 %
 %  wording: [basic.life]/7: [...] The program has undefined behavior if [...] the pointer is implicitly converted ([conv.ptr]) to a pointer to a virtual base class [...]
 %
@@ -4131,7 +4131,7 @@ program has undefined behavior if
   the pointer is used as the operand of a
   \keyword{dynamic_cast}\iref{expr.dynamic.cast}.
 
-%TODO: ubdef --- lifetime.outside.pointer.dynamic.cast
+%NOTE: ubdef --- lifetime.outside.pointer.dynamic.cast
 %
 %  wording: [basic.life]/7: [...] The program has undefined behavior if [...] the pointer is used as the operand of a \tcode{dynamic_cast} ([expr.dynamic.cast]).
 %
@@ -4189,7 +4189,7 @@ well-defined. The program has undefined behavior if
 \begin{itemize}
 \item the glvalue is used to access the object, or
 
-%TODO: ubdef --- lifetime.outside.glvalue.access
+%NOTE: ubdef --- lifetime.outside.glvalue.access
 %
 %  wording: [basic.life]/8: Similarly, before the lifetime of an object has started but after the storage which the object will occupy has been allocated or, after the lifetime of an object has ended and before the storage which the object occupied is reused or released, any glvalue that refers to the original object may be used but only in limited ways. [...] The program has undefined behavior if the glvalue is used to access the object [...]
 %
@@ -4203,7 +4203,7 @@ well-defined. The program has undefined behavior if
 
 \item the glvalue is used to call a non-static member function of the object, or
 
-%TODO: ubdef --- lifetime.outside.glvalue.member
+%NOTE: ubdef --- lifetime.outside.glvalue.member
 %
 %  wording: [basic.life]/8: [...] The program has undefined behavior if [...] the glvalue is used to call a non-static member function of the object [...]
 %
@@ -4217,7 +4217,7 @@ well-defined. The program has undefined behavior if
 
 \item the glvalue is bound to a reference to a virtual base class\iref{dcl.init.ref}, or
 
-%TODO: ubdef --- lifetime.outside.glvalue.virtual
+%NOTE: ubdef --- lifetime.outside.glvalue.virtual
 %
 %  wording: [basic.life]/8: [...] The program has undefined behavior if [...] the glvalue is bound to a reference to a virtual base class ([dcl.init.ref]) [...]
 %
@@ -4233,7 +4233,7 @@ well-defined. The program has undefined behavior if
 \keyword{dynamic_cast}\iref{expr.dynamic.cast} or as the operand of
 \keyword{typeid}.
 
-%TODO: ubdef --- lifetime.outside.glvalue.dynamic.cast
+%NOTE: ubdef --- lifetime.outside.glvalue.dynamic.cast
 %
 %  wording: [basic.life]/8: [...] The program has undefined behavior if [...] the glvalue is used as the operand of a \tcode{dynamic_cast} ([expr.dynamic.cast]) or as the operand of \tcode{typeid}.
 %
@@ -4331,7 +4331,7 @@ and another object of the original type does not occupy
 that same storage location when the implicit destructor call takes
 place, the behavior of the program is undefined. This is true
 
-%TODO: ubdef --- original.type.implicit.destructor
+%NOTE: ubdef --- original.type.implicit.destructor
 %
 %  wording: [basic.life]/11: If a program ends the lifetime of an object of type \tcode{T} with static ([basic.stc.static]), thread ([basic.stc.thread]), or automatic ([basic.stc.auto]) storage duration and if \tcode{T} has a non-trivial destructor, and another object of the original type does not occupy that same storage location when the implicit destructor call takes place, the behavior of the program is undefined.
 %
@@ -4379,7 +4379,7 @@ void h() {
 \end{codeblock}
 \end{example}
 
-%TODO: ubdef --- creating.within.const.complete.obj
+%NOTE: ubdef --- creating.within.const.complete.obj
 %
 %  wording: [basic.life]/12: Creating a new object within the storage that a const, complete object with static, thread, or automatic storage duration occupies, or within the storage that such a const object used to occupy before its lifetime ended, results in undefined behavior.
 %
@@ -4738,7 +4738,7 @@ specified in~\ref{basic.stc.dynamic.allocation}
 and~\ref{basic.stc.dynamic.deallocation},
 the behavior is undefined.
 
-%TODO: ubdef --- basic.stc.alloc.dealloc.constraint
+%NOTE: ubdef --- basic.stc.alloc.dealloc.constraint
 %
 %  wording: [basic.stc.dynamic.general]/3: If the behavior of an allocation or deallocation function does not satisfy the semantic constraints specified in [basic.stc.dynamic.allocation] and [basic.stc.dynamic.deallocation], the behavior is undefined.
 %
@@ -4790,7 +4790,7 @@ for any other object accessible to the caller.
 The effect of indirecting through a pointer
 returned from a request for zero size is undefined.
 
-%TODO: ubdef --- basic.stc.alloc.zero.dereference
+%NOTE: ubdef --- basic.stc.alloc.zero.dereference
 %
 %  wording: [basic.stc.dynamic.allocation]/2: The effect of indirecting through a pointer returned from a request for zero size is undefined.
 %
@@ -6319,7 +6319,7 @@ then the behavior is undefined if $E$ is
 an indirection\iref{expr.unary.op} or
 an invocation of a deallocation function\iref{basic.stc.dynamic.deallocation},
 
-%TODO: ubdef --- basic.compound.invalid.pointer
+%NOTE: ubdef --- basic.compound.invalid.pointer
 %
 %  wording: [basic.compound]/4: If a pointer value $P$ is used in an evaluation $E$ and $P$ is not valid in the context of $E$, then the behavior is undefined if $E$ is an indirection ([expr.unary.op]) or an invocation of a deallocation function ([basic.stc.dynamic.deallocation]) [...]
 %
@@ -7662,7 +7662,7 @@ objects with automatic storage duration\iref{class.dtor}. If
 an object with static or thread storage duration, the program has undefined
 behavior.
 
-%TODO: ubdef --- basic.start.main.exit.during.destruction
+%NOTE: ubdef --- basic.start.main.exit.during.destruction
 %
 %  wording: [basic.start.main]/4: If \tcode{std::exit} is invoked during the destruction of an object with static or thread storage duration, the program has undefined behavior.
 %
@@ -8011,7 +8011,7 @@ If a function contains a block variable of static or thread storage duration tha
 destroyed and the function is called during the destruction of an object with static or
 thread storage duration, the program has undefined behavior if the flow of control
 
-%TODO: ubdef --- basic.start.term.use.after.destruction
+%NOTE: ubdef --- basic.start.term.use.after.destruction
 %
 %  wording: [basic.start.term]/4: If a function contains a block variable of static or thread storage duration that has been destroyed and the function is called during the destruction of an object with static or thread storage duration, the program has undefined behavior if the flow of control passes through the definition of the previously destroyed block variable.
 %
@@ -8059,7 +8059,7 @@ behavior. Terminating every thread before a call to \tcode{std::exit} or the exi
 requirements permit thread managers as static-storage-duration objects.
 \end{note}
 
-%TODO: ubdef --- basic.start.term.signal.handler
+%NOTE: ubdef --- basic.start.term.signal.handler
 %
 %  wording: [basic.start.term]/6: If there is a use of a standard library object or function not permitted within signal handlers ([support.runtime]) that does not happen before ([intro.multithread]) completion of destruction of objects with static storage duration and execution of std::atexit registered functions ([support.start.term]), the program has undefined behavior.
 %
