@@ -38,7 +38,7 @@ type\iref{dcl.enum}. Uses of overloaded operators are transformed into
 function calls as described in~\ref{over.oper}. Overloaded operators
 obey the rules for syntax and evaluation order specified in \ref{expr.compound},
 but the requirements of operand type and value category are replaced
-by the rules for function call. Relations between operators, such as
+by the rules for function call. Relations bexpetween operators, such as
 \tcode{++a} meaning \tcode{a += 1}, are not guaranteed for overloaded
 operators\iref{over.oper}.
 \end{note}
@@ -55,12 +55,6 @@ for the built-in operator. If a built-in operator is selected, such
 conversions will be applied to the operands before the operation is
 considered further according to the rules in \ref{expr.compound};
 see~\ref{over.match.oper}, \ref{over.built}.
-%TODO: ubdef{expr.expr.eval}
-%  wording: [expr.pre]/4: If during the evaluation of an expression, the result is not mathematically defined or not in the range of representable values for its type, the behavior is undefined.
-%  runtime-checkable: Yes
-%  locally-checkable: Yes
-%  checking: Insert a check of whether the value is valid
-%  replacement: Coerce into erroneous value
 
 \pnum
 \indextext{exception!arithmetic}%
@@ -70,7 +64,9 @@ see~\ref{over.match.oper}, \ref{over.built}.
 \indextext{zero!remainder undefined}%
 If during the evaluation of an expression, the result is not
 mathematically defined or not in the range of representable values for
-its type, the behavior is undefined.
+its type, the result is erronneous
+with an implicit precondition assertion
+that it does not occur\iref{basic.contract.implicit}.
 \begin{note}
 \indextext{overflow}%
 Treatment of division by zero, forming a remainder using a zero divisor,

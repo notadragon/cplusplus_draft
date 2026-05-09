@@ -8321,8 +8321,9 @@ for contract assertions.
 By default,
 no repeated evaluations should be performed.
 
-\rSec2[basic.contract.implicit]{}
+\rSec2[basic.contract.implicit]{Implicit Contract Assertions}
 
+\pnum
 A built-in operation $O$
 may have an
 \defn{implicit precondition assertion} $C$ applied to it.
@@ -8333,6 +8334,7 @@ the evaluation of $O$ and
 after the evaluation of
 all operands of $O$.
 
+\pnum
 A built-in operation $O$
 may have an
 \defn{implicit postcondition assertion} $C$ applied to it.
@@ -8340,6 +8342,34 @@ If so,
 the evaluation of $C$
 is sequenced after
 the evaluation of $O$.
+
+\pnum
+All undefined behavior
+except the violation of a contract assertion
+evaluated with the assume semantic
+has an implicit precondition assertion
+that it does not occur.
+
+\pnum
+\begin{note}
+The implicit precondition assertion
+associated with an operation with undefined behavior
+does not occur
+will be evaluated (and thus violated)
+if the operation
+is reached during execution.
+The behavior itself is then undefined if the
+contract-violation handler return normally\iref{basic.contract.handler}.
+\end{note}
+
+\pnum
+\begin{note}
+Erroneous behvior with
+an implicit precondition assertion that it does not occur
+is equivalent to undefined behavior
+when that assertion is evaluated with the
+assume semantic\iref{basic.conttract.eval}.
+\end{note}
 
 \rSec2[basic.contract.handler]{Contract-violation handler}
 
