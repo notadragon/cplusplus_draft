@@ -6951,6 +6951,18 @@ template<class T> class X {
 \end{codeblock}
 \end{example}
 
+%TODO: ubdef --- temp.inst.inf.recursion
+%
+%  wording: [temp.inst]/16: The result of an infinite recursion in instantiation is undefined.
+%
+%  runtime-checkable: No
+%
+%  locally-checkable: No
+%
+%  checking: Compile-time issue; implementation-defined depth limit
+%
+%  replacement: None (considered a wording bug per CWG3034, out of scope for this paper)
+
 \pnum
 The \grammarterm{type-constraint}{s} and \grammarterm{requires-clause}
 of a template specialization or member function

@@ -1121,12 +1121,7 @@ class A {
 A f() { return A(); }   // error: destructor of \tcode{A} is private (even though it is never invoked)
 \end{codeblock}
 \end{example}
-%TODO: ubdef --- stmt.return.flow.off
-%  wording: [stmt.return]/4: Otherwise, flowing off the end of a function that is neither \tcode{main} ([basic.start.main]) nor a coroutine ([dcl.fct.def.coroutine]) results in undefined behavior.
-%  runtime-checkable: Yes
-%  locally-checkable: Yes
-%  checking: Insert \mbox{\tcode{contract_assert(false)}} at end of \emph{function-body}
-%  replacement: Only for built-in return types: return erroneous value
+
 
 \pnum
 Flowing off the end of
@@ -1137,6 +1132,18 @@ equivalent to a \tcode{return} with no operand.
 Otherwise, flowing off the end of a function
 that is neither \tcode{main}\iref{basic.start.main} nor a coroutine\iref{dcl.fct.def.coroutine}
 results in undefined behavior.
+
+%TODO: ubdef --- stmt.return.flow.off
+%
+%  wording: [stmt.return]/4: Otherwise, flowing off the end of a function that is neither \tcode{main} ([basic.start.main]) nor a coroutine ([dcl.fct.def.coroutine]) results in undefined behavior.
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: Yes
+%
+%  checking: Insert \mbox{\tcode{contract_assert(false)}} at end of \emph{function-body}
+%
+%  replacement: Only for built-in return types: return erroneous value
 
 \pnum
 The copy-initialization of the result of the call is sequenced before the
@@ -1225,12 +1232,7 @@ Otherwise,
 The expression \placeholder{p}\tcode{.return_void()}
 shall be a prvalue of type \keyword{void}.
 \end{itemize}
-%TODO: ubdef --- stmt.return.coroutine.flow.off
-%  wording: [stmt.return.coroutine]/3: If a search for the name \tcode{return_void} in the scope of the promise type finds any declarations, flowing off the end of a coroutine's \emph{function-body} is equivalent to a \mbox{\tcode{co_return}} with no operand; otherwise flowing off the end of a coroutine's \emph{function-body} results in undefined behavior.
-%  runtime-checkable: Yes
-%  locally-checkable: Yes
-%  checking: Insert \mbox{\tcode{contract_assert(false)}} at end of \emph{function-body} if no \tcode{return_void} function is provided
-%  replacement: Only for built-in return types: return erroneous value
+
 
 \pnum
 If a search for the name \tcode{return_void} in the scope of the promise type
@@ -1239,6 +1241,18 @@ flowing off the end of a coroutine's \grammarterm{function-body}
 is equivalent to a \keyword{co_return} with no operand;
 otherwise flowing off the end of a coroutine's \grammarterm{function-body}
 results in undefined behavior.
+
+%TODO: ubdef --- stmt.return.coroutine.flow.off
+%
+%  wording: [stmt.return.coroutine]/3: If a search for the name \tcode{return_void} in the scope of the promise type finds any declarations, flowing off the end of a coroutine's \emph{function-body} is equivalent to a \mbox{\tcode{co_return}} with no operand; otherwise flowing off the end of a coroutine's \emph{function-body} results in undefined behavior.
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: Yes
+%
+%  checking: Insert \mbox{\tcode{contract_assert(false)}} at end of \emph{function-body} if no \tcode{return_void} function is provided
+%
+%  replacement: Only for built-in return types: return erroneous value
 
 \rSec2[stmt.goto]{The \keyword{goto} statement}%
 \indextext{statement!\idxcode{goto}}
@@ -1352,12 +1366,7 @@ lx:
 }
 \end{codeblock}
 \end{example}
-%TODO: ubdef --- stmt.dcl.local.static.init.recursive
-%  wording: [stmt.dcl]/3: If control re-enters the declaration recursively while the variable is being initialized, the behavior is undefined.
-%  runtime-checkable: Yes
-%  locally-checkable: No
-%  checking: Insert a recursion counter into a guard for static and thread-local object construction
-%  replacement: None
+
 
 \pnum
 \indextext{initialization!automatic}%
@@ -1393,6 +1402,18 @@ int foo(int i) {
 }
 \end{codeblock}
 \end{example}
+
+%TODO: ubdef --- stmt.dcl.local.static.init.recursive
+%
+%  wording: [stmt.dcl]/3: If control re-enters the declaration recursively while the variable is being initialized, the behavior is undefined.
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Insert a recursion counter into a guard for static and thread-local object construction
+%
+%  replacement: None
 
 \pnum
 \indextext{\idxcode{static}!destruction of local}%
