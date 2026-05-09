@@ -1336,7 +1336,7 @@ p->x.j = 99;                            // undefined behavior: modifies a const 
 \end{codeblock}
 \end{example}
 
-%TODO: ubdef --- dcl.type.cv.modify.const.obj
+%NOTE: ubdef --- dcl.type.cv.modify.const.obj
 %
 %  wording: [dcl.type.cv]/4: Any attempt to modify ([expr.assign], [expr.post.incr], [expr.pre.incr]) a const object ([basic.type.qualifier]) during its lifetime ([basic.life]) results in undefined behavior.
 %
@@ -1355,7 +1355,7 @@ If an attempt is made to access an object defined with a
 volatile-qualified type through the use of a non-volatile glvalue,
 the behavior is undefined.
 
-%TODO: ubdef --- dcl.type.cv.access.volatile
+%NOTE: ubdef --- dcl.type.cv.access.volatile
 %
 %  wording: [dcl.type.cv]/5: If an attempt is made to access an object defined with a volatile-qualified type through the use of a non-volatile glvalue, the behavior is undefined.
 %
@@ -3345,7 +3345,7 @@ int &ir5 = *reinterpret_cast<int *>(&x);    // undefined behavior: initializer r
 \end{codeblock}
 \end{example}
 
-%TODO: ubdef --- dcl.ref.uninitialized.reference
+%NOTE: ubdef --- dcl.ref.uninitialized.reference
 %
 %  wording: [dcl.ref]/6: The behavior of an evaluation of a reference ([expr.prim.id], [expr.ref]) that does not happen after ([intro.races]) the initialization of the reference is undefined.
 %
@@ -3357,7 +3357,7 @@ int &ir5 = *reinterpret_cast<int *>(&x);    // undefined behavior: initializer r
 %
 %  replacement: None
 
-%TODO: ubdef --- dcl.ref.incompatible.type
+%NOTE: ubdef --- dcl.ref.incompatible.type
 %
 %  wording: [dcl.ref]/6: Attempting to bind a reference to an object where the converted initializer is a glvalue through which the object is not type-accessible ([basic.lval]) results in undefined behavior.
 %
@@ -3369,7 +3369,7 @@ int &ir5 = *reinterpret_cast<int *>(&x);    // undefined behavior: initializer r
 %
 %  replacement: None
 
-%TODO: ubdef --- dcl.ref.incompatible.function
+%NOTE: ubdef --- dcl.ref.incompatible.function
 %
 %  wording: [dcl.ref]/6: Attempting to bind a reference to a function where the converted initializer is a glvalue whose type is not call-compatible ([expr.call]) with the type of the function's definition results in undefined behavior.
 %
@@ -7461,7 +7461,7 @@ called the \defnx{resumer}{coroutine!resumer}.
 Invoking a resumption member function for a coroutine
 that is not suspended results in undefined behavior.
 
-%TODO: ubdef --- dcl.fct.def.coroutine.resume.not.suspended
+%NOTE: ubdef --- dcl.fct.def.coroutine.resume.not.suspended
 %
 %  wording: [dcl.fct.def.coroutine]/9: Invoking a resumption member function for a coroutine that is not suspended results in undefined behavior.
 %
@@ -7567,7 +7567,7 @@ non-array deallocation function\iref{basic.stc.dynamic.deallocation}.
 If \tcode{destroy} is called for a coroutine that is not suspended, the
 program has undefined behavior.
 
-%TODO: ubdef --- dcl.fct.def.coroutine.destroy.not.suspended
+%NOTE: ubdef --- dcl.fct.def.coroutine.destroy.not.suspended
 %
 %  wording: [dcl.fct.def.coroutine/12: If \tcode{destroy} is called for a coroutine that is not suspended, the program has undefined behavior.
 %
@@ -10262,7 +10262,7 @@ The function can
 terminate by throwing an exception.
 \end{note}
 
-%TODO: ubdef --- dcl.attr.noreturn.eventually.returns
+%NOTE: ubdef --- dcl.attr.noreturn.eventually.returns
 %
 %  wording: [dcl.attr.noreturn]/2: If a function \tcode{f} is invoked where \tcode{f} was previously declared with the \tcode{noreturn} attribute and that invocation eventually returns, the behavior is runtime-undefined.
 %

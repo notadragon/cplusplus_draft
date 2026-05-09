@@ -333,7 +333,7 @@ the stored value of an object through a glvalue
 through which it is not type-accessible,
 the behavior is undefined.
 
-%TODO: ubdef --- expr.basic.lvalue.strict.aliasing.violation
+%NOTE: ubdef --- expr.basic.lvalue.strict.aliasing.violation
 %
 %  wording: [basic.lval]/11.3: If a program attempts to access ([defns.access]) the stored value of an object through a glvalue through which it is not type-accessible, the behavior is undefined.
 %
@@ -345,7 +345,7 @@ the behavior is undefined.
 %
 %  replacement: None
 
-%TODO: ubdef --- expr.basic.lvalue.union.initialization
+%NOTE: ubdef --- expr.basic.lvalue.union.initialization
 %
 %  wording: [basic.lval]/11.3: If a program invokes a defaulted copy/move constructor or copy/move assignment operator for a union of type \tcode{U} with a glvalue argument that does not denote an object of type $cv$ \tcode{U} within its lifetime, the behavior is undefined.
 %
@@ -390,7 +390,7 @@ Before the lifetime of the reference has started or after it has ended,
 the behavior is undefined (see~\ref{basic.life}).
 \end{note}
 
-%TODO: ubdef --- expr.type.reference.lifetime
+%NOTE: ubdef --- expr.type.reference.lifetime
 %
 %  wording: [expr.type]/1: If a pointer to $X$ would be valid in the context of the evaluation of the expression ([basic.fundamental]), the result designates $X$; otherwise, the behavior is undefined.
 %
@@ -1182,7 +1182,7 @@ Otherwise,
 the result is a pointer to the base class subobject of
 the derived class object.
 
-%TODO: ubdef --- conv.ptr.virtual.base
+%NOTE: ubdef --- conv.ptr.virtual.base
 %
 %  wording: [conv.ptr]/3: Otherwise, if \tcode{B} is a virtual base class of \tcode{D} and \tcode{v} does not point to an object whose type is similar ([conv.qual]) to \tcode{D} and that is within its lifetime or within its period of construction or destruction ([class.cdtor]), the behavior is undefined.
 %
@@ -1248,7 +1248,7 @@ In particular, a pointer to member cannot be converted to a
 \tcode{\keyword{void}*}.
 \end{footnote}
 
-%TODO: ubdef --- conv.member.missing.member
+%NOTE: ubdef --- conv.member.missing.member
 %
 %  wording: [conv.mem]/2: If class \tcode{D} does not contain the original member and is not a base class of the class containing the original member, the behavior is undefined.
 %
@@ -3992,7 +3992,7 @@ a non-throwing exception specification,
 and the function types are otherwise the same.
 \end{note}
 
-%TODO: ubdef --- expr.call.different.type
+%NOTE: ubdef --- expr.call.different.type
 %
 %  wording: [expr.call]/5: Calling a function through an expression whose function type is not call-compatible with the type of the called function's definition results in undefined behavior.
 %
@@ -4541,7 +4541,7 @@ void f() {
 \end{codeblock}
 \end{example}
 
-%TODO: ubdef --- expr.ref.member.not.similar
+%NOTE: ubdef --- expr.ref.member.not.similar
 %
 %  wording: [expr.ref]/9: If \tcode{E2} is a non-static member and the result of \tcode{E1} is an object whose type is not similar ([conv.qual]) to the type of \tcode{E1}, the behavior is undefined.
 %
@@ -4677,7 +4677,7 @@ within its lifetime or
 within its period of construction or destruction,
 the behavior is undefined.
 
-%TODO: ubdef --- expr.dynamic.cast.glvalue.lifetime
+%NOTE: ubdef --- expr.dynamic.cast.glvalue.lifetime
 %
 %  wording: [expr.dynamic.cast]/7: If \tcode{v} is a glvalue of type \tcode{U} and \tcode{v} does not refer to an object whose type is similar to \tcode{U} and that is within its lifetime or within its period of construction or destruction, the behavior is undefined.
 %
@@ -4689,7 +4689,7 @@ the behavior is undefined.
 %
 %  replacement: None
 
-%TODO: ubdef --- expr.dynamic.cast.pointer.lifetime
+%NOTE: ubdef --- expr.dynamic.cast.pointer.lifetime
 %
 %  wording: [expr.dynamic.cast]/7: If \tcode{v} has type ``pointer to $cv$ \tcode{U}'' and \tcode{v} does not point to an object whose type is similar ([conv.qual]) to \tcode{U} and that is within its lifetime or within its period of construction or destruction ([class.cdtor]), the behavior is undefined.
 %
@@ -4916,7 +4916,7 @@ static_cast<D&>(br);            // produces lvalue denoting the original \tcode{
 \end{codeblock}
 \end{example}
 
-%TODO: ubdef --- expr.static.cast.base.class
+%NOTE: ubdef --- expr.static.cast.base.class
 %
 %  wording: [expr.static.cast]/2: An xvalue of type ``$cv1$ \tcode{B}'' can be cast to type ``rvalue reference to $cv2$ \tcode{D}'' with the same constraints as for an lvalue of type ``$cv1$ \tcode{B}''. If the object of type ``$cv1$ \tcode{B}'' is actually a base class subobject of an object of type \tcode{D}, the result refers to the enclosing object of type \tcode{D}. Otherwise, the behavior is undefined.
 %
@@ -5078,7 +5078,7 @@ actually a base class subobject of an object of type \tcode{D}, the resulting
 pointer points to the enclosing object of type \tcode{D}. Otherwise, the
 behavior is undefined.
 
-%TODO: ubdef --- expr.static.cast.downcast.wrong.derived.type
+%NOTE: ubdef --- expr.static.cast.downcast.wrong.derived.type
 %
 %  wording: [expr.static.cast]/11: If the prvalue of type ``pointer to $cv1$ \tcode{B}'' points to a \tcode{B} that is actually a base class subobject of an object of type \tcode{D}, the resulting pointer points to the enclosing object of type \tcode{D}. Otherwise, the behavior is undefined.
 %
@@ -5119,7 +5119,7 @@ to member is performed must contain the original member;
 see~\ref{expr.mptr.oper}.
 \end{note}
 
-%TODO: ubdef --- expr.static.cast.does.not.contain.orignal.member
+%NOTE: ubdef --- expr.static.cast.does.not.contain.orignal.member
 %
 %  wording: [expr.static.cast]/12: If class \tcode{B} contains the original member, or is a base class of the class containing the original member, the resulting pointer to member points to the original member. Otherwise, the behavior is undefined.
 %
@@ -5513,7 +5513,7 @@ used in limited ways (to initialize a reference, for example); this
 lvalue must not be converted to a prvalue, see~\ref{conv.lval}.
 \end{note}
 
-%TODO: ubdef --- expr.unary.dereference
+%NOTE: ubdef --- expr.unary.dereference
 %
 %  wording: [expr.unary.op]/1: If the operand points to an object or function, the result denotes that object or function; otherwise, the behavior is undefined except as specified in [expr.typeid].
 %
@@ -6535,7 +6535,7 @@ if the allocation function returns null, initialization shall not be
 done, the deallocation function shall not be called, and the value of
 the \grammarterm{new-expression} shall be null.
 
-%TODO: ubdef --- expr.new.non.allocating.null
+%NOTE: ubdef --- expr.new.non.allocating.null
 %
 %  wording: [expr.new]/22: If the allocation function is a non-allocating form ([new.delete.placement]) that returns null, the behavior is undefined.
 %
@@ -6785,7 +6785,7 @@ a pointer to a base class subobject
 of an object created by such a \grammarterm{new-expression}.
 If not, the behavior is undefined.
 
-%TODO: ubdef --- expr.delete.mismatch
+%NOTE: ubdef --- expr.delete.mismatch
 %
 %  wording: [expr.delete]/2: In a single-object delete expression, the value of the operand of delete may be a null pointer value, a pointer value that resulted from a previous non-array new-expression, or a pointer to a base class subobject of an object created by such a new-expression. If not, the behavior is undefined.
 %
@@ -6797,7 +6797,7 @@ If not, the behavior is undefined.
 %
 %  replacement: None
 
-%TODO: ubdef --- expr.delete.array.mismatch
+%NOTE: ubdef --- expr.delete.array.mismatch
 %
 %  wording: [expr.delete]/2: In an array delete expression, the value of the operand of delete may be a null pointer value or a pointer value that resulted from a previous array new-expression whose allocation function was not a non-allocating form ([new.delete.placement]). If not, the behavior is undefined.
 %
@@ -6843,7 +6843,7 @@ the static type shall be a base
 class of the dynamic type of the object to be deleted and the static type shall
 have a virtual destructor or the behavior is undefined. In an array delete
 
-%TODO: ubdef --- expr.delete.dynamic.type.differ
+%NOTE: ubdef --- expr.delete.dynamic.type.differ
 %
 %  wording: [expr.delete]/3: In a single-object delete expression, if the static type of the object to be deleted is not similar ([conv.qual]) to its dynamic type and the selected deallocation function (see below) is not a destroying operator delete, the static type shall be a base class of the dynamic type of the object to be deleted and the static type shall have a virtual destructor or the behavior is undefined.
 %
@@ -6858,7 +6858,7 @@ have a virtual destructor or the behavior is undefined. In an array delete
 expression, if the dynamic type of the object to be deleted is not similar to
 its static type, the behavior is undefined.
 
-%TODO: ubdef --- expr.delete.dynamic.array.dynamic.type.differ
+%NOTE: ubdef --- expr.delete.dynamic.array.dynamic.type.differ
 %
 %  wording: [expr.delete]/3: In an array delete expression, if the dynamic type of the object to be deleted is not similar to its static type, the behavior is undefined.
 %
@@ -7435,7 +7435,7 @@ whose most derived object does not
 contain the member to which
 \tcode{E2} refers, the behavior is undefined.
 
-%TODO: ubdef --- expr.mptr.oper.not.contain.member
+%NOTE: ubdef --- expr.mptr.oper.not.contain.member
 %
 %  wording: [expr.mptr.oper]/4: Abbreviating \emph{pm-expression}\tcode{.*}\emph{cast-expression} as \tcode{E1.*E2}, \tcode{E1} is called the object expression. If the result of \tcode{E1} is an object whose type is not similar to the type of \tcode{E1}, or whose most derived object does not contain the member to which \tcode{E2} refers, the behavior is undefined.
 %
@@ -7500,7 +7500,7 @@ second operand is a pointer to a member function is a prvalue.
 If the second operand is the null
 member pointer value\iref{conv.mem}, the behavior is undefined.
 
-%TODO: ubdef --- expr.mptr.oper.member.func.null
+%NOTE: ubdef --- expr.mptr.oper.member.func.null
 %
 %  wording: [expr.mptr.oper]/6: The result of a .* expression whose second operand is a pointer to a member function is a prvalue. If the second operand is the null member pointer value, the behavior is undefined.
 %
@@ -7664,7 +7664,7 @@ points to the (possibly-hypothetical) array element
 $i - j$ of \tcode{x} if $0 \le i - j \le n$.
 \item Otherwise, the behavior is undefined.
 
-%TODO: ubdef --- expr.add.out.of.bounds
+%NOTE: ubdef --- expr.add.out.of.bounds
 %
 %  wording: [expr.add]/4: When an expression \tcode{J} that has integral type is added to or subtracted from an expression \tcode{P} of pointer type, the result has the type of \tcode{P}. If \tcode{P} evaluates to a null pointer value and \tcode{J} evaluates to 0, the result is a null pointer value. Otherwise, if \tcode{P} points to a (possibly-hypothetical) array element $i$ of an array object \tcode{x} with $n$ elements ([dcl.array]), the expressions \tcode{P + J} and \tcode{J + P} (where \tcode{J} has the value $j$) point to the (possibly-hypothetical) array element $i + j$ of \tcode{x} if $0 \leq i + j \leq n$ and the expression \tcode{P - J} points to the (possibly-hypothetical) array element $i - j$ of \tcode{x} if $0 \leq i - j \leq n$. Otherwise, the behavior is undefined.
 %
@@ -7704,7 +7704,7 @@ the behavior is undefined\iref{expr.pre}.
 \item Otherwise, the behavior is undefined.
 \end{itemize}
 
-%TODO: ubdef --- expr.add.sub.diff.pointers
+%NOTE: ubdef --- expr.add.sub.diff.pointers
 %
 %  wording: [expr.add]/4: When an expression \tcode{J} that has integral type is added to or subtracted from an expression \tcode{P} of pointer type, the result has the type of \tcode{P}. If \tcode{P} evaluates to a null pointer value and \tcode{J} evaluates to 0, the result is a null pointer value. Otherwise, if \tcode{P} points to a (possibly-hypothetical) array element $i$ of an array object \tcode{x} with $n$ elements ([dcl.array]), the expressions \tcode{P + J} and \tcode{J + P} (where \tcode{J} has the value $j$) point to the (possibly-hypothetical) array element $i + j$ of \tcode{x} if $0 \leq i + j \leq n$ and the expression \tcode{P - J} points to the (possibly-hypothetical) array element $i - j$ of \tcode{x} if $0 \leq i - j \leq n$. Otherwise, the behavior is undefined.
 %
@@ -7729,7 +7729,7 @@ unsigned int *q = p + 1;        // undefined behavior: \tcode{p} points to an \t
 \end{codeblock}
 \end{example}
 
-%TODO: ubdef --- expr.add.not.similar
+%NOTE: ubdef --- expr.add.not.similar
 %
 %  wording: [expr.add]/6: For addition or subtraction, if the expressions \tcode{P} or \tcode{Q} have type ``pointer to $cv$ \tcode{T}'', where \tcode{T} and the array element type are not similar, the behavior is undefined.
 %
@@ -8700,7 +8700,7 @@ statement about how the target of the assignment can be aliased in general.
 See~\ref{basic.lval}.
 \end{note}
 
-%TODO: ubdef --- expr.assign.overlap
+%NOTE: ubdef --- expr.assign.overlap
 %
 %  wording: [expr.assign]/7: If the value being stored in an object is read via another object that overlaps in any way the storage of the first object, then the overlap shall be exact and the two objects shall have the same type, otherwise the behavior is undefined.
 %
