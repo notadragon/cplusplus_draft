@@ -1293,7 +1293,6 @@ Cv-qualifiers are supported by the type system so that they cannot be
 subverted without casting\iref{expr.const.cast}.
 \end{note}
 
-
 \pnum
 \indextext{const object!undefined change to}%
 Any attempt to modify\iref{expr.assign,expr.post.incr,expr.pre.incr} a
@@ -1348,7 +1347,6 @@ p->x.j = 99;                            // undefined behavior: modifies a const 
 %  checking: Track whether storage is associated with a \tcode{const} object
 %
 %  replacement: None
-
 
 \pnum
 The semantics of an access through a volatile glvalue are
@@ -3306,7 +3304,6 @@ except when the declaration contains an explicit
 specifier\iref{dcl.stc},
 is a class member\iref{class.mem} declaration within a class definition,
 or is the declaration of a parameter or a return type\iref{dcl.fct}; see~\ref{basic.def}.
-
 
 \pnum
 Attempting to bind a reference to a function where
@@ -7454,7 +7451,6 @@ is sequenced before
 the call to \tcode{initial_suspend}
 and is invoked at most once.
 
-
 \pnum
 A suspended coroutine can be resumed to continue execution by invoking
 a resumption member function\iref{coroutine.handle.resumption}
@@ -7555,7 +7551,6 @@ int main() {
 }
 \end{codeblock}
 \end{example}
-
 
 \pnum
 The coroutine state is destroyed when control flows off the end of the
@@ -9826,7 +9821,6 @@ evaluation of the assumption has runtime-undefined behavior.
 %
 %  replacement: Ignore the assumption
 
-
 \pnum
 \begin{note}
 The expression is potentially evaluated\iref{basic.def.odr}.
@@ -10258,7 +10252,6 @@ specify the \tcode{noreturn} attribute if any declaration of that function speci
 \tcode{noreturn} attribute. If a function is declared with the \tcode{noreturn} attribute in one
 translation unit and the same function is declared without the \tcode{noreturn} attribute in another
 translation unit, the program is ill-formed, no diagnostic required.
-
 
 \pnum
 If a function \tcode{f} is invoked where \tcode{f} was previously declared with the \tcode{noreturn}
