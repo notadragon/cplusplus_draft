@@ -690,7 +690,7 @@ still active is called the
 Referring to any non-static member or base class of an object
 in the handler for a
 \grammarterm{function-try-block}
-of a constructor or destructor for that object results in undefined behavior.
+of a constructor or destructor for that object results in undefined behavior\ubdef{except.handle.handler.ctor.dtor}.
 
 %NOTE: ubdef --- except.handle.handler.ctor.dtor
 %
@@ -903,7 +903,7 @@ of $E$ that is not an unevaluated operand is potentially-throwing
 \begin{note}
 The evaluation of an expression
 that is not potentially-throwing
-may nevertheless exit via an exception
+can nevertheless exit via an exception
 if, as part of that evaluation,
 the violation of an implicit contract assertion
 ([basic.contract.general]) causes
