@@ -64,7 +64,7 @@ see~\ref{over.match.oper}, \ref{over.built}.
 \indextext{zero!remainder undefined}%
 If during the evaluation of an expression, the result is not
 mathematically defined or not in the range of representable values for
-its type, the result is an erronneous value
+its type, the result is an erroneous value
 with an implicit precondition assertion
 that it does not occur\iref{basic.contract.implicit}.
 \begin{note}
@@ -74,9 +74,7 @@ and all floating-point exceptions varies among machines, and is sometimes
 adjustable by a library function.
 \end{note}
 
-%TODO: ubdef --- expr.expr.eval
-%
-%  wording: [expr.pre]/4: If during the evaluation of an expression, the result is not mathematically defined or not in the range of representable values for its type, the behavior is undefined\ubdef{expr.expr.eval}.
+%NOTE: ubdef --- expr.expr.eval
 %
 %  runtime-checkable: Yes
 %
@@ -335,8 +333,6 @@ the behavior is undefined\ubdef{expr.basic.lvalue.strict.aliasing.violation}.
 
 %NOTE: ubdef --- expr.basic.lvalue.strict.aliasing.violation
 %
-%  wording: [basic.lval]/11.3: If a program attempts to access ([defns.access]) the stored value of an object through a glvalue through which it is not type-accessible, the behavior is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -346,8 +342,6 @@ the behavior is undefined\ubdef{expr.basic.lvalue.strict.aliasing.violation}.
 %  replacement: None
 
 %NOTE: ubdef --- expr.basic.lvalue.union.initialization
-%
-%  wording: [basic.lval]/11.3: If a program invokes a defaulted copy/move constructor or copy/move assignment operator for a union of type \tcode{U} with a glvalue argument that does not denote an object of type $cv$ \tcode{U} within its lifetime, the behavior is undefined.
 %
 %  runtime-checkable: Yes
 %
@@ -391,8 +385,6 @@ the behavior is undefined (see~\ref{basic.life}).
 \end{note}
 
 %NOTE: ubdef --- expr.type.reference.lifetime
-%
-%  wording: [expr.type]/1: If a pointer to $X$ would be valid in the context of the evaluation of the expression ([basic.fundamental]), the result designates $X$; otherwise, the behavior is undefined.
 %
 %  runtime-checkable: Yes
 %
@@ -737,7 +729,15 @@ pointer value\iref{basic.compound}, the behavior is
 
 \item Otherwise, if the bits in the value representation of
 the object to which the glvalue refers
-are not valid for the object's type, the behavior is undefined\ubdef{conv.lval.valid.representation}.
+are not valid for the object's type,
+
+\begin{itemize}
+\item
+if the object is of scalar type,
+the object is initialized with an erroneous value
+and there is an implicit precondition that this does not occur\iref{basic.contract.implicit},
+\item otherwise the behavior is undefined\ubdef{conv.lval.valid.representation}.
+\end{itemize}
 \begin{example}
 \begin{codeblock}
 bool f() {
@@ -748,10 +748,7 @@ bool f() {
 }
 \end{codeblock}
 \end{example}
-
-%TODO: ubdef --- conv.lval.valid.representation
-%
-%  wording: [conv.lval]/3.4: Otherwise, if the bits in the value representation of the object to which the glvalue refers are not valid for the object's type, the behavior is undefined.
+%NOTE: ubdef --- conv.lval.valid.representation
 %
 %  runtime-checkable: Yes
 %
@@ -1052,13 +1049,10 @@ represented in the destination type, the result of the conversion is
 that exact representation. If the source value is between two adjacent
 destination values, the result of the conversion is an
 \impldef{result of inexact floating-point conversion} choice of either of those values.
-Otherwise, the behavior is undefined\ubdef{conv.double.out.of.range}.
+Otherwise, the result is an erroneous value
+with an implicit precondition that this does not occur.\ubdef{conv.double.out.of.range}.
 
-%TODO: ubdef --- conv.double.out.of.range
-%
-%  wording: [conv.double]/2: A prvalue of floating-point type can be converted to a prvalue of another floating-point type with a greater or equal conversion rank ([conv.rank]). [...] If the source value can be exactly represented in the destination type, the result of the conversion is that exact representation. If the source value is between two adjacent destination values, the result of the conversion is an implementation-defined choice of either of those values. Otherwise, the behavior is undefined.
-%
-%  runtime-checkable: Yes
+%NOTE: ubdef --- conv.double.out.of.range
 %
 %  locally-checkable: Yes
 %
@@ -1078,11 +1072,15 @@ A prvalue of a floating-point type can be converted to a prvalue of an
 integer type. The conversion truncates; that is, the fractional part is
 discarded.
 \indextext{value!undefined unrepresentable integral}%
-The behavior is undefined\ubdef{conv.fpint.float.not.represented} if the truncated value cannot be represented
+An erronneous value is produced
+if the truncated value cannot be represented\ubdef{conv.fpint.float.not.represented}
+in the destination type,
+with an implicit precondition that this does not occur\iref{basic.contract.implicit}.
+\begin{note}
+If the destination type is \keyword{bool}, see~\ref{conv.bool}.
+\end{note}
 
-%TODO: ubdef --- conv.fpint.float.not.represented
-%
-%  wording: [conv.fpint]/1: A prvalue of a floating-point type can be converted to a prvalue of an integer type. The conversion truncates; that is, the fractional part is discarded. The behavior is undefined if the truncated value cannot be represented in the destination type.
+%NOTE: ubdef --- conv.fpint.float.not.represented
 %
 %  runtime-checkable: Yes
 %
@@ -1092,10 +1090,6 @@ The behavior is undefined\ubdef{conv.fpint.float.not.represented} if the truncat
 %
 %  replacement: Coerce into erroneous value
 
-in the destination type.
-\begin{note}
-If the destination type is \keyword{bool}, see~\ref{conv.bool}.
-\end{note}
 
 \pnum
 \indextext{conversion!integral to floating}%
@@ -1112,13 +1106,14 @@ Loss of precision occurs if the integral value cannot be represented
 exactly as a value of the floating-point type.
 \end{note}
 If the value being converted is
-outside the range of values that can be represented, the behavior is undefined\ubdef{conv.fpint.int.not.represented}. If the
+outside the range of values that can be represented,
+an erroneous value is produced
+with an implicit precondition that this does not occur\ubdef{conv.fpint.int.not.represented}.
+If the
 source type is \keyword{bool}, the value \keyword{false} is converted to zero and the value
 \keyword{true} is converted to one.
 
-%TODO: ubdef --- conv.fpint.int.not.represented
-%
-%  wording: [conv.fpint]/2: A prvalue of an integer type or of an unscoped enumeration type can be converted to a prvalue of a floating-point type. [...] If the value being converted is outside the range of values that can be represented, the behavior is undefined.
+%NOTE: ubdef --- conv.fpint.int.not.represented
 %
 %  runtime-checkable: Yes
 %
@@ -1184,8 +1179,6 @@ the derived class object.
 
 %NOTE: ubdef --- conv.ptr.virtual.base
 %
-%  wording: [conv.ptr]/3: Otherwise, if \tcode{B} is a virtual base class of \tcode{D} and \tcode{v} does not point to an object whose type is similar ([conv.qual]) to \tcode{D} and that is within its lifetime or within its period of construction or destruction ([class.cdtor]), the behavior is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: Only for the null pointer case
@@ -1249,8 +1242,6 @@ In particular, a pointer to member cannot be converted to a
 \end{footnote}
 
 %NOTE: ubdef --- conv.member.missing.member
-%
-%  wording: [conv.mem]/2: If class \tcode{D} does not contain the original member and is not a base class of the class containing the original member, the behavior is undefined.
 %
 %  runtime-checkable: Yes
 %
@@ -3994,8 +3985,6 @@ and the function types are otherwise the same.
 
 %NOTE: ubdef --- expr.call.different.type
 %
-%  wording: [expr.call]/5: Calling a function through an expression whose function type is not call-compatible with the type of the called function's definition results in undefined behavior.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -4543,8 +4532,6 @@ void f() {
 
 %NOTE: ubdef --- expr.ref.member.not.similar
 %
-%  wording: [expr.ref]/9: If \tcode{E2} is a non-static member and the result of \tcode{E1} is an object whose type is not similar ([conv.qual]) to the type of \tcode{E1}, the behavior is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -4679,8 +4666,6 @@ the behavior is undefined\ubdef{expr.dynamic.cast.glvalue.lifetime}.
 
 %NOTE: ubdef --- expr.dynamic.cast.glvalue.lifetime
 %
-%  wording: [expr.dynamic.cast]/7: If \tcode{v} is a glvalue of type \tcode{U} and \tcode{v} does not refer to an object whose type is similar to \tcode{U} and that is within its lifetime or within its period of construction or destruction, the behavior is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -4690,8 +4675,6 @@ the behavior is undefined\ubdef{expr.dynamic.cast.glvalue.lifetime}.
 %  replacement: None
 
 %NOTE: ubdef --- expr.dynamic.cast.pointer.lifetime
-%
-%  wording: [expr.dynamic.cast]/7: If \tcode{v} has type ``pointer to $cv$ \tcode{U}'' and \tcode{v} does not point to an object whose type is similar ([conv.qual]) to \tcode{U} and that is within its lifetime or within its period of construction or destruction ([class.cdtor]), the behavior is undefined.
 %
 %  runtime-checkable: Yes
 %
@@ -4918,8 +4901,6 @@ static_cast<D&>(br);            // produces lvalue denoting the original \tcode{
 
 %NOTE: ubdef --- expr.static.cast.base.class
 %
-%  wording: [expr.static.cast]/2: An xvalue of type ``$cv1$ \tcode{B}'' can be cast to type ``rvalue reference to $cv2$ \tcode{D}'' with the same constraints as for an lvalue of type ``$cv1$ \tcode{B}''. If the object of type ``$cv1$ \tcode{B}'' is actually a base class subobject of an object of type \tcode{D}, the result refers to the enclosing object of type \tcode{D}. Otherwise, the behavior is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -5016,15 +4997,15 @@ If the enumeration type does not have a fixed underlying type,
 the value is unchanged
 if the original value is within the range
 of the enumeration values\iref{dcl.enum}, and
-otherwise, the behavior is undefined\ubdef{expr.static.cast.enum.outside.range}.
+otherwise, an erroneous value is produced with
+an implicit precondition that this does not occur\iref{basic.contract.implicit}
+\ubdef{expr.static.cast.enum.outside.range}.
 A value of floating-point type can also be explicitly converted to an enumeration type.
 The resulting value is the same as converting the original value to the
 underlying type of the enumeration\iref{conv.fpint}, and subsequently to
 the enumeration type.
 
-%TODO: ubdef --- expr.static.cast.enum.outside.range
-%
-%  wording: [expr.static.cast]/9: If the enumeration type does not have a fixed underlying type, the value is unchanged if the original value is within the range of the enumeration values ([dcl.enum]), and otherwise, the behavior is undefined.
+%NOTE: ubdef --- expr.static.cast.enum.outside.range
 %
 %  runtime-checkable: Yes
 %
@@ -5043,11 +5024,10 @@ If the source value is between two adjacent destination values,
 the result of the conversion is
 an \impldef{result of inexact floating-point conversion} choice of
 either of those values.
-Otherwise, the behavior is undefined\ubdef{expr.static.cast.fp.outside.range}.
+Otherwise, the an erroneous value is produced
+with an implicit precondition that this does not occur\iref{basic.contract.impliciti}\ubdef{expr.static.cast.fp.outside.range}.
 
-%TODO: ubdef --- expr.static.cast.fp.outside.range
-%
-%  wording: [expr.static.cast]/10: A prvalue of floating-point type can be explicitly converted to any other floating-point type. If the source value can be exactly represented in the destination type, the result of the conversion has that exact representation. If the source value is between two adjacent destination values, the result of the conversion is an implementation-defined choice of either of those values. Otherwise, the behavior is undefined.
+%NOTE: ubdef --- expr.static.cast.fp.outside.range
 %
 %  runtime-checkable: Yes
 %
@@ -5079,8 +5059,6 @@ pointer points to the enclosing object of type \tcode{D}. Otherwise, the
 behavior is undefined\ubdef{expr.static.cast.downcast.wrong.derived.type}.
 
 %NOTE: ubdef --- expr.static.cast.downcast.wrong.derived.type
-%
-%  wording: [expr.static.cast]/11: If the prvalue of type ``pointer to $cv1$ \tcode{B}'' points to a \tcode{B} that is actually a base class subobject of an object of type \tcode{D}, the resulting pointer points to the enclosing object of type \tcode{D}. Otherwise, the behavior is undefined.
 %
 %  runtime-checkable: Yes
 %
@@ -5120,8 +5098,6 @@ see~\ref{expr.mptr.oper}.
 \end{note}
 
 %NOTE: ubdef --- expr.static.cast.does.not.contain.orignal.member
-%
-%  wording: [expr.static.cast]/12: If class \tcode{B} contains the original member, or is a base class of the class containing the original member, the resulting pointer to member points to the original member. Otherwise, the behavior is undefined.
 %
 %  runtime-checkable: Yes
 %
@@ -5514,8 +5490,6 @@ lvalue must not be converted to a prvalue, see~\ref{conv.lval}.
 \end{note}
 
 %NOTE: ubdef --- expr.unary.dereference
-%
-%  wording: [expr.unary.op]/1: If the operand points to an object or function, the result denotes that object or function; otherwise, the behavior is undefined except as specified in [expr.typeid].
 %
 %  runtime-checkable: Yes
 %
@@ -6537,8 +6511,6 @@ the \grammarterm{new-expression} shall be null.
 
 %NOTE: ubdef --- expr.new.non.allocating.null
 %
-%  wording: [expr.new]/22: If the allocation function is a non-allocating form ([new.delete.placement]) that returns null, the behavior is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: Yes
@@ -6787,8 +6759,6 @@ If not, the behavior is undefined\ubdef{expr.delete.mismatch}.
 
 %NOTE: ubdef --- expr.delete.mismatch
 %
-%  wording: [expr.delete]/2: In a single-object delete expression, the value of the operand of delete may be a null pointer value, a pointer value that resulted from a previous non-array new-expression, or a pointer to a base class subobject of an object created by such a new-expression. If not, the behavior is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -6798,8 +6768,6 @@ If not, the behavior is undefined\ubdef{expr.delete.mismatch}.
 %  replacement: None
 
 %NOTE: ubdef --- expr.delete.array.mismatch
-%
-%  wording: [expr.delete]/2: In an array delete expression, the value of the operand of delete may be a null pointer value or a pointer value that resulted from a previous array new-expression whose allocation function was not a non-allocating form ([new.delete.placement]). If not, the behavior is undefined.
 %
 %  runtime-checkable: Yes
 %
@@ -6845,8 +6813,6 @@ have a virtual destructor or the behavior is undefined\ubdef{expr.delete.dynamic
 
 %NOTE: ubdef --- expr.delete.dynamic.type.differ
 %
-%  wording: [expr.delete]/3: In a single-object delete expression, if the static type of the object to be deleted is not similar ([conv.qual]) to its dynamic type and the selected deallocation function (see below) is not a destroying operator delete, the static type shall be a base class of the dynamic type of the object to be deleted and the static type shall have a virtual destructor or the behavior is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -6859,8 +6825,6 @@ expression, if the dynamic type of the object to be deleted is not similar to
 its static type, the behavior is undefined\ubdef{expr.delete.dynamic.array.dynamic.type.differ}.
 
 %NOTE: ubdef --- expr.delete.dynamic.array.dynamic.type.differ
-%
-%  wording: [expr.delete]/3: In an array delete expression, if the dynamic type of the object to be deleted is not similar to its static type, the behavior is undefined.
 %
 %  runtime-checkable: Yes
 %
@@ -7437,8 +7401,6 @@ contain the member to which
 
 %NOTE: ubdef --- expr.mptr.oper.not.contain.member
 %
-%  wording: [expr.mptr.oper]/4: Abbreviating \emph{pm-expression}\tcode{.*}\emph{cast-expression} as \tcode{E1.*E2}, \tcode{E1} is called the object expression. If the result of \tcode{E1} is an object whose type is not similar to the type of \tcode{E1}, or whose most derived object does not contain the member to which \tcode{E2} refers, the behavior is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -7502,8 +7464,6 @@ member pointer value\iref{conv.mem}, the behavior is undefined\ubdef{expr.mptr.o
 
 %NOTE: ubdef --- expr.mptr.oper.member.func.null
 %
-%  wording: [expr.mptr.oper]/6: The result of a .* expression whose second operand is a pointer to a member function is a prvalue. If the second operand is the null member pointer value, the behavior is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: Yes
@@ -7550,20 +7510,21 @@ The binary \tcode{/} operator yields the quotient, and the binary
 \tcode{\%} operator yields the remainder from the division of the first
 expression by the second.
 \indextext{zero!undefined division by}%
-If the second operand of \tcode{/} or \tcode{\%} is zero, the behavior is
-undefined\ubdef{expr.mul.div.by.zero}.
+There is an implicit precondition that
+the second operand of \tcode{/} or \tcode{\%} is notzero\ubdef{expr.mul.div.by.zero},
+and if it is then the operator yields an erroneous value.
 For integral operands, the \tcode{/} operator yields the algebraic quotient with
 any fractional part discarded;
 \begin{footnote}
 This is often called truncation towards zero.
 \end{footnote}
 if the quotient \tcode{a/b} is representable in the type of the result,
-\tcode{(a/b)*b + a\%b} is equal to \tcode{a}; otherwise, the behavior
-of both \tcode{a/b} and \tcode{a\%b} is undefined\ubdef{expr.mul.representable.type.result}.
+\tcode{(a/b)*b + a\%b} is equal to \tcode{a}; otherwise,
+the operator yields an erroneous value 
+and there is an implicit precondition that
+this does not occur\iref{basic.contract.implicit}\ubdef{expr.mul.representable.type.result}.
 
-%TODO: ubdef --- expr.mul.representable.type.result
-%
-%  wording: [expr.mul]/4: For integral operands, the \tcode{/} operator yields the algebraic quotient with any fractional part discarded; if the quotient \tcode{a/b} is representable in the type of the result, \tcode{(a/b)*b + a\%b} is equal to \tcode{a}; otherwise, the behavior of both \tcode{a/b} and \tcode{a\%b} is undefined.
+%NOTE: ubdef --- expr.mul.representable.type.result
 %
 %  runtime-checkable: Yes
 %
@@ -7573,9 +7534,7 @@ of both \tcode{a/b} and \tcode{a\%b} is undefined\ubdef{expr.mul.representable.t
 %
 %  replacement: Coerce into erroneous value
 
-%TODO: ubdef --- expr.mul.div.by.zero
-%
-%  wording: [expr.mul]/4: The binary \tcode{/} operator yields the quotient, and the binary \tcode{\%} operator yields the remainder from the division of the first expression by the second. If the second operand of \tcode{/} or \tcode{\%} is zero, the behavior is undefined.
+%NOTE: ubdef --- expr.mul.div.by.zero
 %
 %  runtime-checkable: Yes
 %
@@ -7666,8 +7625,6 @@ $i - j$ of \tcode{x} if $0 \le i - j \le n$.
 
 %NOTE: ubdef --- expr.add.out.of.bounds
 %
-%  wording: [expr.add]/4: When an expression \tcode{J} that has integral type is added to or subtracted from an expression \tcode{P} of pointer type, the result has the type of \tcode{P}. If \tcode{P} evaluates to a null pointer value and \tcode{J} evaluates to 0, the result is a null pointer value. Otherwise, if \tcode{P} points to a (possibly-hypothetical) array element $i$ of an array object \tcode{x} with $n$ elements ([dcl.array]), the expressions \tcode{P + J} and \tcode{J + P} (where \tcode{J} has the value $j$) point to the (possibly-hypothetical) array element $i + j$ of \tcode{x} if $0 \leq i + j \leq n$ and the expression \tcode{P - J} points to the (possibly-hypothetical) array element $i - j$ of \tcode{x} if $0 \leq i - j \leq n$. Otherwise, the behavior is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: Only if the array bound is statically known
@@ -7706,8 +7663,6 @@ the behavior is undefined\iref{expr.pre}.
 
 %NOTE: ubdef --- expr.add.sub.diff.pointers
 %
-%  wording: [expr.add]/4: When an expression \tcode{J} that has integral type is added to or subtracted from an expression \tcode{P} of pointer type, the result has the type of \tcode{P}. If \tcode{P} evaluates to a null pointer value and \tcode{J} evaluates to 0, the result is a null pointer value. Otherwise, if \tcode{P} points to a (possibly-hypothetical) array element $i$ of an array object \tcode{x} with $n$ elements ([dcl.array]), the expressions \tcode{P + J} and \tcode{J + P} (where \tcode{J} has the value $j$) point to the (possibly-hypothetical) array element $i + j$ of \tcode{x} if $0 \leq i + j \leq n$ and the expression \tcode{P - J} points to the (possibly-hypothetical) array element $i - j$ of \tcode{x} if $0 \leq i - j \leq n$. Otherwise, the behavior is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: Only if the array bound is statically known
@@ -7730,8 +7685,6 @@ unsigned int *q = p + 1;        // undefined behavior: \tcode{p} points to an \t
 \end{example}
 
 %NOTE: ubdef --- expr.add.not.similar
-%
-%  wording: [expr.add]/6: For addition or subtraction, if the expressions \tcode{P} or \tcode{Q} have type ``pointer to $cv$ \tcode{T}'', where \tcode{T} and the array element type are not similar, the behavior is undefined.
 %
 %  runtime-checkable: Yes
 %
@@ -7768,11 +7721,12 @@ The operands shall be prvalues of integral or unscoped enumeration type and inte
 promotions are performed. The type of the result is that of the promoted
 left operand.
 \indextext{left shift!undefined}%
-The behavior is undefined\ubdef{expr.shift.neg.and.width} if the right operand is negative, or greater
+There is an implicit precondition that
+the right operand is nonnegative and
+less than the width of the promoted left operand\iref{basic.contract.implicit};
+if not, an erroneous value is produced\ubdef{expr.shift.neg.and.width}.
 
-%TODO: ubdef --- expr.shift.neg.and.width
-%
-%  wording: [expr.shift]/1: The behavior is undefined if the right operand is negative, or greater than or equal to the width of the promoted left operand.
+%NOTE: ubdef --- expr.shift.neg.and.width
 %
 %  runtime-checkable: Yes
 %
@@ -7781,8 +7735,6 @@ The behavior is undefined\ubdef{expr.shift.neg.and.width} if the right operand i
 %  checking: Insert check whether right operand is valid
 %
 %  replacement: Coerce into erroneous value
-
-than or equal to the width of the promoted left operand.
 
 \pnum
 The value of \tcode{E1 << E2} is the unique value congruent to
@@ -8701,8 +8653,6 @@ See~\ref{basic.lval}.
 \end{note}
 
 %NOTE: ubdef --- expr.assign.overlap
-%
-%  wording: [expr.assign]/7: If the value being stored in an object is read via another object that overlaps in any way the storage of the first object, then the overlap shall be exact and the two objects shall have the same type, otherwise the behavior is undefined.
 %
 %  runtime-checkable: Yes
 %
