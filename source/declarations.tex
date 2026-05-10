@@ -1338,8 +1338,6 @@ p->x.j = 99;                            // undefined behavior: modifies a const 
 
 %NOTE: ubdef --- dcl.type.cv.modify.const.obj
 %
-%  wording: [dcl.type.cv]/4: Any attempt to modify ([expr.assign], [expr.post.incr], [expr.pre.incr]) a const object ([basic.type.qualifier]) during its lifetime ([basic.life]) results in undefined behavior.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -1356,8 +1354,6 @@ volatile-qualified type through the use of a non-volatile glvalue,
 the behavior is undefined\ubdef{dcl.type.cv.access.volatile}.
 
 %NOTE: ubdef --- dcl.type.cv.access.volatile
-%
-%  wording: [dcl.type.cv]/5: If an attempt is made to access an object defined with a volatile-qualified type through the use of a non-volatile glvalue, the behavior is undefined.
 %
 %  runtime-checkable: Yes
 %
@@ -3347,8 +3343,6 @@ int &ir5 = *reinterpret_cast<int *>(&x);    // undefined behavior: initializer r
 
 %NOTE: ubdef --- dcl.ref.uninitialized.reference
 %
-%  wording: [dcl.ref]/6: The behavior of an evaluation of a reference ([expr.prim.id], [expr.ref]) that does not happen after ([intro.races]) the initialization of the reference is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -3359,8 +3353,6 @@ int &ir5 = *reinterpret_cast<int *>(&x);    // undefined behavior: initializer r
 
 %NOTE: ubdef --- dcl.ref.incompatible.type
 %
-%  wording: [dcl.ref]/6: Attempting to bind a reference to an object where the converted initializer is a glvalue through which the object is not type-accessible ([basic.lval]) results in undefined behavior.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -3370,8 +3362,6 @@ int &ir5 = *reinterpret_cast<int *>(&x);    // undefined behavior: initializer r
 %  replacement: None
 
 %NOTE: ubdef --- dcl.ref.incompatible.function
-%
-%  wording: [dcl.ref]/6: Attempting to bind a reference to a function where the converted initializer is a glvalue whose type is not call-compatible ([expr.call]) with the type of the function's definition results in undefined behavior.
 %
 %  runtime-checkable: Yes
 %
@@ -7463,8 +7453,6 @@ that is not suspended results in undefined behavior\ubdef{dcl.fct.def.coroutine.
 
 %NOTE: ubdef --- dcl.fct.def.coroutine.resume.not.suspended
 %
-%  wording: [dcl.fct.def.coroutine]/9: Invoking a resumption member function for a coroutine that is not suspended results in undefined behavior.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -7568,8 +7556,6 @@ If \tcode{destroy} is called for a coroutine that is not suspended, the
 program has undefined behavior\ubdef{dcl.fct.def.coroutine.destroy.not.suspended}.
 
 %NOTE: ubdef --- dcl.fct.def.coroutine.destroy.not.suspended
-%
-%  wording: [dcl.fct.def.coroutine/12: If \tcode{destroy} is called for a coroutine that is not suspended, the program has undefined behavior.
 %
 %  runtime-checkable: Yes
 %
@@ -9806,12 +9792,10 @@ The expression is not evaluated.
 If the converted expression would evaluate to \tcode{true}
 at the point where the assumption appears,
 the assumption has no effect.
-Otherwise,
-evaluation of the assumption has runtime-undefined behavior\ubdef{dcl.attr.assume.false}.
+There is an implicit precondition assertion
+that this does not occur\iref{basic.contract.implicit}\ubdef{dcl.attr.assume.false}.
 
-%TODO: ubdef --- dcl.attr.assume.false
-%
-%  wording: [dcl.attr.assume]/1: If the converted expression would evaluate to true at the point where the assumption appears, the assumption has no effect. Otherwise, evaluation of the assumption has runtime undefined behavior.
+%NOTE: ubdef --- dcl.attr.assume.false
 %
 %  runtime-checkable: No
 %
@@ -10263,8 +10247,6 @@ terminate by throwing an exception.
 \end{note}
 
 %NOTE: ubdef --- dcl.attr.noreturn.eventually.returns
-%
-%  wording: [dcl.attr.noreturn]/2: If a function \tcode{f} is invoked where \tcode{f} was previously declared with the \tcode{noreturn} attribute and that invocation eventually returns, the behavior is runtime-undefined.
 %
 %  runtime-checkable: Yes
 %

@@ -4408,8 +4408,8 @@ produces an erroneous or indeterminate value,
 then the value produced by that operator is
 erroneous or indeterminate respectively.
 Except in the following cases,
-all evaluations have an implicit precondition assertion that
-they will not produce an indeterminate value
+all evaluations have an implicit precondition assertion
+that they will not produce an indeterminate value\ubdef{basic.indet.value}
 and if they do then the result of the evaluation is
 an indeterminate value;
 if an erroneous value is produced by an evaluation,
@@ -4512,8 +4512,6 @@ void h() {
 %  replacement: Only for built-in types: initialise default-initialised variables with erroneous value
 %
 %  notes: we need to make the indeterminate nature of a value propagate just like erroneous, where previously that was not needed because anything touchoing an indeterminate value was UB.
-%
-%  action: add \ubdef{basic.indet.value} at the appropriate location in the reworded paragraph
 
 
 \rSec2[basic.stc]{Storage duration}
@@ -4900,7 +4898,7 @@ signature.
 \pnum
 If a deallocation function terminates by throwing an exception, the behavior is undefined\ubdef{basic.stc.alloc.dealloc.throw}.
 
-%Note: ubdef --- basic.stc.alloc.dealloc.throw
+%NOTE: ubdef --- basic.stc.alloc.dealloc.throw
 %
 %  runtime-checkable: Make ill-formed via \cite{P3424R0}
 %
@@ -6819,14 +6817,13 @@ evaluations.
 The value computations of the operands of an
 operator are sequenced before the value computation of the result of the
 operator.
-
-If an operation
+The behavior is undefined\iref{intro.multithread}\ubdef{intro.execution.unsequenced.modification} if
 \begin{itemize}
 \item
 \indextext{side effects}%
-has a side effect on a memory location\iref{intro.memory} or
+a side effect on a memory location\iref{intro.memory} or
 \item
-starts or ends the lifetime of an object in a memory location
+starting or ending the lifetime of an object in a memory location
 \end{itemize}
 is unsequenced relative to
 \begin{itemize}
@@ -6838,39 +6835,15 @@ overlaps with the memory location, or
 \item
 a value computation using the value of any object in the same memory location,
 \end{itemize}
-and the two evaluations are not potentially concurrent\iref{intro.multithread}
-then
-\begin{itemize}
-\item the result of the operation is an indeterminate value, and
-\item if the operation has a side effect on a memory location,
-an indeterminate value is stored in that memory location.
-\end{itemize}
+and the two evaluations are not potentially concurrent\iref{intro.multithread}.
 \begin{note}
 Starting the lifetime of an object in a memory location can end the lifetime of
 objects in other memory locations\iref{basic.life}.
 \end{note}
 \begin{note}
-There is an implicit precondition assertion
-that such an indeterminate value will
-not be produced by any operation\iref{basic.contract.implicit},
-and using that value can have undefined behavior.
-\end{note}
-\begin{note}
 The next subclause imposes similar, but more complex restrictions on
 potentially concurrent computations.
 \end{note}
-
-%NOTE: ubdef --- intro.execution.unsequenced.modification
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: Yes
-%
-%  checking: Identify all potential read operations that are not sequenced with respect to each given write operation; insert checks to identify if those operations are referencing the same address
-%
-%  replacement: Sequence operations in some unspecified order
-%
-%  action: add \ubdef{intro.execution.unsequenced.modification} at the appropriate location in the reworded paragraph
 
 \begin{example}
 \begin{codeblock}
@@ -6886,6 +6859,18 @@ void g(int i) {
 }
 \end{codeblock}
 \end{example}
+
+%NOTE: ubdef --- intro.execution.unsequenced.modification
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: Yes
+%
+%  checking: Identify all potential read operations that are not sequenced with respect to each given write operation; insert checks to identify if those operations are referencing the same address
+%
+%  replacement: Sequence operations in some unspecified order
+%
+%  note: Needs more careful specification work, defer to future paper.
 
 \pnum
 When invoking a function \placeholder{f} (whether or not the function is inline),
@@ -7271,7 +7256,7 @@ transformations remain possible, since any program that behaves
 differently as a result has undefined behavior.
 \end{note}
 
-%TODO: ubdef --- intro.races.data
+%NOTE: ubdef --- intro.races.data
 %
 %  runtime-checkable: Partially
 %
@@ -7280,6 +7265,8 @@ differently as a result has undefined behavior.
 %  checking: Track from which threads memory is accessed and when accesses synchronise with each other; only practical for a subset of cases (see TSan)
 %
 %  replacement: Make all primitive memory accesses implicitly atomic
+%
+%  note: Needs more careful specification work, defer to future paper.
 
 \pnum
 Two accesses to the same non-bit-field object
@@ -7322,17 +7309,6 @@ hardware race detection.
 
 \pnum
 The implementation may assume\ubdef{intro.progress.stops} that any thread will eventually do one of the
-
-%TODO: ubdef --- intro.progress.stops
-%
-%  runtime-checkable: No
-%
-%  locally-checkable: No
-%
-%  checking: No checking strategy exists as whether a thread will make progress is undecidable
-%
-%  replacement: Do nothing
-
 following:
 \begin{itemize}
 \item terminate,
@@ -7350,6 +7326,19 @@ even when termination cannot be proven.
 An affordance is made for trivial infinite loops,
 which cannot be removed nor reordered.
 \end{note}
+
+%NOTE: ubdef --- intro.progress.stops
+%
+%  runtime-checkable: No
+%
+%  locally-checkable: No
+%
+%  checking: No checking strategy exists as whether a thread will make progress is undecidable
+%
+%  replacement: Do nothing
+%
+%  note: Needs more careful specification work, defer to future paper.
+
 
 \pnum
 Executions of atomic functions
