@@ -3772,8 +3772,6 @@ If no such set of objects would give the program defined behavior,
 
 %NOTE: ubdef --- intro.object.implicit.create
 %
-%  wording: [intro.object]/11: For each operation that is specified as implicitly creating objects, that operation implicitly creates and starts the lifetime of zero or more objects of implicit-lifetime types ([basic.types.general]) in its specified region of storage if doing so would result in the program having defined behavior. If no such set of objects would give the program defined behavior, the behavior of the program is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -3804,8 +3802,6 @@ If multiple such pointer values would give the program defined behavior,
 it is unspecified which such pointer value is produced.
 
 %NOTE: ubdef --- intro.object.implicit.pointer
-%
-%  wording: [intro.object]/11: Further, after implicitly creating objects within a specified region of storage, some operations are described as producing a pointer to a suitable created object. These operations select one of the implicitly-created objects whose address is the address of the start of the region of storage, and produce a pointer value that points to that object, if that value would result in the program having defined behavior. If no such pointer value would give the program defined behavior, the behavior of the program is undefined.
 %
 %  runtime-checkable: Yes
 %
@@ -3868,8 +3864,6 @@ does not meet the alignment requirements of the object's type
 is undefined behavior.
 
 %NOTE: ubdef --- basic.align.object.alignment
-%
-%  wording: [basic.align]/1: Attempting to create an object ([intro.object]) in storage that does not meet the alignment requirements of the object's type is undefined behavior.
 %
 %  runtime-checkable: Yes
 %
@@ -4073,8 +4067,6 @@ program has undefined behavior if
 
 %NOTE: ubdef --- lifetime.outside.pointer.delete
 %
-%  wording: [basic.life]/7: Before the lifetime of an object has started but after the storage which the object will occupy has been allocated or, after the lifetime of an object has ended and before the storage which the object occupied is reused or released, any pointer that represents the address of the storage location where the object will be or was located may be used but only in limited ways. [...] The program has undefined behavior if the pointer is used as the operand of a \emph{delete-expression} [...]
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -4088,8 +4080,6 @@ program has undefined behavior if
   non-static member function of the object, or
 
 %NOTE: ubdef --- lifetime.outside.pointer.member
-%
-%  wording: [basic.life]/7: [...] The program has undefined behavior if [...] the pointer is used to access a non-static data member or call a non-static member function of the object, [...]
 %
 %  runtime-checkable: Yes
 %
@@ -4105,8 +4095,6 @@ program has undefined behavior if
 
 %NOTE: ubdef --- lifetime.outside.pointer.static.cast
 %
-%  wording: [basic.life]/7: [...] The program has undefined behavior if [...] the pointer is used as the operand of a \tcode{static_cast} ([expr.static.cast]), except when the conversion is to pointer to $cv$ \tcode{void}, or to pointer to $cv$ \tcode{void} and subsequently to pointer to $cv$ \tcode{char}, $cv$ \tcode{unsigned char}, or $cv$ \tcode{std::byte} ([cstddef.syn]) [...]
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -4116,8 +4104,6 @@ program has undefined behavior if
 %  replacement: None
 
 %NOTE: ubdef --- lifetime.outside.pointer.virtual
-%
-%  wording: [basic.life]/7: [...] The program has undefined behavior if [...] the pointer is implicitly converted ([conv.ptr]) to a pointer to a virtual base class [...]
 %
 %  runtime-checkable: Yes
 %
@@ -4132,8 +4118,6 @@ program has undefined behavior if
   \keyword{dynamic_cast}\iref{expr.dynamic.cast}.
 
 %NOTE: ubdef --- lifetime.outside.pointer.dynamic.cast
-%
-%  wording: [basic.life]/7: [...] The program has undefined behavior if [...] the pointer is used as the operand of a \tcode{dynamic_cast} ([expr.dynamic.cast]).
 %
 %  runtime-checkable: Yes
 %
@@ -4191,8 +4175,6 @@ well-defined. The program has undefined behavior if
 
 %NOTE: ubdef --- lifetime.outside.glvalue.access
 %
-%  wording: [basic.life]/8: Similarly, before the lifetime of an object has started but after the storage which the object will occupy has been allocated or, after the lifetime of an object has ended and before the storage which the object occupied is reused or released, any glvalue that refers to the original object may be used but only in limited ways. [...] The program has undefined behavior if the glvalue is used to access the object [...]
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -4205,8 +4187,6 @@ well-defined. The program has undefined behavior if
 
 %NOTE: ubdef --- lifetime.outside.glvalue.member
 %
-%  wording: [basic.life]/8: [...] The program has undefined behavior if [...] the glvalue is used to call a non-static member function of the object [...]
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -4218,8 +4198,6 @@ well-defined. The program has undefined behavior if
 \item the glvalue is bound to a reference to a virtual base class\iref{dcl.init.ref}, or
 
 %NOTE: ubdef --- lifetime.outside.glvalue.virtual
-%
-%  wording: [basic.life]/8: [...] The program has undefined behavior if [...] the glvalue is bound to a reference to a virtual base class ([dcl.init.ref]) [...]
 %
 %  runtime-checkable: Yes
 %
@@ -4234,8 +4212,6 @@ well-defined. The program has undefined behavior if
 \keyword{typeid}.
 
 %NOTE: ubdef --- lifetime.outside.glvalue.dynamic.cast
-%
-%  wording: [basic.life]/8: [...] The program has undefined behavior if [...] the glvalue is used as the operand of a \tcode{dynamic_cast} ([expr.dynamic.cast]) or as the operand of \tcode{typeid}.
 %
 %  runtime-checkable: Yes
 %
@@ -4333,8 +4309,6 @@ place, the behavior of the program is undefined. This is true
 
 %NOTE: ubdef --- original.type.implicit.destructor
 %
-%  wording: [basic.life]/11: If a program ends the lifetime of an object of type \tcode{T} with static ([basic.stc.static]), thread ([basic.stc.thread]), or automatic ([basic.stc.auto]) storage duration and if \tcode{T} has a non-trivial destructor, and another object of the original type does not occupy that same storage location when the implicit destructor call takes place, the behavior of the program is undefined.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -4380,8 +4354,6 @@ void h() {
 \end{example}
 
 %NOTE: ubdef --- creating.within.const.complete.obj
-%
-%  wording: [basic.life]/12: Creating a new object within the storage that a const, complete object with static, thread, or automatic storage duration occupies, or within the storage that such a const object used to occupy before its lifetime ended, results in undefined behavior.
 %
 %  runtime-checkable: Yes
 %
@@ -4432,26 +4404,17 @@ see~\ref{basic.start.static}.
 If any operand of a built-in operator that produces a prvalue
 is evaluated,
 is not a discarded-value expression\iref{expr.context}, and
-produces an erroneous value,
-then the value produced by that operator is erroneous.
+produces an erroneous or indeterminate value,
+then the value produced by that operator is
+erroneous or indeterminate respectively.
 Except in the following cases,
-if an indeterminate value is produced by an evaluation,
-the behavior is undefined, and
-
-%TODO: ubdef --- basic.indet.value
-%
-%  wording: [basic.indet]/2: Except in the following cases, if an indeterminate value is produced by an evaluation, the behavior is undefined, [...]
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether storage has been initialized
-%
-%  replacement: Only for built-in types: initialise default-initialised variables with erroneous value
-
+all evaluations have an implicit precondition assertion that
+they will not produce an indeterminate value
+and if they do then the result of the evaluation is
+an indeterminate value;
 if an erroneous value is produced by an evaluation,
-the behavior is erroneous and
+the behavior is erroneous
+and
 the result of the evaluation is that erroneous value:
 \begin{itemize}
 \item
@@ -4537,6 +4500,19 @@ void h() {
 }
 \end{codeblock}
 \end{example}
+
+%NOTE: ubdef --- basic.indet.value
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether storage has been initialized
+%
+%  replacement: Only for built-in types: initialise default-initialised variables with erroneous value
+%
+%  notes: we need to make the indeterminate nature of a value propagate just like erroneous, where previously that was not needed because anything touchoing an indeterminate value was UB.
+
 
 \rSec2[basic.stc]{Storage duration}
 
@@ -4740,8 +4716,6 @@ the behavior is undefined.
 
 %NOTE: ubdef --- basic.stc.alloc.dealloc.constraint
 %
-%  wording: [basic.stc.dynamic.general]/3: If the behavior of an allocation or deallocation function does not satisfy the semantic constraints specified in [basic.stc.dynamic.allocation] and [basic.stc.dynamic.deallocation], the behavior is undefined.
-%
 %  runtime-checkable: Partially: some constraints can be checked locally (e.g., allocation function does not return null); others cannot be checked at all.
 %
 %  locally-checkable: Partially
@@ -4791,8 +4765,6 @@ The effect of indirecting through a pointer
 returned from a request for zero size is undefined.
 
 %NOTE: ubdef --- basic.stc.alloc.zero.dereference
-%
-%  wording: [basic.stc.dynamic.allocation]/2: The effect of indirecting through a pointer returned from a request for zero size is undefined.
 %
 %  runtime-checkable: Yes
 %
@@ -4926,9 +4898,7 @@ signature.
 \pnum
 If a deallocation function terminates by throwing an exception, the behavior is undefined.
 
-%TODO: ubdef --- basic.stc.alloc.dealloc.throw
-%
-%  wording: [basic.stc.dynamic.deallocation]/4: If a deallocation function terminates by throwing an exception, the behavior is undefined.
+%Note: ubdef --- basic.stc.alloc.dealloc.throw
 %
 %  runtime-checkable: Make ill-formed via \cite{P3424R0}
 %
@@ -4936,7 +4906,7 @@ If a deallocation function terminates by throwing an exception, the behavior is 
 %
 %  checking: ---
 %
-%  replacement: 
+%  replacement: None
 
 The value of the first argument supplied to a deallocation function may
 be a null pointer value; if so, and if the deallocation function is one
@@ -6318,19 +6288,6 @@ $P$ is not valid in the context of $E$,
 then the behavior is undefined if $E$ is
 an indirection\iref{expr.unary.op} or
 an invocation of a deallocation function\iref{basic.stc.dynamic.deallocation},
-
-%NOTE: ubdef --- basic.compound.invalid.pointer
-%
-%  wording: [basic.compound]/4: If a pointer value $P$ is used in an evaluation $E$ and $P$ is not valid in the context of $E$, then the behavior is undefined if $E$ is an indirection ([expr.unary.op]) or an invocation of a deallocation function ([basic.stc.dynamic.deallocation]) [...]
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether storage has been allocated and freed
-%
-%  replacement: None
-
 and \impldef{invalid pointer value in the context of an evaluation} otherwise.
 \begin{footnote}
 Some implementations might define that
@@ -6343,6 +6300,16 @@ if $O$ is not within its lifetime,
 although further restrictions apply
 to such pointer values\iref{basic.life, basic.lval, expr.add}.
 \end{note}
+%NOTE: ubdef --- basic.compound.invalid.pointer
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether storage has been allocated and freed
+%
+%  replacement: None
+
 
 \pnum
 Two objects \placeholder{a} and \placeholder{b} are \defn{pointer-interconvertible} if
@@ -6851,25 +6818,13 @@ The value computations of the operands of an
 operator are sequenced before the value computation of the result of the
 operator.
 
-%TODO: ubdef --- intro.execution.unsequenced.modification
-%
-%  wording: [conv.rank]/10: The behavior is undefined if a side effect on a memory location ([intro.memory]) or starting or ending the lifetime of an object in a memory location is unsequenced relative to another side effect on the same memory location, starting or ending the lifetime of an object occupying storage that overlaps with the memory location, or a value computation using the value of any object in the same memory location, and the two evaluations are not potentially concurrent ([intro.multithread]).
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: Yes
-%
-%  checking: Identify all potential read operations that are not sequenced with respect to each given write operation; insert checks to identify if those operations are referencing the same address
-%
-%  replacement: Sequence operations in some unspecified order
-
-The behavior is undefined if
+If an operation
 \begin{itemize}
 \item
 \indextext{side effects}%
-a side effect on a memory location\iref{intro.memory} or
+has a side effect on a memory location\iref{intro.memory} or
 \item
-starting or ending the lifetime of an object in a memory location
+starts or ends the lifetime of an object in a memory location
 \end{itemize}
 is unsequenced relative to
 \begin{itemize}
@@ -6881,15 +6836,37 @@ overlaps with the memory location, or
 \item
 a value computation using the value of any object in the same memory location,
 \end{itemize}
-and the two evaluations are not potentially concurrent\iref{intro.multithread}.
+and the two evaluations are not potentially concurrent\iref{intro.multithread}
+then
+\begin{itemize}
+\item the result of the operation is an indeterminate value, and
+\item if the operation has a side effect on a memory location,
+an indeterminate value is stored in that memory location.
+\end{itemize}
 \begin{note}
 Starting the lifetime of an object in a memory location can end the lifetime of
 objects in other memory locations\iref{basic.life}.
 \end{note}
 \begin{note}
+There is an implicit precondition assertion
+that such an indeterminate value will
+not be produced by any operation\iref{basic.contract.implicit},
+and using that value may have undefined behavior.
+\end{note}
+\begin{note}
 The next subclause imposes similar, but more complex restrictions on
 potentially concurrent computations.
 \end{note}
+
+%NOTE: ubdef --- intro.execution.unsequenced.modification
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: Yes
+%
+%  checking: Identify all potential read operations that are not sequenced with respect to each given write operation; insert checks to identify if those operations are referencing the same address
+%
+%  replacement: Sequence operations in some unspecified order
 
 \begin{example}
 \begin{codeblock}
@@ -7292,8 +7269,6 @@ differently as a result has undefined behavior.
 
 %TODO: ubdef --- intro.races.data
 %
-%  wording: [intro.races]/17: Any such data race results in undefined behavior.
-%
 %  runtime-checkable: Partially
 %
 %  locally-checkable: No
@@ -7345,8 +7320,6 @@ hardware race detection.
 The implementation may assume that any thread will eventually do one of the
 
 %TODO: ubdef --- intro.progress.stops
-%
-%  wording: [intro.progress]/1: The implementation may assume that any thread will eventually do one of the following: terminate, invoke the function \tcode{std::this_thread::yield} ([thread.thread.this]), make a call to a library I/O function, perform an access through a volatile glvalue, perform an atomic or synchronization operation other than an atomic modify-write operation ([atomics.order]), or continue execution of a trivial infinite loop ([stmt.iter.general]).
 %
 %  runtime-checkable: No
 %
@@ -7663,8 +7636,6 @@ an object with static or thread storage duration, the program has undefined
 behavior.
 
 %NOTE: ubdef --- basic.start.main.exit.during.destruction
-%
-%  wording: [basic.start.main]/4: If \tcode{std::exit} is invoked during the destruction of an object with static or thread storage duration, the program has undefined behavior.
 %
 %  runtime-checkable: Yes
 %
@@ -8013,8 +7984,6 @@ thread storage duration, the program has undefined behavior if the flow of contr
 
 %NOTE: ubdef --- basic.start.term.use.after.destruction
 %
-%  wording: [basic.start.term]/4: If a function contains a block variable of static or thread storage duration that has been destroyed and the function is called during the destruction of an object with static or thread storage duration, the program has undefined behavior if the flow of control passes through the definition of the previously destroyed block variable.
-%
 %  runtime-checkable: Yes
 %
 %  locally-checkable: No
@@ -8060,8 +8029,6 @@ requirements permit thread managers as static-storage-duration objects.
 \end{note}
 
 %NOTE: ubdef --- basic.start.term.signal.handler
-%
-%  wording: [basic.start.term]/6: If there is a use of a standard library object or function not permitted within signal handlers ([support.runtime]) that does not happen before ([intro.multithread]) completion of destruction of objects with static storage duration and execution of std::atexit registered functions ([support.start.term]), the program has undefined behavior.
 %
 %  runtime-checkable: No
 %
