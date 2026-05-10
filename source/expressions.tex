@@ -38,7 +38,7 @@ type\iref{dcl.enum}. Uses of overloaded operators are transformed into
 function calls as described in~\ref{over.oper}. Overloaded operators
 obey the rules for syntax and evaluation order specified in \ref{expr.compound},
 but the requirements of operand type and value category are replaced
-by the rules for function call. Relations bexpetween operators, such as
+by the rules for function call. Relations between operators, such as
 \tcode{++a} meaning \tcode{a += 1}, are not guaranteed for overloaded
 operators\iref{over.oper}.
 \end{note}
@@ -1072,7 +1072,7 @@ A prvalue of a floating-point type can be converted to a prvalue of an
 integer type. The conversion truncates; that is, the fractional part is
 discarded.
 \indextext{value!undefined unrepresentable integral}%
-An erronneous value is produced
+An erroneous value is produced
 if the truncated value cannot be represented\ubdef{conv.fpint.float.not.represented}
 in the destination type,
 with an implicit precondition that this does not occur\iref{basic.contract.implicit}.
@@ -5024,8 +5024,8 @@ If the source value is between two adjacent destination values,
 the result of the conversion is
 an \impldef{result of inexact floating-point conversion} choice of
 either of those values.
-Otherwise, the an erroneous value is produced
-with an implicit precondition that this does not occur\iref{basic.contract.impliciti}\ubdef{expr.static.cast.fp.outside.range}.
+Otherwise, an erroneous value is produced
+with an implicit precondition that this does not occur\iref{basic.contract.implicit}\ubdef{expr.static.cast.fp.outside.range}.
 
 %NOTE: ubdef --- expr.static.cast.fp.outside.range
 %
@@ -7511,7 +7511,7 @@ The binary \tcode{/} operator yields the quotient, and the binary
 expression by the second.
 \indextext{zero!undefined division by}%
 There is an implicit precondition that
-the second operand of \tcode{/} or \tcode{\%} is notzero\ubdef{expr.mul.div.by.zero},
+the second operand of \tcode{/} or \tcode{\%} is not zero\ubdef{expr.mul.div.by.zero},
 and if it is then the operator yields an erroneous value.
 For integral operands, the \tcode{/} operator yields the algebraic quotient with
 any fractional part discarded;
