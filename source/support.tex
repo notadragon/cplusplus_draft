@@ -4731,7 +4731,7 @@ with the argument \tcode{v}.
 
 \rSec2[support.contract.control]{Assertion-control concepts and utilities}
 
-%NOTE: This section defines a mix of concepts and langauge definitions for
+%NOTE: This section defines a mix of concepts and language definitions for
 % library-only assertion control types.  Where the concept represents
 % a core-language assertion control type we reference back to \ref{basic.contract.control}
 
@@ -4989,8 +4989,8 @@ multiple results for the same key.
 if no result is available for the given key and index.
 
 \pnum
-A type \tcode{T} is a \defnadj{quryable}{control type}
-if it models \tcode{quryable_label}.
+A type \tcode{T} is a \defnadj{queryable}{control type}
+if it models \tcode{queryable_label}.
 
 \pnum
 \begin{note}
@@ -5032,9 +5032,14 @@ namespace std::contracts {
 
     // \ref{support.contract.control.semset.access}, accessors
     constexpr bool contains(evaluation_semantic) const;
+    constexpr size_t size() const;
+    constexpr bool empty() const;
 
     // \ref{support.contract.control.semset.mod}, modifiers
+    constexpr void clear();
     constexpr void insert(evaluation_semantic);
+    constexpr void insert(initializer_list<evaluation_semantic>);
+    constexpr void remove(evaluation_semantic);
 
     // \ref{support.contract.control.semset.setops}, set operations
     constexpr evaluation_semantic_set& operator&=(const evaluation_semantic_set&);
@@ -5103,7 +5108,38 @@ is an element of the set;
 otherwise, \tcode{false}.
 \end{itemdescr}
 
+\begin{itemdecl}
+constexpr size_t size() const;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+The number of elements in the set.
+\end{itemdescr}
+
+\begin{itemdecl}
+constexpr bool empty() const;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{true} if the set contains no elements;
+otherwise, \tcode{false}.
+\end{itemdescr}
+
 \rSec4[support.contract.control.semset.mod]{Modifiers}
+
+\begin{itemdecl}
+constexpr void clear();
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\ensures
+\tcode{empty()} is \tcode{true}.
+\end{itemdescr}
 
 \begin{itemdecl}
 constexpr void insert(evaluation_semantic s);
@@ -5113,6 +5149,27 @@ constexpr void insert(evaluation_semantic s);
 \pnum
 \ensures
 \tcode{contains(s)} is \tcode{true}.
+\end{itemdescr}
+
+\begin{itemdecl}
+constexpr void insert(initializer_list<evaluation_semantic> ilist);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\ensures
+For each element \tcode{s} of \tcode{ilist},
+\tcode{contains(s)} is \tcode{true}.
+\end{itemdescr}
+
+\begin{itemdecl}
+constexpr void remove(evaluation_semantic s);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\ensures
+\tcode{contains(s)} is \tcode{false}.
 \end{itemdescr}
 
 \rSec4[support.contract.control.semset.setops]{Set operations}
@@ -5457,14 +5514,14 @@ except the one indicated by its name.
 namespace std::contracts::labels {
   struct @\placeholder{review_t}@ {
     using assertion_control_object = @\placeholder{review_t}@;
-    consteval evaluation_semantic compute_semantic(evaluation_semantic s) const;
+    constexpr evaluation_semantic compute_semantic(evaluation_semantic s) const;
   };
   inline constexpr @\placeholder{review_t}@ review;
 }
 \end{codeblock}
 
 \begin{itemdecl}
-consteval evaluation_semantic compute_semantic(evaluation_semantic s) const;
+constexpr evaluation_semantic compute_semantic(evaluation_semantic s) const;
 \end{itemdecl}
 
 \begin{itemdescr}

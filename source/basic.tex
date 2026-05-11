@@ -7872,7 +7872,7 @@ if a \grammarterm{result-name-introducer}\iref{dcl.contract.res} has been specif
 %
 %  3. We don't need to deliberate on introducing "facet" as a new term of art.
 %     If we change our mind on this last one, we could conceivably reuse it
-%     for things like variuos aspects of the coroutine promise object.
+%     for things like various aspects of the coroutine promise object.
 
 \pnum
 A type is an \defnadj{assertion}{control type} if the search for the name
@@ -7888,7 +7888,7 @@ If $C$ has
 an \grammarterm{assertion-control-specifier} $S$
 then it has an assertion-control-object $O$
 whose type is deduced from $S$
-and which is initialized b $S$.
+and which is initialized by $S$.
 The type of $O$ must be an assertion-control type.
 \item
 Otherwise, the contract assertion
@@ -7904,7 +7904,7 @@ has no assertion-control object.
 \begin{note}
 $S$ is manifestly constant-evaluated\iref{expr.const.defns},
 $O$ must have a literal type\iref{basic.types.general}, and
-$S$ is not part of the immediate conetxt\iref{temp.deduct.general}.
+$S$ is not part of the immediate context\iref{temp.deduct.general}.
 \end{note}
 
 \pnum
@@ -7959,7 +7959,7 @@ enforce and quick-enforce are \defnx{terminating semantics}{contract evaluation 
 
 \pnum
 A contract evaluation semantic is an
-\defnadj{alowed}{contract evaluation semantic}
+\defnadj{allowed}{contract evaluation semantic}
 of a contract assertion $C$
 if
 \begin{itemize}
@@ -7967,7 +7967,7 @@ if
 \item the assertion-control object $O$ of $C$ is not
 an allowed-semantics control type\iref{basic.contract.control}, or
 \item the expression \tcode{o.allowed_semantics.contains(S)}
-is \tcode{True}
+is \tcode{true}
 where \tcode{S} is the corresponding enumerator for the evaluation semantic
 in \tcode{std::contracts::evaluation_semantic}.
 \end{itemize}
@@ -8187,7 +8187,7 @@ that triggered the violation.
 Storage for \tcode{V}
 is allocated in an unspecified manner
 except as noted in \ref{basic.stc.dynamic.allocation}.
-The lifetime of \tcode{v} persists until
+The lifetime of \tcode{V} persists until
 contract-violation handling completes.
 \item
 If the contract assertion
@@ -8195,7 +8195,7 @@ has an assertion-control object $o$
 whose type is a local-violation control type,
 the expression \tcode{o.handle_contract_violation(v)} is evaluated
 where \tcode{v} is a \tcode{const} lvalue referring to \tcode{V}.
-If the this expression has a value
+If this expression has a value
 equivalent to \tcode{std::contracts::violation_handled::handled}
 then contract-violation handling is complete.
 \item
