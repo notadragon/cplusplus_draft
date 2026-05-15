@@ -583,6 +583,7 @@ the values of these macros with greater values.
 #define @\defnlibxname{cpp_lib_array_constexpr}@                   201811L
   // freestanding, also in \libheader{iterator}, \libheader{array}
 #define @\defnlibxname{cpp_lib_as_const}@                          201510L // freestanding, also in \libheader{utility}
+#define @\defnlibxname{cpp_lib_assert_can_use_contracts}@          yyyymmL // freestanding, also in \libheader{assert.h} and \libheader{cassert}
 #define @\defnlibxname{cpp_lib_associative_heterogeneous_erasure}@ 202110L
   // also in \libheader{map}, \libheader{set}, \libheader{unordered_map}, \libheader{unordered_set}
 #define @\defnlibxname{cpp_lib_associative_heterogeneous_insertion}@ 202306L
@@ -660,6 +661,7 @@ the values of these macros with greater values.
   // also in \libheader{vector}, \libheader{list}, \libheader{forward_list}, \libheader{map}, \libheader{set}, \libheader{unordered_map}, \libheader{unordered_set},
   // \libheader{deque}, \libheader{queue}, \libheader{stack}, \libheader{string}
 #define @\defnlibxname{cpp_lib_contracts}@                         202502L // freestanding, also in \libheader{contracts}
+#define @\defnlibxname{cpp_lib_contracts_api}@                     yyyymmL // freestanding, also in \libheader{contracts}
 #define @\defnlibxname{cpp_lib_copyable_function}@                 202306L // also in \libheader{functional}
 #define @\defnlibxname{cpp_lib_coroutine}@                         201902L // freestanding, also in \libheader{coroutine}
 #define @\defnlibxname{cpp_lib_counting_scope}@                    202506L // also in \libheader{execution}
@@ -4383,7 +4385,9 @@ namespace std::contracts {
   enum class assertion_kind : @\unspec@ {
     pre = 1,
     post = 2,
-    assert = 3
+    assert = 3,
+    manual = 4,
+    cassert = 5
   };
 
   enum class evaluation_semantic : @\unspec@ {
@@ -4394,6 +4398,7 @@ namespace std::contracts {
   };
 
   enum class detection_mode : @\unspec@ {
+    unspecified = 0,
     predicate_false = 1,
     evaluation_exception = 2
   };
@@ -4415,6 +4420,31 @@ namespace std::contracts {
   };
 
   void invoke_default_contract_violation_handler(const contract_violation&);
+  
+  [[noreturn]] void handle_enforced_contract_violation(
+      const char* comment,
+      const std::source_location &location
+          = std::source_location::current());
+  [[noreturn]] void handle_enforced_contract_violation(
+      std::nothrow_t,
+      const char* comment,
+      const std::source_location& location
+          = std::source_location::current()) noexcept;
+
+  void handle_observed_contract_violation(
+      const char* comment,
+      const std::source_location &location
+          = std::source_location::current());
+  void handle_observed_contract_violation(
+      std::nothrow_t,
+      const char* comment,
+      const std::source_location& location
+          = std::source_location::current()) noexcept;
+
+  [[noreturn]] void handle_quick_enforced_contract_violation(
+      const char* comment,
+      const std::source_location& location
+          = std::source_location::current()) noexcept;
 }
 \end{codeblock}
 
@@ -4435,10 +4465,12 @@ with meanings listed in Table~\ref{tab:support.contract.enum.kind}.
 \begin{floattable}{Enum \tcode{assertion_kind}}{support.contract.enum.kind}
 {ll}
 \topline
-\lhdr{Name}    & \rhdr{Meaning}                        \\ \capsep
-\tcode{pre}    & A precondition assertion              \\ \rowsep
-\tcode{post}   & A postcondition assertion             \\ \rowsep
-\tcode{assert} & An \grammarterm{assertion-statement}  \\ \rowsep
+\lhdr{Name}     & \rhdr{Meaning}                                   \\ \capsep
+\tcode{pre}     & A precondition assertion                         \\ \rowsep
+\tcode{post}    & A postcondition assertion                        \\ \rowsep
+\tcode{assert}  & An \grammarterm{assertion-statement}             \\ \rowsep
+\tcode{cassert} & The \tcode{assert} macro\iref{assertions.assert} \\ \rowsep
+\tcode{manual}  & A manually triggered violation                   \\ \rowsep
 \end{floattable}
 
 \pnum
@@ -4467,6 +4499,7 @@ meanings listed in \mbox{Table~\ref{tab:support.contract.enum.detection}}.
 {lp{.6\hsize}}
 \topline
 \lhdr{Name}                  & \rhdr{Meaning}                    \\ \capsep
+\tcode{unspecified}          & The mode of detection was not provided to the contract-violation handling process \\ \rowsep
 \tcode{predicate_false}      & The predicate of the contract assertion evaluated to \keyword{false} or would have evaluated to \keyword{false}. \\ \rowsep
 \tcode{evaluation_exception} & An uncaught exception occurred during evaluation of the contract assertion. \\ \rowsep
 \end{floattable}
@@ -4609,6 +4642,121 @@ void invoke_default_contract_violation_handler(const contract_violation& v);
 Invokes the default contract-violation handler\iref{basic.contract.handler}
 with the argument \tcode{v}.
 
+\end{itemdescr}
+
+\rSec2[support.contract.handle]{Violation Invocation}
+
+\begin{itemdecl}
+  [[noreturn]] void handle_enforced_contract_violation(
+      const char* comment,
+      const std::source_location &location
+          = std::source_location::current());
+  [[noreturn]] void handle_enforced_contract_violation(
+      std::nothrow_t,
+      const char* comment,
+      const std::source_location& location
+          = std::source_location::current()) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+\begin{itemize}
+\item
+  Invoke
+  the contract-violation handler
+  with a \tcode{contract_violation} object
+  populated as follows:
+  \begin{itemize}
+  \item
+    The \tcode{comment},
+    if populated,
+    will be
+    the \tcode{comment} passed to this function.
+  \item
+    The \tcode{location},
+    if populated,
+    will be
+    the \tcode{location} passed to this function or
+    the location of the function invocation.
+  \item
+    The \tcode{kind}
+    will be
+    \tcode{manual}.
+  \item
+    The \tcode{detection_mode}
+    will be
+    \tcode{unspecified}.
+  \item
+    The \tcode{evaluation_semantic}
+    will be
+    \tcode{enforce}.
+  \end{itemize}
+\item
+  If the violation handler returns normally,
+  the program is contract-terminated\iref{basic.contract.eval}.
+\end{itemize}
+\end{itemdescr}
+
+\begin{itemdecl}
+  void handle_observed_contract_violation(
+      const char* comment,
+      const std::source_location &location
+          = std::source_location::current());
+  void handle_observed_contract_violation(
+      std::nothrow_t,
+      const char* comment,
+      const std::source_location& location
+          = std::source_location::current()) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+\begin{itemize}
+\item
+  Invoke
+  the contract-violation handler
+  with a \tcode{contract_violation} object
+  populated as follows:
+  \begin{itemize}
+  \item
+    The \tcode{comment}
+    will be
+    the \tcode{comment} passed to this function.
+  \item
+    The \tcode{location},
+    if populated,
+    will be
+    the \tcode{location} passed to this function or
+    the location of the function invocation.
+  \item
+    The \tcode{kind}
+    will be
+    \tcode{manual}.
+  \item
+    The \tcode{detection_mode}
+    will be
+    \tcode{unspecified}.
+  \item
+    The \tcode{evaluation_semantic}
+    will be
+    \tcode{observe}.
+  \end{itemize}
+\end{itemize}
+\end{itemdescr}
+
+\begin{itemdecl}
+  [[noreturn]] void handle_quick_enforced_contract_violation(
+      const char* comment,
+      const std::source_location& location
+          = std::source_location::current()) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Contract-terminate the program\iref{basic.contract.eval}.
 \end{itemdescr}
 
 \rSec1[support.initlist]{Initializer lists}
