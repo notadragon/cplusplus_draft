@@ -6939,7 +6939,7 @@ of the specialization at that point.
 There is an \impldef{maximum depth of recursive template instantiations} quantity
 that specifies the limit on the total depth of recursive instantiations\iref{implimits},
 which could involve more than one template.
-The result of an infinite recursion in instantiation is undefined\ubdef{temp.inst.inf.recursion}.
+The result of an infinite recursion in instantiation is undefined.
 \begin{example}
 \begin{codeblock}
 template<class T> class X {
@@ -6950,18 +6950,6 @@ template<class T> class X {
 };
 \end{codeblock}
 \end{example}
-
-%NOTE: ubdef --- temp.inst.inf.recursion
-%
-%  wording: [temp.inst]/16: The result of an infinite recursion in instantiation is undefined.
-%
-%  runtime-checkable: No
-%
-%  locally-checkable: No
-%
-%  checking: Compile-time issue; implementation-defined depth limit
-%
-%  replacement: None (considered a wording bug per CWG3034, out of scope for this paper)
 
 \pnum
 The \grammarterm{type-constraint}{s} and \grammarterm{requires-clause}

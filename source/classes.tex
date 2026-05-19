@@ -2335,7 +2335,7 @@ void g() {                      // rare, specialized use:
 
 \pnum
 Once a destructor is invoked for an object, the object's lifetime ends;
-the behavior is undefined\ubdef{class.dtor.no.longer.exists} if the destructor is invoked
+the behavior is undefined\noteubdef{class.dtor.no.longer.exists} if the destructor is invoked
 
 %NOTE: ubdef --- class.dtor.no.longer.exists
 %
@@ -4251,7 +4251,7 @@ abstract class;
 \indextext{virtual function call!undefined pure}%
 the effect of making a virtual call\iref{class.virtual} to a pure
 virtual function directly or indirectly for the object being created (or
-destroyed) from such a constructor (or destructor) is undefined\ubdef{class.abstract.pure.virtual}.%
+destroyed) from such a constructor (or destructor) is undefined\noteubdef{class.abstract.pure.virtual}.%
 
 %NOTE: ubdef --- class.abstract.pure.virtual
 %
@@ -5862,7 +5862,7 @@ a precondition assertion of a constructor, or
 \item
 a postcondition assertion of a destructor\iref{dcl.contract.func},
 \end{itemize}
-the program has undefined behavior\ubdef{class.base.init.mem.fun}.
+the program has undefined behavior\noteubdef{class.base.init.mem.fun}.
 \begin{example}
 \begin{codeblock}
 class A {
@@ -6069,9 +6069,9 @@ when the initialization of all subobjects is complete.%
 \indextext{destruction!member access}%
 For an object with a non-trivial constructor, referring to any non-static member
 or base class of the object before the constructor begins execution results in
-undefined behavior\ubdef{class.cdtor.before.ctor}. For an object with a non-trivial destructor, referring to
+undefined behavior\noteubdef{class.cdtor.before.ctor}. For an object with a non-trivial destructor, referring to
 any non-static member or base class of the object after the destructor finishes
-execution results in undefined behavior\ubdef{class.cdtor.after.dtor}.
+execution results in undefined behavior\noteubdef{class.cdtor.after.dtor}.
 \begin{example}
 \begin{codeblock}
 struct X { int i; };
@@ -6176,7 +6176,7 @@ and the construction of all of its direct or indirect bases that directly or
 indirectly derive from
 \tcode{B}
 shall have started and the destruction of these classes shall not have
-completed, otherwise the conversion results in undefined behavior\ubdef{class.cdtor.convert.pointer}.
+completed, otherwise the conversion results in undefined behavior\noteubdef{class.cdtor.convert.pointer}.
 
 %NOTE: ubdef --- class.cdtor.convert.pointer
 %
@@ -6195,7 +6195,7 @@ the construction of
 \tcode{obj}
 shall have started and its destruction shall not have completed,
 otherwise the computation of the pointer value (or accessing the member
-value) results in undefined behavior\ubdef{class.cdtor.form.pointer}.
+value) results in undefined behavior\noteubdef{class.cdtor.form.pointer}.
 \begin{example}
 \begin{codeblock}
 struct A { };
@@ -6249,7 +6249,7 @@ If the virtual function call uses an explicit class member access\iref{expr.ref}
 and the object expression refers to
 the complete object of \tcode{x} or one of that object's base class subobjects
 but not \tcode{x} or one of its base class subobjects, the behavior
-is undefined\ubdef{class.cdtor.virtual.not.x}.
+is undefined\noteubdef{class.cdtor.virtual.not.x}.
 \begin{example}
 \begin{codeblock}
 struct V {
@@ -6316,7 +6316,7 @@ If the operand of
 \tcode{typeid}
 refers to the object under construction or destruction and the static type of
 the operand is neither the constructor or destructor's class nor one of its
-bases, the behavior is undefined\ubdef{class.cdtor.typeid}.
+bases, the behavior is undefined\noteubdef{class.cdtor.typeid}.
 
 %NOTE: ubdef --- class.cdtor.typeid
 %
@@ -6351,7 +6351,7 @@ refers to the object under construction or destruction and the static type of
 the operand is not a pointer to or object of the constructor or destructor's
 own class or one of its bases, the
 \keyword{dynamic_cast}
-results in undefined behavior\ubdef{class.cdtor.dynamic.cast}.
+results in undefined behavior\noteubdef{class.cdtor.dynamic.cast}.
 \begin{example}
 \begin{codeblock}
 struct V {

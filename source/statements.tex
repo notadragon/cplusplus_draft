@@ -1134,7 +1134,7 @@ that is neither \tcode{main}\iref{basic.start.main} nor a coroutine\iref{dcl.fct
 \item with a scalar return type
 returns an erroneous value
 with an implicit precondition assertion that this does not occur\iref{basic.contract.implicit};
-\item otherwise it results in undefined behavior\ubdef{stmt.return.flow.off}.
+\item otherwise it results in undefined behavior\noteubdef{stmt.return.flow.off}.
 \end{itemize}
 
 %NOTE: ubdef --- stmt.return.flow.off
@@ -1241,7 +1241,7 @@ finds any declarations,
 flowing off the end of a coroutine's \grammarterm{function-body}
 is equivalent to a \keyword{co_return} with no operand;
 otherwise flowing off the end of a coroutine's \grammarterm{function-body}
-results in undefined behavior\ubdef{stmt.return.coroutine.flow.off}.
+results in undefined behavior\noteubdef{stmt.return.coroutine.flow.off}.
 
 %NOTE: ubdef --- stmt.return.coroutine.flow.off
 %
@@ -1395,7 +1395,7 @@ due to its own synchronization operations.
 \end{note}
 If control
 re-enters the declaration recursively while
-the variable is being initialized, the behavior is undefined\ubdef{stmt.dcl.local.static.init.recursive}.
+the variable is being initialized, the behavior is undefined\noteubdef{stmt.dcl.local.static.init.recursive}.
 \begin{example}
 \begin{codeblock}
 int foo(int i) {
