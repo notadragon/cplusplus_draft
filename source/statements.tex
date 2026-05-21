@@ -1135,8 +1135,6 @@ that is neither \tcode{main}\iref{basic.start.main} nor a coroutine\iref{dcl.fct
 returns an erroneous value
 with an implicit precondition assertion that this does not occur\iref{basic.contract.implicit};
 \item otherwise it results in undefined behavior\wordingcomment{\ubdef{stmt.return.flow.off}}.
-\end{itemize}
-
 %WORDINGNOTE: ubdef --- stmt.return.flow.off
 %
 %  runtime-checkable: Yes
@@ -1146,6 +1144,7 @@ with an implicit precondition assertion that this does not occur\iref{basic.cont
 %  checking: Insert \mbox{\tcode{contract_assert(false)}} at end of \emph{function-body}
 %
 %  replacement: Only for built-in return types: return erroneous value
+\end{itemize}
 
 \pnum
 The copy-initialization of the result of the call is sequenced before the
@@ -1242,7 +1241,6 @@ flowing off the end of a coroutine's \grammarterm{function-body}
 is equivalent to a \keyword{co_return} with no operand;
 otherwise flowing off the end of a coroutine's \grammarterm{function-body}
 results in undefined behavior\wordingcomment{\ubdef{stmt.return.coroutine.flow.off}}.
-
 %WORDINGNOTE: ubdef --- stmt.return.coroutine.flow.off
 %
 %  runtime-checkable: Yes
@@ -1396,15 +1394,6 @@ due to its own synchronization operations.
 If control
 re-enters the declaration recursively while
 the variable is being initialized, the behavior is undefined\wordingcomment{\ubdef{stmt.dcl.local.static.init.recursive}}.
-\begin{example}
-\begin{codeblock}
-int foo(int i) {
-  static int s = foo(2*i);      // undefined behavior: recursive call
-  return i+1;
-}
-\end{codeblock}
-\end{example}
-
 %WORDINGNOTE: ubdef --- stmt.dcl.local.static.init.recursive
 %
 %  runtime-checkable: Yes
@@ -1414,6 +1403,14 @@ int foo(int i) {
 %  checking: Insert a recursion counter into a guard for static and thread-local object construction
 %
 %  replacement: None
+\begin{example}
+\begin{codeblock}
+int foo(int i) {
+  static int s = foo(2*i);      // undefined behavior: recursive call
+  return i+1;
+}
+\end{codeblock}
+\end{example}
 
 \pnum
 \indextext{\idxcode{static}!destruction of local}%

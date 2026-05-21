@@ -1298,6 +1298,15 @@ subverted without casting\iref{expr.const.cast}.
 Any attempt to modify\iref{expr.assign,expr.post.incr,expr.pre.incr} a
 const object\iref{basic.type.qualifier} during its
 lifetime\iref{basic.life} results in undefined behavior\wordingcomment{\ubdef{dcl.type.cv.modify.const.obj}}.
+%WORDINGNOTE: ubdef --- dcl.type.cv.modify.const.obj
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether storage is associated with a \tcode{const} object
+%
+%  replacement: None
 \begin{example}
 \begin{codeblock}
 const int ci = 3;                       // cv-qualified (initialized as required)
@@ -1336,23 +1345,12 @@ p->x.j = 99;                            // undefined behavior: modifies a const 
 \end{codeblock}
 \end{example}
 
-%WORDINGNOTE: ubdef --- dcl.type.cv.modify.const.obj
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether storage is associated with a \tcode{const} object
-%
-%  replacement: None
-
 \pnum
 The semantics of an access through a volatile glvalue are
 \impldef{semantics of an access through a volatile glvalue}.
 If an attempt is made to access an object defined with a
 volatile-qualified type through the use of a non-volatile glvalue,
 the behavior is undefined\wordingcomment{\ubdef{dcl.type.cv.access.volatile}}.
-
 %WORDINGNOTE: ubdef --- dcl.type.cv.access.volatile
 %
 %  runtime-checkable: Yes
@@ -3307,10 +3305,28 @@ the converted initializer is a glvalue whose
 type is not call-compatible\iref{expr.call}
 with the type of the function's definition
 results in undefined behavior\wordingcomment{\ubdef{dcl.ref.incompatible.function}}.
+%WORDINGNOTE: ubdef --- dcl.ref.incompatible.function
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track the types of all functions based on their addresses
+%
+%  replacement: None
 Attempting to bind a reference to an object where
 the converted initializer is a glvalue through which
 the object is not type-accessible\iref{basic.lval}
 results in undefined behavior\wordingcomment{\ubdef{dcl.ref.incompatible.type}}.
+%WORDINGNOTE: ubdef --- dcl.ref.incompatible.type
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether storage is associated with an object of correct type
+%
+%  replacement: None
 \begin{note}
 \indextext{reference!null}%
 The object designated by such a glvalue can be
@@ -3325,6 +3341,15 @@ to a bit-field.
 The behavior of an evaluation of a reference\iref{expr.prim.id, expr.ref} that
 does not happen after\iref{intro.races} the initialization of the reference
 is undefined\wordingcomment{\ubdef{dcl.ref.uninitialized.reference}}.
+%WORDINGNOTE: ubdef --- dcl.ref.uninitialized.reference
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether references have been initialised
+%
+%  replacement: None
 \begin{example}
 \begin{codeblock}
 int &f(int&);
@@ -3341,35 +3366,7 @@ int &ir5 = *reinterpret_cast<int *>(&x);    // undefined behavior: initializer r
 \end{codeblock}
 \end{example}
 
-%WORDINGNOTE: ubdef --- dcl.ref.uninitialized.reference
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether references have been initialised
-%
-%  replacement: None
 
-%WORDINGNOTE: ubdef --- dcl.ref.incompatible.type
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether storage is associated with an object of correct type
-%
-%  replacement: None
-
-%WORDINGNOTE: ubdef --- dcl.ref.incompatible.function
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track the types of all functions based on their addresses
-%
-%  replacement: None
 
 \pnum
 \indextext{reference collapsing}%
@@ -7450,7 +7447,6 @@ The evaluation that invoked a resumption member function is
 called the \defnx{resumer}{coroutine!resumer}.
 Invoking a resumption member function for a coroutine
 that is not suspended results in undefined behavior\wordingcomment{\ubdef{dcl.fct.def.coroutine.resume.not.suspended}}.
-
 %WORDINGNOTE: ubdef --- dcl.fct.def.coroutine.resume.not.suspended
 %
 %  runtime-checkable: Yes
@@ -7554,7 +7550,6 @@ The storage for the coroutine state is released by calling a
 non-array deallocation function\iref{basic.stc.dynamic.deallocation}.
 If \tcode{destroy} is called for a coroutine that is not suspended, the
 program has undefined behavior\wordingcomment{\ubdef{dcl.fct.def.coroutine.destroy.not.suspended}}.
-
 %WORDINGNOTE: ubdef --- dcl.fct.def.coroutine.destroy.not.suspended
 %
 %  runtime-checkable: Yes
@@ -9794,7 +9789,6 @@ at the point where the assumption appears,
 the assumption has no effect.
 There is an implicit precondition assertion
 that this does not occur\iref{basic.contract.implicit}\wordingcomment{\ubdef{dcl.attr.assume.false}}.
-
 %WORDINGNOTE: ubdef --- dcl.attr.assume.false
 %
 %  runtime-checkable: No
@@ -10241,11 +10235,6 @@ translation unit, the program is ill-formed, no diagnostic required.
 If a function \tcode{f} is invoked where \tcode{f} was previously declared with the \tcode{noreturn}
 attribute and that invocation eventually returns,
 the behavior is runtime-undefined\wordingcomment{\ubdef{dcl.attr.noreturn.eventually.returns}}.
-\begin{note}
-The function can
-terminate by throwing an exception.
-\end{note}
-
 %WORDINGNOTE: ubdef --- dcl.attr.noreturn.eventually.returns
 %
 %  runtime-checkable: Yes
@@ -10255,6 +10244,11 @@ terminate by throwing an exception.
 %  checking: Insert \tcode{post(false)}
 %
 %  replacement: None
+\begin{note}
+The function can
+terminate by throwing an exception.
+\end{note}
+
 
 \pnum
 \recommended

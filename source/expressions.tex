@@ -330,18 +330,7 @@ If a program attempts to access\iref{defns.access}
 the stored value of an object through a glvalue
 through which it is not type-accessible,
 the behavior is undefined\wordingcomment{\ubdef{expr.basic.lvalue.strict.aliasing.violation}}.
-
 %WORDINGNOTE: ubdef --- expr.basic.lvalue.strict.aliasing.violation
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether storage is associated with an object of correct type within its lifetime
-%
-%  replacement: None
-
-%WORDINGNOTE: ubdef --- expr.basic.lvalue.union.initialization
 %
 %  runtime-checkable: Yes
 %
@@ -360,6 +349,15 @@ a defaulted copy/move constructor or copy/move assignment operator
 for a union of type \tcode{U} with a glvalue argument
 that does not denote an object of type \cv{}~\tcode{U} within its lifetime,
 the behavior is undefined\wordingcomment{\ubdef{expr.basic.lvalue.union.initialization}}.
+%WORDINGNOTE: ubdef --- expr.basic.lvalue.union.initialization
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%
+%  replacement: None
 \begin{note}
 In C, an entire object of structure type can be accessed, e.g., using assignment.
 By contrast, \Cpp{} has no notion of accessing an object of class type
@@ -379,11 +377,6 @@ If a pointer to $X$ would be valid in
 the context of the evaluation of the expression\iref{basic.fundamental},
 the result designates $X$;
 otherwise, the behavior is undefined\wordingcomment{\ubdef{expr.type.reference.lifetime}}.
-\begin{note}
-Before the lifetime of the reference has started or after it has ended,
-the behavior is undefined (see~\ref{basic.life}).
-\end{note}
-
 %WORDINGNOTE: ubdef --- expr.type.reference.lifetime
 %
 %  runtime-checkable: Yes
@@ -393,6 +386,10 @@ the behavior is undefined (see~\ref{basic.life}).
 %  checking: Track whether storage has been allocated and freed
 %
 %  replacement: None
+\begin{note}
+Before the lifetime of the reference has started or after it has ended,
+the behavior is undefined (see~\ref{basic.life}).
+\end{note}
 
 \pnum
 If a prvalue initially has the type ``\cv{}~\tcode{T}'', where
@@ -737,6 +734,15 @@ if the object is of scalar type,
 the object is initialized with an erroneous value
 and there is an implicit precondition that this does not occur\iref{basic.contract.implicit},
 \item otherwise the behavior is undefined\wordingcomment{\ubdef{conv.lval.valid.representation}}.
+%WORDINGNOTE: ubdef --- conv.lval.valid.representation
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%
+%  replacement: Coerce invalid value representations into erroneous values
 \end{itemize}
 \begin{example}
 \begin{codeblock}
@@ -748,15 +754,6 @@ bool f() {
 }
 \end{codeblock}
 \end{example}
-%WORDINGNOTE: ubdef --- conv.lval.valid.representation
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether storage is associated with an object of correct type within its lifetime
-%
-%  replacement: Coerce invalid value representations into erroneous values
 
 \item Otherwise, the object indicated by the glvalue is read\iref{defns.access}.
 Let \tcode{V} be the value contained in the object.
@@ -1051,7 +1048,6 @@ destination values, the result of the conversion is an
 \impldef{result of inexact floating-point conversion} choice of either of those values.
 Otherwise, the result is an erroneous value
 with an implicit precondition that this does not occur.\wordingcomment{\ubdef{conv.double.out.of.range}}.
-
 %WORDINGNOTE: ubdef --- conv.double.out.of.range
 %
 %  runtime-checkable: Yes
@@ -1076,12 +1072,6 @@ discarded.
 \indextext{value!undefined unrepresentable integral}%
 An erroneous value is produced
 if the truncated value cannot be represented\wordingcomment{\ubdef{conv.fpint.float.not.represented}}
-in the destination type,
-with an implicit precondition that this does not occur\iref{basic.contract.implicit}.
-\begin{note}
-If the destination type is \keyword{bool}, see~\ref{conv.bool}.
-\end{note}
-
 %WORDINGNOTE: ubdef --- conv.fpint.float.not.represented
 %
 %  runtime-checkable: Yes
@@ -1091,6 +1081,12 @@ If the destination type is \keyword{bool}, see~\ref{conv.bool}.
 %  checking: Insert a check of whether the value is valid
 %
 %  replacement: Coerce into erroneous value
+in the destination type,
+with an implicit precondition that this does not occur\iref{basic.contract.implicit}.
+\begin{note}
+If the destination type is \keyword{bool}, see~\ref{conv.bool}.
+\end{note}
+
 
 
 \pnum
@@ -1111,10 +1107,6 @@ If the value being converted is
 outside the range of values that can be represented,
 an erroneous value is produced
 with an implicit precondition that this does not occur\wordingcomment{\ubdef{conv.fpint.int.not.represented}}.
-If the
-source type is \keyword{bool}, the value \keyword{false} is converted to zero and the value
-\keyword{true} is converted to one.
-
 %WORDINGNOTE: ubdef --- conv.fpint.int.not.represented
 %
 %  runtime-checkable: Yes
@@ -1124,6 +1116,10 @@ source type is \keyword{bool}, the value \keyword{false} is converted to zero an
 %  checking: Insert a check of whether the value is valid
 %
 %  replacement: Coerce into erroneous value
+If the
+source type is \keyword{bool}, the value \keyword{false} is converted to zero and the value
+\keyword{true} is converted to one.
+
 
 \rSec2[conv.ptr]{Pointer conversions}
 
@@ -1175,10 +1171,6 @@ that is
 within its lifetime or
 within its period of construction or destruction\iref{class.cdtor},
 the behavior is undefined\wordingcomment{\ubdef{conv.ptr.virtual.base}}.
-Otherwise,
-the result is a pointer to the base class subobject of
-the derived class object.
-
 %WORDINGNOTE: ubdef --- conv.ptr.virtual.base
 %
 %  runtime-checkable: Yes
@@ -1188,6 +1180,9 @@ the derived class object.
 %  checking: Track whether storage is associated with an object of correct type within its lifetime or an object currently being constructed or destroyed; insert null pointer check
 %
 %  replacement: None
+Otherwise,
+the result is a pointer to the base class subobject of
+the derived class object.
 
 \rSec2[conv.mem]{Pointer-to-member conversions}
 
@@ -1218,7 +1213,17 @@ class of \tcode{D}, or a base class of a virtual base class of
 \tcode{D}, a program that necessitates this conversion is ill-formed.
 If class \tcode{D} does not contain the original member and
 is not a base class of the class containing the original member,
-the behavior is undefined\wordingcomment{\ubdef{conv.member.missing.member}}. Otherwise,
+the behavior is undefined\wordingcomment{\ubdef{conv.member.missing.member}}.
+%WORDINGNOTE: ubdef --- conv.member.missing.member
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track which type the pointer to member originated from
+%
+%  replacement: None
+Otherwise,
 the result of the conversion refers to the same member as the pointer to
 member before the conversion took place, but it refers to the base class
 member as if it were a member of the derived class. The result refers to
@@ -1242,16 +1247,6 @@ of such pointers do not apply to pointers to members.
 In particular, a pointer to member cannot be converted to a
 \tcode{\keyword{void}*}.
 \end{footnote}
-
-%WORDINGNOTE: ubdef --- conv.member.missing.member
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track which type the pointer to member originated from
-%
-%  replacement: None
 
 \rSec2[conv.fctptr]{Function pointer conversions}
 
@@ -3977,14 +3972,6 @@ expression whose function type
 is not call-compatible with the
 type of the called function's
 definition results in undefined behavior\wordingcomment{\ubdef{expr.call.different.type}}.
-\begin{note}
-This requirement allows the case
-when the expression has the type of a
-potentially-throwing function, but the called function has
-a non-throwing exception specification,
-and the function types are otherwise the same.
-\end{note}
-
 %WORDINGNOTE: ubdef --- expr.call.different.type
 %
 %  runtime-checkable: Yes
@@ -3994,6 +3981,13 @@ and the function types are otherwise the same.
 %  checking: Track type information of function based on address
 %
 %  replacement: None
+\begin{note}
+This requirement allows the case
+when the expression has the type of a
+potentially-throwing function, but the called function has
+a non-throwing exception specification,
+and the function types are otherwise the same.
+\end{note}
 
 \pnum
 \indextext{function argument|see{argument}}%
@@ -4519,6 +4513,15 @@ or direct base class relationship and
 the result of \tcode{E1} is an object whose type
 is not similar\iref{conv.qual} to the type of \tcode{E1},
 the behavior is undefined\wordingcomment{\ubdef{expr.ref.member.not.similar}}.
+%WORDINGNOTE: ubdef --- expr.ref.member.not.similar
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%
+%  replacement: None
 \begin{example}
 \begin{codeblock}
 struct A { int i; };
@@ -4531,16 +4534,6 @@ void f() {
 }
 \end{codeblock}
 \end{example}
-
-%WORDINGNOTE: ubdef --- expr.ref.member.not.similar
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether storage is associated with an object of correct type within its lifetime
-%
-%  replacement: None
 
 \rSec3[expr.post.incr]{Increment and decrement}
 
@@ -4658,24 +4651,6 @@ that is
 within its lifetime or
 within its period of construction or destruction\iref{class.cdtor},
 the behavior is undefined\wordingcomment{\ubdef{expr.dynamic.cast.pointer.lifetime}}.
-If \tcode{v} is a glvalue of type \tcode{U} and
-\tcode{v} does not refer to an object
-whose type is similar to \tcode{U} and
-that is
-within its lifetime or
-within its period of construction or destruction,
-the behavior is undefined\wordingcomment{\ubdef{expr.dynamic.cast.glvalue.lifetime}}.
-
-%WORDINGNOTE: ubdef --- expr.dynamic.cast.glvalue.lifetime
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether storage is associated with an object of correct type within its lifetime or an object currently being constructed or destroyed
-%
-%  replacement: None
-
 %WORDINGNOTE: ubdef --- expr.dynamic.cast.pointer.lifetime
 %
 %  runtime-checkable: Yes
@@ -4683,6 +4658,22 @@ the behavior is undefined\wordingcomment{\ubdef{expr.dynamic.cast.glvalue.lifeti
 %  locally-checkable: Only for the null pointer case
 %
 %  checking: Track whether storage is associated with an object of correct type within its lifetime or an object currently being constructed or destroyed; insert null pointer check
+%
+%  replacement: None
+If \tcode{v} is a glvalue of type \tcode{U} and
+\tcode{v} does not refer to an object
+whose type is similar to \tcode{U} and
+that is
+within its lifetime or
+within its period of construction or destruction,
+the behavior is undefined\wordingcomment{\ubdef{expr.dynamic.cast.glvalue.lifetime}}.
+%WORDINGNOTE: ubdef --- expr.dynamic.cast.glvalue.lifetime
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether storage is associated with an object of correct type within its lifetime or an object currently being constructed or destroyed
 %
 %  replacement: None
 
@@ -4890,6 +4881,15 @@ type ``\cvqual{cv1} \tcode{B}''. If the object
 of type ``\cvqual{cv1} \tcode{B}'' is actually a base class subobject of an object
 of type \tcode{D}, the result refers to the enclosing object of type
 \tcode{D}. Otherwise, the behavior is undefined\wordingcomment{\ubdef{expr.static.cast.base.class}}.
+%WORDINGNOTE: ubdef --- expr.static.cast.base.class
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether storage is associated with an object of correct type within its lifetime
+%
+%  replacement: None
 \begin{example}
 \begin{codeblock}
 struct B { };
@@ -4900,16 +4900,6 @@ B &br = d;
 static_cast<D&>(br);            // produces lvalue denoting the original \tcode{d} object
 \end{codeblock}
 \end{example}
-
-%WORDINGNOTE: ubdef --- expr.static.cast.base.class
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether storage is associated with an object of correct type within its lifetime
-%
-%  replacement: None
 
 \pnum
 An lvalue
@@ -5002,11 +4992,6 @@ of the enumeration values\iref{dcl.enum}, and
 otherwise, an erroneous value is produced with
 an implicit precondition that this does not occur\iref{basic.contract.implicit}
 \wordingcomment{\ubdef{expr.static.cast.enum.outside.range}}.
-A value of floating-point type can also be explicitly converted to an enumeration type.
-The resulting value is the same as converting the original value to the
-underlying type of the enumeration\iref{conv.fpint}, and subsequently to
-the enumeration type.
-
 %WORDINGNOTE: ubdef --- expr.static.cast.enum.outside.range
 %
 %  runtime-checkable: Yes
@@ -5016,6 +5001,10 @@ the enumeration type.
 %  checking: Insert a check of whether the value is valid
 %
 %  replacement: Coerce into erroneous value
+A value of floating-point type can also be explicitly converted to an enumeration type.
+The resulting value is the same as converting the original value to the
+underlying type of the enumeration\iref{conv.fpint}, and subsequently to
+the enumeration type.
 
 \pnum
 A prvalue of floating-point type can be explicitly converted to
@@ -5028,7 +5017,6 @@ an \impldef{result of inexact floating-point conversion} choice of
 either of those values.
 Otherwise, an erroneous value is produced
 with an implicit precondition that this does not occur\iref{basic.contract.implicit}\wordingcomment{\ubdef{expr.static.cast.fp.outside.range}}.
-
 %WORDINGNOTE: ubdef --- expr.static.cast.fp.outside.range
 %
 %  runtime-checkable: Yes
@@ -5059,7 +5047,6 @@ to the null pointer value of the destination type. If the prvalue of type
 actually a base class subobject of an object of type \tcode{D}, the resulting
 pointer points to the enclosing object of type \tcode{D}. Otherwise, the
 behavior is undefined\wordingcomment{\ubdef{expr.static.cast.downcast.wrong.derived.type}}.
-
 %WORDINGNOTE: ubdef --- expr.static.cast.downcast.wrong.derived.type
 %
 %  runtime-checkable: Yes
@@ -5092,13 +5079,6 @@ member pointer value of the destination type. If class \tcode{B}
 contains the original member, or is a base class of the class
 containing the original member, the resulting pointer to member points
 to the original member. Otherwise, the behavior is undefined\wordingcomment{\ubdef{expr.static.cast.does.not.contain.orignal.member}}.
-\begin{note}
-Although class \tcode{B} need not contain the original member, the
-dynamic type of the object with which indirection through the pointer
-to member is performed must contain the original member;
-see~\ref{expr.mptr.oper}.
-\end{note}
-
 %WORDINGNOTE: ubdef --- expr.static.cast.does.not.contain.orignal.member
 %
 %  runtime-checkable: Yes
@@ -5108,6 +5088,13 @@ see~\ref{expr.mptr.oper}.
 %  checking: Track which type the pointer to member originated from
 %
 %  replacement: None
+\begin{note}
+Although class \tcode{B} need not contain the original member, the
+dynamic type of the object with which indirection through the pointer
+to member is performed must contain the original member;
+see~\ref{expr.mptr.oper}.
+\end{note}
+
 
 \pnum
 A prvalue of type ``pointer to \cvqual{cv1} \keyword{void}'' can be
@@ -5480,6 +5467,15 @@ The operator yields an lvalue of type \tcode{T}.
 If the operand points to an object or function,
 the result denotes that object or function;
 otherwise, the behavior is undefined except as specified in \ref{expr.typeid}\wordingcomment{\ubdef{expr.unary.dereference}}.
+%WORDINGNOTE: ubdef --- expr.unary.dereference
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: Only for the null pointer case
+%
+%  checking: Track whether storage is associated with an object of correct type within its lifetime; track whether the address is associated with a function; insert a null pointer check
+%
+%  replacement: None
 \begin{note}
 Indirection through a pointer to an out-of-lifetime object is valid\iref{basic.life}.
 \end{note}
@@ -5490,16 +5486,6 @@ Indirection through a pointer to an incomplete type (other than
 used in limited ways (to initialize a reference, for example); this
 lvalue must not be converted to a prvalue, see~\ref{conv.lval}.
 \end{note}
-
-%WORDINGNOTE: ubdef --- expr.unary.dereference
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: Only for the null pointer case
-%
-%  checking: Track whether storage is associated with an object of correct type within its lifetime; track whether the address is associated with a function; insert a null pointer check
-%
-%  replacement: None
 
 \pnum
 Each of the following unary operators yields a prvalue.
@@ -6506,11 +6492,6 @@ and a non-null pointer otherwise.
 If the allocation function is a non-allocating
 form\iref{new.delete.placement} that returns null,
 the behavior is undefined\wordingcomment{\ubdef{expr.new.non.allocating.null}}.
-Otherwise,
-if the allocation function returns null, initialization shall not be
-done, the deallocation function shall not be called, and the value of
-the \grammarterm{new-expression} shall be null.
-
 %WORDINGNOTE: ubdef --- expr.new.non.allocating.null
 %
 %  runtime-checkable: Yes
@@ -6520,6 +6501,10 @@ the \grammarterm{new-expression} shall be null.
 %  checking: Insert \tcode{post(r: r)}
 %
 %  replacement: None
+Otherwise,
+if the allocation function returns null, initialization shall not be
+done, the deallocation function shall not be called, and the value of
+the \grammarterm{new-expression} shall be null.
 
 \pnum
 \begin{note}
@@ -6758,18 +6743,7 @@ that resulted from a previous non-array \grammarterm{new-expression}, or
 a pointer to a base class subobject
 of an object created by such a \grammarterm{new-expression}.
 If not, the behavior is undefined\wordingcomment{\ubdef{expr.delete.mismatch}}.
-
 %WORDINGNOTE: ubdef --- expr.delete.mismatch
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track pointer provenance, insert bounds check
-%
-%  replacement: None
-
-%WORDINGNOTE: ubdef --- expr.delete.array.mismatch
 %
 %  runtime-checkable: Yes
 %
@@ -6791,6 +6765,15 @@ element of the array created by that \grammarterm{new-expression}.
 Zero-length arrays do not have a first element.
 \end{footnote}
 If not, the behavior is undefined\wordingcomment{\ubdef{expr.delete.array.mismatch}}.
+%WORDINGNOTE: ubdef --- expr.delete.array.mismatch
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track pointer provenance, insert bounds check
+%
+%  replacement: None
 \begin{note}
 This means that the syntax of the \grammarterm{delete-expression} must
 match the type of the object allocated by \keyword{new}, not the syntax of the
@@ -6812,7 +6795,6 @@ is not a destroying operator delete,
 the static type shall be a base
 class of the dynamic type of the object to be deleted and the static type shall
 have a virtual destructor or the behavior is undefined\wordingcomment{\ubdef{expr.delete.dynamic.type.differ}}. In an array delete
-
 %WORDINGNOTE: ubdef --- expr.delete.dynamic.type.differ
 %
 %  runtime-checkable: Yes
@@ -6822,10 +6804,8 @@ have a virtual destructor or the behavior is undefined\wordingcomment{\ubdef{exp
 %  checking: Track dynamic type of non-polymorphic objects
 %
 %  replacement: None
-
 expression, if the dynamic type of the object to be deleted is not similar to
 its static type, the behavior is undefined\wordingcomment{\ubdef{expr.delete.dynamic.array.dynamic.type.differ}}.
-
 %WORDINGNOTE: ubdef --- expr.delete.dynamic.array.dynamic.type.differ
 %
 %  runtime-checkable: Yes
@@ -7400,7 +7380,6 @@ whose type is not similar to the type of \tcode{E1}, or
 whose most derived object does not
 contain the member to which
 \tcode{E2} refers, the behavior is undefined\wordingcomment{\ubdef{expr.mptr.oper.not.contain.member}}.
-
 %WORDINGNOTE: ubdef --- expr.mptr.oper.not.contain.member
 %
 %  runtime-checkable: Yes
@@ -7410,7 +7389,6 @@ contain the member to which
 %  checking: Track which type the pointer to member originated from and the dynamic type of non-polymorphic objects
 %
 %  replacement: None
-
 The expression \tcode{E1} is sequenced before the expression \tcode{E2}.
 
 \pnum
@@ -7463,7 +7441,6 @@ operand is an lvalue and an xvalue otherwise. The result of a \tcode{.*} express
 second operand is a pointer to a member function is a prvalue.
 If the second operand is the null
 member pointer value\iref{conv.mem}, the behavior is undefined\wordingcomment{\ubdef{expr.mptr.oper.member.func.null}}.
-
 %WORDINGNOTE: ubdef --- expr.mptr.oper.member.func.null
 %
 %  runtime-checkable: Yes
@@ -7514,6 +7491,15 @@ expression by the second.
 \indextext{zero!undefined division by}%
 There is an implicit precondition that
 the second operand of \tcode{/} or \tcode{\%} is not zero\wordingcomment{\ubdef{expr.mul.div.by.zero}},
+%WORDINGNOTE: ubdef --- expr.mul.div.by.zero
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: Yes
+%
+%  checking: Insert a check of whether the second operand is zero
+%
+%  replacement: Coerce into erroneous value
 and if it is then the operator yields an erroneous value.
 For integral operands, the \tcode{/} operator yields the algebraic quotient with
 any fractional part discarded;
@@ -7525,7 +7511,6 @@ if the quotient \tcode{a/b} is representable in the type of the result,
 the operator yields an erroneous value
 and there is an implicit precondition that
 this does not occur\iref{basic.contract.implicit}\wordingcomment{\ubdef{expr.mul.representable.type.result}}.
-
 %WORDINGNOTE: ubdef --- expr.mul.representable.type.result
 %
 %  runtime-checkable: Yes
@@ -7536,15 +7521,6 @@ this does not occur\iref{basic.contract.implicit}\wordingcomment{\ubdef{expr.mul
 %
 %  replacement: Coerce into erroneous value
 
-%WORDINGNOTE: ubdef --- expr.mul.div.by.zero
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: Yes
-%
-%  checking: Insert a check of whether the second operand is zero
-%
-%  replacement: Coerce into erroneous value
 
 \rSec2[expr.add]{Additive operators}%
 \indextext{expression!additive operators}%
@@ -7624,7 +7600,6 @@ and the expression \tcode{P - J}
 points to the (possibly-hypothetical) array element
 $i - j$ of \tcode{x} if $0 \le i - j \le n$.
 \item Otherwise, the behavior is undefined\wordingcomment{\ubdef{expr.add.out.of.bounds}}.
-
 %WORDINGNOTE: ubdef --- expr.add.out.of.bounds
 %
 %  runtime-checkable: Yes
@@ -7634,7 +7609,6 @@ $i - j$ of \tcode{x} if $0 \le i - j \le n$.
 %  checking: Track pointer provenance, insert bounds check
 %
 %  replacement: None
-
 \end{itemize}
 \begin{note}
 Adding a value other than $0$ or $1$
@@ -7661,8 +7635,6 @@ of type \tcode{std::ptrdiff_t},
 the behavior is undefined\iref{expr.pre}.
 \end{note}
 \item Otherwise, the behavior is undefined\wordingcomment{\ubdef{expr.add.sub.diff.pointers}}.
-\end{itemize}
-
 %WORDINGNOTE: ubdef --- expr.add.sub.diff.pointers
 %
 %  runtime-checkable: Yes
@@ -7672,20 +7644,12 @@ the behavior is undefined\iref{expr.pre}.
 %  checking: Track pointer provenance, insert bounds check
 %
 %  replacement: None
+\end{itemize}
 
 \pnum
 For addition or subtraction, if the expressions \tcode{P} or \tcode{Q} have
 type ``pointer to \cv{}~\tcode{T}'', where \tcode{T} and the array element type
 are not similar\iref{conv.qual}, the behavior is undefined\wordingcomment{\ubdef{expr.add.not.similar}}.
-\begin{example}
-\begin{codeblock}
-int arr[5] = {1, 2, 3, 4, 5};
-unsigned int *p = reinterpret_cast<unsigned int*>(arr + 1);
-unsigned int k = *p;            // OK, value of \tcode{k} is $2$\iref{conv.lval}
-unsigned int *q = p + 1;        // undefined behavior: \tcode{p} points to an \tcode{int}, not an \tcode{unsigned int} object
-\end{codeblock}
-\end{example}
-
 %WORDINGNOTE: ubdef --- expr.add.not.similar
 %
 %  runtime-checkable: Yes
@@ -7695,6 +7659,14 @@ unsigned int *q = p + 1;        // undefined behavior: \tcode{p} points to an \t
 %  checking: Track whether storage is associated with an object of correct type
 %
 %  replacement: None
+\begin{example}
+\begin{codeblock}
+int arr[5] = {1, 2, 3, 4, 5};
+unsigned int *p = reinterpret_cast<unsigned int*>(arr + 1);
+unsigned int k = *p;            // OK, value of \tcode{k} is $2$\iref{conv.lval}
+unsigned int *q = p + 1;        // undefined behavior: \tcode{p} points to an \tcode{int}, not an \tcode{unsigned int} object
+\end{codeblock}
+\end{example}
 
 \rSec2[expr.shift]{Shift operators}
 
@@ -7727,7 +7699,6 @@ There is an implicit precondition that
 the right operand is nonnegative and
 less than the width of the promoted left operand\iref{basic.contract.implicit};
 if not, an erroneous value is produced\wordingcomment{\ubdef{expr.shift.neg.and.width}}.
-
 %WORDINGNOTE: ubdef --- expr.shift.neg.and.width
 %
 %  runtime-checkable: Yes
@@ -8647,13 +8618,6 @@ If the value being stored in an object is read via another object that
 overlaps in any way the storage of the first object, then the overlap shall be
 exact and the two objects shall have the same type, otherwise the behavior is
 undefined\wordingcomment{\ubdef{expr.assign.overlap}}.
-\begin{note}
-This restriction applies to the relationship
-between the left and right sides of the assignment operation; it is not a
-statement about how the target of the assignment can be aliased in general.
-See~\ref{basic.lval}.
-\end{note}
-
 %WORDINGNOTE: ubdef --- expr.assign.overlap
 %
 %  runtime-checkable: Yes
@@ -8663,6 +8627,12 @@ See~\ref{basic.lval}.
 %  checking: Check overlap of the two address ranges
 %
 %  replacement: None
+\begin{note}
+This restriction applies to the relationship
+between the left and right sides of the assignment operation; it is not a
+statement about how the target of the assignment can be aliased in general.
+See~\ref{basic.lval}.
+\end{note}
 
 \pnum
 A \grammarterm{braced-init-list} $B$ may appear on the right-hand side of

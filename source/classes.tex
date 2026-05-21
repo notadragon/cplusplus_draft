@@ -2335,8 +2335,7 @@ void g() {                      // rare, specialized use:
 
 \pnum
 Once a destructor is invoked for an object, the object's lifetime ends;
-the behavior is undefined\wordingcomment{\ubdef{class.dtor.no.longer.exists}} if the destructor is invoked
-
+the behavior is undefined\wordingcomment{\ubdef{class.dtor.no.longer.exists}}
 %WORDINGNOTE: ubdef --- class.dtor.no.longer.exists
 %
 %  runtime-checkable: Yes
@@ -2346,7 +2345,7 @@ the behavior is undefined\wordingcomment{\ubdef{class.dtor.no.longer.exists}} if
 %  checking: Track whether storage is associated with an object of correct type within its lifetime
 %
 %  replacement: None
-
+if the destructor is invoked
 for an object whose lifetime has ended\iref{basic.life}.
 \begin{example}
 If the destructor for an object with automatic storage duration is explicitly invoked,
@@ -4252,7 +4251,6 @@ abstract class;
 the effect of making a virtual call\iref{class.virtual} to a pure
 virtual function directly or indirectly for the object being created (or
 destroyed) from such a constructor (or destructor) is undefined\wordingcomment{\ubdef{class.abstract.pure.virtual}}.%
-
 %WORDINGNOTE: ubdef --- class.abstract.pure.virtual
 %
 %  runtime-checkable: Yes
@@ -4262,7 +4260,6 @@ destroyed) from such a constructor (or destructor) is undefined\wordingcomment{\
 %  checking: Insert a \tcode{pre(false)} into the pure virtual stub pointed to from the base-class vtable
 %
 %  replacement: None
-
 \indextext{derived class|)}
 
 \rSec1[class.access]{Member access control}%
@@ -5863,6 +5860,15 @@ a precondition assertion of a constructor, or
 a postcondition assertion of a destructor\iref{dcl.contract.func},
 \end{itemize}
 the program has undefined behavior\wordingcomment{\ubdef{class.base.init.mem.fun}}.
+%WORDINGNOTE: ubdef --- class.base.init.mem.fun
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether objects are currently being constructed or destroyed
+%
+%  replacement: None
 \begin{example}
 \begin{codeblock}
 class A {
@@ -5891,16 +5897,6 @@ public:
 };
 \end{codeblock}
 \end{example}
-
-%WORDINGNOTE: ubdef --- class.base.init.mem.fun
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether objects are currently being constructed or destroyed
-%
-%  replacement: None
 
 \pnum
 \begin{note}
@@ -6069,9 +6065,28 @@ when the initialization of all subobjects is complete.%
 \indextext{destruction!member access}%
 For an object with a non-trivial constructor, referring to any non-static member
 or base class of the object before the constructor begins execution results in
-undefined behavior\wordingcomment{\ubdef{class.cdtor.before.ctor}}. For an object with a non-trivial destructor, referring to
+undefined behavior\wordingcomment{\ubdef{class.cdtor.before.ctor}}.
+%WORDINGNOTE: ubdef --- class.cdtor.after.dtor
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether objects are currently being constructed or destroyed
+%
+%  replacement: None
+For an object with a non-trivial destructor, referring to
 any non-static member or base class of the object after the destructor finishes
 execution results in undefined behavior\wordingcomment{\ubdef{class.cdtor.after.dtor}}.
+%WORDINGNOTE: ubdef --- class.cdtor.before.ctor
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether objects are currently being constructed or destroyed
+%
+%  replacement: None
 \begin{example}
 \begin{codeblock}
 struct X { int i; };
@@ -6104,25 +6119,7 @@ struct Y {
 \end{codeblock}
 \end{example}
 
-%WORDINGNOTE: ubdef --- class.cdtor.after.dtor
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether objects are currently being constructed or destroyed
-%
-%  replacement: None
 
-%WORDINGNOTE: ubdef --- class.cdtor.before.ctor
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether objects are currently being constructed or destroyed
-%
-%  replacement: None
 
 \pnum
 During the construction of an object,
@@ -6177,7 +6174,6 @@ indirectly derive from
 \tcode{B}
 shall have started and the destruction of these classes shall not have
 completed, otherwise the conversion results in undefined behavior\wordingcomment{\ubdef{class.cdtor.convert.pointer}}.
-
 %WORDINGNOTE: ubdef --- class.cdtor.convert.pointer
 %
 %  runtime-checkable: Yes
@@ -6187,7 +6183,6 @@ completed, otherwise the conversion results in undefined behavior\wordingcomment
 %  checking: Track whether objects are currently being constructed or destroyed
 %
 %  replacement: None
-
 To form a pointer to (or access the value of) a direct non-static member of
 an object
 \tcode{obj},
@@ -6196,6 +6191,15 @@ the construction of
 shall have started and its destruction shall not have completed,
 otherwise the computation of the pointer value (or accessing the member
 value) results in undefined behavior\wordingcomment{\ubdef{class.cdtor.form.pointer}}.
+%WORDINGNOTE: ubdef --- class.cdtor.form.pointer
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether objects are currently being constructed or destroyed
+%
+%  replacement: None
 \begin{example}
 \begin{codeblock}
 struct A { };
@@ -6215,16 +6219,6 @@ struct E : C, D, X {
 };
 \end{codeblock}
 \end{example}
-
-%WORDINGNOTE: ubdef --- class.cdtor.form.pointer
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether objects are currently being constructed or destroyed
-%
-%  replacement: None
 
 \pnum
 \indextext{virtual function call!constructor and}%
@@ -6250,6 +6244,15 @@ and the object expression refers to
 the complete object of \tcode{x} or one of that object's base class subobjects
 but not \tcode{x} or one of its base class subobjects, the behavior
 is undefined\wordingcomment{\ubdef{class.cdtor.virtual.not.x}}.
+%WORDINGNOTE: ubdef --- class.cdtor.virtual.not.x
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether objects are currently being constructed or destroyed
+%
+%  replacement: None
 \begin{example}
 \begin{codeblock}
 struct V {
@@ -6281,16 +6284,6 @@ B::B(V* v, A* a) {
 \end{codeblock}
 \end{example}
 
-%WORDINGNOTE: ubdef --- class.cdtor.virtual.not.x
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether objects are currently being constructed or destroyed
-%
-%  replacement: None
-
 \pnum
 \indextext{construction!\idxcode{typeid} operator}%
 \indextext{destruction!\idxcode{typeid} operator}%
@@ -6317,7 +6310,6 @@ If the operand of
 refers to the object under construction or destruction and the static type of
 the operand is neither the constructor or destructor's class nor one of its
 bases, the behavior is undefined\wordingcomment{\ubdef{class.cdtor.typeid}}.
-
 %WORDINGNOTE: ubdef --- class.cdtor.typeid
 %
 %  runtime-checkable: Yes
@@ -6352,6 +6344,15 @@ the operand is not a pointer to or object of the constructor or destructor's
 own class or one of its bases, the
 \keyword{dynamic_cast}
 results in undefined behavior\wordingcomment{\ubdef{class.cdtor.dynamic.cast}}.
+%WORDINGNOTE: ubdef --- class.cdtor.dynamic.cast
+%
+%  runtime-checkable: Yes
+%
+%  locally-checkable: No
+%
+%  checking: Track whether objects are currently being constructed or destroyed
+%
+%  replacement: None
 \begin{example}
 \begin{codeblock}
 struct V {
@@ -6380,15 +6381,6 @@ B::B(V* v, A* a) {
 \indextext{destruction|)}%
 \indextext{construction|)}%
 
-%WORDINGNOTE: ubdef --- class.cdtor.dynamic.cast
-%
-%  runtime-checkable: Yes
-%
-%  locally-checkable: No
-%
-%  checking: Track whether objects are currently being constructed or destroyed
-%
-%  replacement: None
 
 \rSec2[class.copy.elision]{Copy/move elision}%
 
