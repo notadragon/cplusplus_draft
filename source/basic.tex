@@ -4084,7 +4084,7 @@ program has undefined behavior if
 , or
 \item
   the pointer is converted\iref{conv.ptr,expr.static.cast} to a pointer
-  to a virtual base class\wordingcomment{\ubdef{lifetime.outside.pointer.virtual}} or to a base class thereof, or
+  to a virtual base class\wordingcomment{\ubdef{lifetime.outside.pointer.virtual}}
 %WORDINGNOTE: ubdef --- lifetime.outside.pointer.virtual
 %
 %  runtime-checkable: Yes
@@ -4094,6 +4094,7 @@ program has undefined behavior if
 %  checking: Track whether storage is associated with an object of correct type within its lifetime
 %
 %  replacement: None
+or to a base class thereof, or
 \item
   the pointer is used as the operand of a
   \keyword{dynamic_cast}\iref{expr.dynamic.cast}\wordingcomment{\ubdef{lifetime.outside.pointer.dynamic.cast}}.
@@ -4280,7 +4281,7 @@ with static storage duration.
 \end{footnote}
 and another object of the original type does not occupy
 that same storage location when the implicit destructor call takes
-place, the behavior of the program is undefined\wordingcomment{\ubdef{original.type.implicit.destructor}}. This is true
+place, the behavior of the program is undefined\wordingcomment{\ubdef{original.type.implicit.destructor}}
 %WORDINGNOTE: ubdef --- original.type.implicit.destructor
 %
 %  runtime-checkable: Yes
@@ -4290,6 +4291,7 @@ place, the behavior of the program is undefined\wordingcomment{\ubdef{original.t
 %  checking: Track whether storage is associated with an object of correct type within its lifetime
 %
 %  replacement: None
+. This is true
 even if the block is exited with an exception.
 \begin{example}
 \begin{codeblock}
