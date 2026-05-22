@@ -7863,7 +7863,7 @@ if a \grammarterm{result-name-introducer}\iref{dcl.contract.res} has been specif
 %     keeping the library dependency but in only one place.
 %
 %  For now, we are going with option 4 for certain reasons:
-%      
+%
 %  1. This keeps the core wording from having to depend on the Standard library
 %     definitions, especially when
 %
@@ -7911,7 +7911,7 @@ $S$ is not part of the immediate context\iref{temp.deduct.general}.
 A type is an \defnadj{allowed-semantics}{control type} if
 \begin{itemize}
 \item it is an assertion-control type, and
-\item it has a static member named \tcode{allowed_semantics} that is 
+\item it has a static member named \tcode{allowed_semantics} that is
 \begin{itemize}
 \item usable in constant expressions, and
 \item can be converted to the type \tcode{std::contracts::labels::evaluation_semantic_set}.
@@ -7963,7 +7963,7 @@ A contract evaluation semantic is an
 of a contract assertion $C$
 if
 \begin{itemize}
-\item $C$ does not have an assertion-control object, 
+\item $C$ does not have an assertion-control object,
 \item the assertion-control object $O$ of $C$ is not
 an allowed-semantics control type\iref{basic.contract.control}, or
 \item the expression \tcode{o.allowed_semantics.contains(S)}
@@ -7978,7 +7978,7 @@ the program is ill-formed.
 The \defnadj{configured}{contract evaluation semantic}
 for an evaluation of a contract assertion
 is an allowed contract evaluation semantic
-chosen in an 
+chosen in an
 \impldef{evaluation semantic used for the evaluation of a contract assertion}
 manner.
 
