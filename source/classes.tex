@@ -2335,7 +2335,7 @@ void g() {                      // rare, specialized use:
 
 \pnum
 Once a destructor is invoked for an object, the object's lifetime ends;
-the behavior is undefined\wordingcomment{\ubdef{class.dtor.no.longer.exists}}
+the behavior is undefined\wordingcomment{\stdstablename{class.dtor.no.longer.exists}}
 %WORDINGNOTE: ubdef --- class.dtor.no.longer.exists
 %
 %  runtime-checkable: Yes
@@ -4250,7 +4250,7 @@ abstract class;
 \indextext{virtual function call!undefined pure}%
 the effect of making a virtual call\iref{class.virtual} to a pure
 virtual function directly or indirectly for the object being created (or
-destroyed) from such a constructor (or destructor) is undefined\wordingcomment{\ubdef{class.abstract.pure.virtual}}.%
+destroyed) from such a constructor (or destructor) is undefined\wordingcomment{\stdstablename{class.abstract.pure.virtual}}.%
 %WORDINGNOTE: ubdef --- class.abstract.pure.virtual
 %
 %  runtime-checkable: Yes
@@ -5859,7 +5859,7 @@ a precondition assertion of a constructor, or
 \item
 a postcondition assertion of a destructor\iref{dcl.contract.func},
 \end{itemize}
-the program has undefined behavior\wordingcomment{\ubdef{class.base.init.mem.fun}}.
+the program has undefined behavior\wordingcomment{\stdstablename{class.base.init.mem.fun}}.
 %WORDINGNOTE: ubdef --- class.base.init.mem.fun
 %
 %  runtime-checkable: Yes
@@ -6065,7 +6065,7 @@ when the initialization of all subobjects is complete.%
 \indextext{destruction!member access}%
 For an object with a non-trivial constructor, referring to any non-static member
 or base class of the object before the constructor begins execution results in
-undefined behavior\wordingcomment{\ubdef{class.cdtor.before.ctor}}.
+undefined behavior\wordingcomment{\stdstablename{class.cdtor.before.ctor}}.
 %WORDINGNOTE: ubdef --- class.cdtor.after.dtor
 %
 %  runtime-checkable: Yes
@@ -6077,7 +6077,7 @@ undefined behavior\wordingcomment{\ubdef{class.cdtor.before.ctor}}.
 %  replacement: None
 For an object with a non-trivial destructor, referring to
 any non-static member or base class of the object after the destructor finishes
-execution results in undefined behavior\wordingcomment{\ubdef{class.cdtor.after.dtor}}.
+execution results in undefined behavior\wordingcomment{\stdstablename{class.cdtor.after.dtor}}.
 %WORDINGNOTE: ubdef --- class.cdtor.before.ctor
 %
 %  runtime-checkable: Yes
@@ -6173,7 +6173,7 @@ and the construction of all of its direct or indirect bases that directly or
 indirectly derive from
 \tcode{B}
 shall have started and the destruction of these classes shall not have
-completed, otherwise the conversion results in undefined behavior\wordingcomment{\ubdef{class.cdtor.convert.pointer}}.
+completed, otherwise the conversion results in undefined behavior\wordingcomment{\stdstablename{class.cdtor.convert.pointer}}.
 %WORDINGNOTE: ubdef --- class.cdtor.convert.pointer
 %
 %  runtime-checkable: Yes
@@ -6190,7 +6190,7 @@ the construction of
 \tcode{obj}
 shall have started and its destruction shall not have completed,
 otherwise the computation of the pointer value (or accessing the member
-value) results in undefined behavior\wordingcomment{\ubdef{class.cdtor.form.pointer}}.
+value) results in undefined behavior\wordingcomment{\stdstablename{class.cdtor.form.pointer}}.
 %WORDINGNOTE: ubdef --- class.cdtor.form.pointer
 %
 %  runtime-checkable: Yes
@@ -6243,7 +6243,7 @@ If the virtual function call uses an explicit class member access\iref{expr.ref}
 and the object expression refers to
 the complete object of \tcode{x} or one of that object's base class subobjects
 but not \tcode{x} or one of its base class subobjects, the behavior
-is undefined\wordingcomment{\ubdef{class.cdtor.virtual.not.x}}.
+is undefined\wordingcomment{\stdstablename{class.cdtor.virtual.not.x}}.
 %WORDINGNOTE: ubdef --- class.cdtor.virtual.not.x
 %
 %  runtime-checkable: Yes
@@ -6309,7 +6309,7 @@ If the operand of
 \tcode{typeid}
 refers to the object under construction or destruction and the static type of
 the operand is neither the constructor or destructor's class nor one of its
-bases, the behavior is undefined\wordingcomment{\ubdef{class.cdtor.typeid}}.
+bases, the behavior is undefined\wordingcomment{\stdstablename{class.cdtor.typeid}}.
 %WORDINGNOTE: ubdef --- class.cdtor.typeid
 %
 %  runtime-checkable: Yes
@@ -6343,7 +6343,7 @@ refers to the object under construction or destruction and the static type of
 the operand is not a pointer to or object of the constructor or destructor's
 own class or one of its bases, the
 \keyword{dynamic_cast}
-results in undefined behavior\wordingcomment{\ubdef{class.cdtor.dynamic.cast}}.
+results in undefined behavior\wordingcomment{\stdstablename{class.cdtor.dynamic.cast}}.
 %WORDINGNOTE: ubdef --- class.cdtor.dynamic.cast
 %
 %  runtime-checkable: Yes

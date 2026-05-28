@@ -3768,7 +3768,7 @@ that operation implicitly creates and starts the lifetime of
 zero or more objects of implicit-lifetime types\iref{term.implicit.lifetime.type}
 in its specified region of storage
 if doing so would result in the program having defined behavior.
-If no such set of objects would give the program defined behavior\wordingcomment{\ubdef{intro.object.implicit.create}},
+If no such set of objects would give the program defined behavior\wordingcomment{\stdstablename{intro.object.implicit.create}},
 %WORDINGNOTE: ubdef --- intro.object.implicit.create
 %
 %  runtime-checkable: Yes
@@ -3795,7 +3795,7 @@ whose address is the address of the start of the region of storage,
 and produce a pointer value that points to that object,
 if that value would result in the program having defined behavior.
 If no such pointer value would give the program defined behavior,
-the behavior of the program is undefined\wordingcomment{\ubdef{intro.object.implicit.pointer}}.
+the behavior of the program is undefined\wordingcomment{\stdstablename{intro.object.implicit.pointer}}.
 %WORDINGNOTE: ubdef --- intro.object.implicit.pointer
 %
 %  runtime-checkable: Yes
@@ -3858,7 +3858,7 @@ requirement on every object of that type; stricter alignment can be requested
 using the \grammarterm{alignment-specifier}\iref{dcl.align}.
 Attempting to create an object\iref{intro.object} in storage that
 does not meet the alignment requirements of the object's type
-is undefined behavior\wordingcomment{\ubdef{basic.align.object.alignment}}.
+is undefined behavior\wordingcomment{\stdstablename{basic.align.object.alignment}}.
 %WORDINGNOTE: ubdef --- basic.align.object.alignment
 %
 %  runtime-checkable: Yes
@@ -4059,7 +4059,7 @@ limited ways, as described below. The
 program has undefined behavior if
 \begin{itemize}
 \item
-  the pointer is used as the operand of a \grammarterm{delete-expression}\wordingcomment{\ubdef{lifetime.outside.pointer.delete}},
+  the pointer is used as the operand of a \grammarterm{delete-expression}\wordingcomment{\stdstablename{lifetime.outside.pointer.delete}},
 %WORDINGNOTE: ubdef --- lifetime.outside.pointer.delete
 %
 %  runtime-checkable: Yes
@@ -4071,7 +4071,7 @@ program has undefined behavior if
 %  replacement: None
 \item
   the pointer is used to access a non-static data member or call a
-  non-static member function of the object\wordingcomment{\ubdef{lifetime.outside.pointer.member}}
+  non-static member function of the object\wordingcomment{\stdstablename{lifetime.outside.pointer.member}}
 %WORDINGNOTE: ubdef --- lifetime.outside.pointer.member
 %
 %  runtime-checkable: Yes
@@ -4084,7 +4084,7 @@ program has undefined behavior if
 , or
 \item
   the pointer is converted\iref{conv.ptr,expr.static.cast} to a pointer
-  to a virtual base class\wordingcomment{\ubdef{lifetime.outside.pointer.virtual}}
+  to a virtual base class\wordingcomment{\stdstablename{lifetime.outside.pointer.virtual}}
 %WORDINGNOTE: ubdef --- lifetime.outside.pointer.virtual
 %
 %  runtime-checkable: Yes
@@ -4097,7 +4097,7 @@ program has undefined behavior if
 or to a base class thereof, or
 \item
   the pointer is used as the operand of a
-  \keyword{dynamic_cast}\iref{expr.dynamic.cast}\wordingcomment{\ubdef{lifetime.outside.pointer.dynamic.cast}}.
+  \keyword{dynamic_cast}\iref{expr.dynamic.cast}\wordingcomment{\stdstablename{lifetime.outside.pointer.dynamic.cast}}.
 %WORDINGNOTE: ubdef --- lifetime.outside.pointer.dynamic.cast
 %
 %  runtime-checkable: Yes
@@ -4152,7 +4152,7 @@ allocated storage\iref{basic.stc.dynamic.allocation}, and using the
 properties of the glvalue that do not depend on its value is
 well-defined. The program has undefined behavior if
 \begin{itemize}
-\item the glvalue is used to access the object\wordingcomment{\ubdef{lifetime.outside.glvalue.access}}
+\item the glvalue is used to access the object\wordingcomment{\stdstablename{lifetime.outside.glvalue.access}}
 %WORDINGNOTE: ubdef --- lifetime.outside.glvalue.access
 %
 %  runtime-checkable: Yes
@@ -4163,7 +4163,7 @@ well-defined. The program has undefined behavior if
 %
 %  replacement: None
 , or
-\item the glvalue is used to call a non-static member function of the object\wordingcomment{\ubdef{lifetime.outside.glvalue.member}}
+\item the glvalue is used to call a non-static member function of the object\wordingcomment{\stdstablename{lifetime.outside.glvalue.member}}
 %WORDINGNOTE: ubdef --- lifetime.outside.glvalue.member
 %
 %  runtime-checkable: Yes
@@ -4174,7 +4174,7 @@ well-defined. The program has undefined behavior if
 %
 %  replacement: None
 , or
-\item the glvalue is bound to a reference to a virtual base class\iref{dcl.init.ref}\wordingcomment{\ubdef{lifetime.outside.glvalue.virtual}}
+\item the glvalue is bound to a reference to a virtual base class\iref{dcl.init.ref}\wordingcomment{\stdstablename{lifetime.outside.glvalue.virtual}}
 %WORDINGNOTE: ubdef --- lifetime.outside.glvalue.virtual
 %
 %  runtime-checkable: Yes
@@ -4187,7 +4187,7 @@ well-defined. The program has undefined behavior if
 , or
 \item the glvalue is used as the operand of a
 \keyword{dynamic_cast}\iref{expr.dynamic.cast} or as the operand of
-\keyword{typeid}\wordingcomment{\ubdef{lifetime.outside.glvalue.dynamic.cast}}.
+\keyword{typeid}\wordingcomment{\stdstablename{lifetime.outside.glvalue.dynamic.cast}}.
 %WORDINGNOTE: ubdef --- lifetime.outside.glvalue.dynamic.cast
 %
 %  runtime-checkable: Yes
@@ -4281,7 +4281,7 @@ with static storage duration.
 \end{footnote}
 and another object of the original type does not occupy
 that same storage location when the implicit destructor call takes
-place, the behavior of the program is undefined\wordingcomment{\ubdef{original.type.implicit.destructor}}
+place, the behavior of the program is undefined\wordingcomment{\stdstablename{original.type.implicit.destructor}}
 %WORDINGNOTE: ubdef --- original.type.implicit.destructor
 %
 %  runtime-checkable: Yes
@@ -4311,7 +4311,7 @@ void h() {
 Creating a new object within the storage that a const, complete
 object with static, thread, or automatic storage duration occupies,
 or within the storage that such a const object used to occupy before
-its lifetime ended, results in undefined behavior\wordingcomment{\ubdef{creating.within.const.complete.obj}}.
+its lifetime ended, results in undefined behavior\wordingcomment{\stdstablename{creating.within.const.complete.obj}}.
 \begin{example}
 \begin{codeblock}
 struct B {
@@ -4382,7 +4382,7 @@ then the value produced by that operator is
 erroneous or indeterminate respectively.
 Except in the following cases,
 all evaluations have an implicit precondition assertion
-that they will not produce an indeterminate value\wordingcomment{\ubdef{basic.indet.value}}
+that they will not produce an indeterminate value\wordingcomment{\stdstablename{basic.indet.value}}
 %WORDINGNOTE: ubdef --- basic.indet.value
 %
 %  runtime-checkable: Yes
@@ -4683,7 +4683,7 @@ If the behavior of an allocation or deallocation function
 does not satisfy the semantic constraints
 specified in~\ref{basic.stc.dynamic.allocation}
 and~\ref{basic.stc.dynamic.deallocation},
-the behavior is undefined\wordingcomment{\ubdef{basic.stc.alloc.dealloc.constraint}}.
+the behavior is undefined\wordingcomment{\stdstablename{basic.stc.alloc.dealloc.constraint}}.
 %WORDINGNOTE: ubdef --- basic.stc.alloc.dealloc.constraint
 %
 %  runtime-checkable: No
@@ -4731,7 +4731,7 @@ in~\ref{new.delete.single} and~\ref{new.delete.array},
 \tcode{p0} represents the address of a block of storage disjoint from the storage
 for any other object accessible to the caller.
 The effect of indirecting through a pointer
-returned from a request for zero size is undefined\wordingcomment{\ubdef{basic.stc.alloc.zero.dereference}}.
+returned from a request for zero size is undefined\wordingcomment{\stdstablename{basic.stc.alloc.zero.dereference}}.
 %WORDINGNOTE: ubdef --- basic.stc.alloc.zero.dereference
 %
 %  runtime-checkable: Yes
@@ -4863,7 +4863,7 @@ instance is never a usual deallocation function, regardless of its
 signature.
 
 \pnum
-If a deallocation function terminates by throwing an exception, the behavior is undefined\wordingcomment{\ubdef{basic.stc.alloc.dealloc.throw}}.
+If a deallocation function terminates by throwing an exception, the behavior is undefined\wordingcomment{\stdstablename{basic.stc.alloc.dealloc.throw}}.
 %WORDINGNOTE: ubdef --- basic.stc.alloc.dealloc.throw
 %
 %  runtime-checkable: Yes
@@ -6252,7 +6252,7 @@ If a pointer value $P$ is used in an evaluation $E$ and
 $P$ is not valid in the context of $E$,
 then the behavior is undefined if $E$ is
 an indirection\iref{expr.unary.op} or
-an invocation of a deallocation function\iref{basic.stc.dynamic.deallocation}\wordingcomment{\ubdef{basic.compound.invalid.pointer}},
+an invocation of a deallocation function\iref{basic.stc.dynamic.deallocation}\wordingcomment{\stdstablename{basic.compound.invalid.pointer}},
 %WORDINGNOTE: ubdef --- basic.compound.invalid.pointer
 %
 %  runtime-checkable: Yes
@@ -6782,7 +6782,7 @@ evaluations.
 The value computations of the operands of an
 operator are sequenced before the value computation of the result of the
 operator.
-The behavior is undefined\iref{intro.multithread}\wordingcomment{\ubdef{intro.execution.unsequenced.modification}} if
+The behavior is undefined\iref{intro.multithread}\wordingcomment{\stdstablename{intro.execution.unsequenced.modification}} if
 %WORDINGNOTE: ubdef --- intro.execution.unsequenced.modification
 %
 %  runtime-checkable: Yes
@@ -7201,7 +7201,7 @@ potentially concurrent conflicting actions, at least one of which is not atomic,
 and neither happens before the other,
 except for the special case for signal handlers described below.
 Any such data race results in undefined
-behavior\wordingcomment{\ubdef{intro.races.data}}.
+behavior\wordingcomment{\stdstablename{intro.races.data}}.
 %WORDINGNOTE: ubdef --- intro.races.data
 %
 %  runtime-checkable: Yes
@@ -7271,7 +7271,7 @@ hardware race detection.
 \rSec3[intro.progress]{Forward progress}
 
 \pnum
-The implementation may assume\wordingcomment{\ubdef{intro.progress.stops}}
+The implementation may assume\wordingcomment{\stdstablename{intro.progress.stops}}
 %WORDINGNOTE: ubdef --- intro.progress.stops
 %
 %  runtime-checkable: No
@@ -7588,7 +7588,7 @@ without leaving the current block (e.g., by calling the function
 objects with automatic storage duration\iref{class.dtor}. If
 \tcode{std::exit} is invoked during the destruction of
 an object with static or thread storage duration, the program has undefined
-behavior\wordingcomment{\ubdef{basic.start.main.exit.during.destruction}}.
+behavior\wordingcomment{\stdstablename{basic.start.main.exit.during.destruction}}.
 %WORDINGNOTE: ubdef --- basic.start.main.exit.during.destruction
 %
 %  runtime-checkable: Yes
@@ -7934,7 +7934,7 @@ as each element of the array is destroyed\iref{class.temporary}.
 \pnum
 If a function contains a block variable of static or thread storage duration that has been
 destroyed and the function is called during the destruction of an object with static or
-thread storage duration, the program has undefined behavior\wordingcomment{\ubdef{basic.start.term.use.after.destruction}}
+thread storage duration, the program has undefined behavior\wordingcomment{\stdstablename{basic.start.term.use.after.destruction}}
 %WORDINGNOTE: ubdef --- basic.start.term.use.after.destruction
 %
 %  runtime-checkable: Yes

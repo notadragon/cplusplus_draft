@@ -1297,7 +1297,7 @@ subverted without casting\iref{expr.const.cast}.
 \indextext{const object!undefined change to}%
 Any attempt to modify\iref{expr.assign,expr.post.incr,expr.pre.incr} a
 const object\iref{basic.type.qualifier} during its
-lifetime\iref{basic.life} results in undefined behavior\wordingcomment{\ubdef{dcl.type.cv.modify.const.obj}}.
+lifetime\iref{basic.life} results in undefined behavior\wordingcomment{\stdstablename{dcl.type.cv.modify.const.obj}}.
 %WORDINGNOTE: ubdef --- dcl.type.cv.modify.const.obj
 %
 %  runtime-checkable: Yes
@@ -1350,7 +1350,7 @@ The semantics of an access through a volatile glvalue are
 \impldef{semantics of an access through a volatile glvalue}.
 If an attempt is made to access an object defined with a
 volatile-qualified type through the use of a non-volatile glvalue,
-the behavior is undefined\wordingcomment{\ubdef{dcl.type.cv.access.volatile}}.
+the behavior is undefined\wordingcomment{\stdstablename{dcl.type.cv.access.volatile}}.
 %WORDINGNOTE: ubdef --- dcl.type.cv.access.volatile
 %
 %  runtime-checkable: Yes
@@ -3304,7 +3304,7 @@ Attempting to bind a reference to a function where
 the converted initializer is a glvalue whose
 type is not call-compatible\iref{expr.call}
 with the type of the function's definition
-results in undefined behavior\wordingcomment{\ubdef{dcl.ref.incompatible.function}}.
+results in undefined behavior\wordingcomment{\stdstablename{dcl.ref.incompatible.function}}.
 %WORDINGNOTE: ubdef --- dcl.ref.incompatible.function
 %
 %  runtime-checkable: Yes
@@ -3317,7 +3317,7 @@ results in undefined behavior\wordingcomment{\ubdef{dcl.ref.incompatible.functio
 Attempting to bind a reference to an object where
 the converted initializer is a glvalue through which
 the object is not type-accessible\iref{basic.lval}
-results in undefined behavior\wordingcomment{\ubdef{dcl.ref.incompatible.type}}.
+results in undefined behavior\wordingcomment{\stdstablename{dcl.ref.incompatible.type}}.
 %WORDINGNOTE: ubdef --- dcl.ref.incompatible.type
 %
 %  runtime-checkable: Yes
@@ -3340,7 +3340,7 @@ to a bit-field.
 \end{note}
 The behavior of an evaluation of a reference\iref{expr.prim.id, expr.ref} that
 does not happen after\iref{intro.races} the initialization of the reference
-is undefined\wordingcomment{\ubdef{dcl.ref.uninitialized.reference}}.
+is undefined\wordingcomment{\stdstablename{dcl.ref.uninitialized.reference}}.
 %WORDINGNOTE: ubdef --- dcl.ref.uninitialized.reference
 %
 %  runtime-checkable: Yes
@@ -7446,7 +7446,7 @@ that refers to the coroutine.
 The evaluation that invoked a resumption member function is
 called the \defnx{resumer}{coroutine!resumer}.
 Invoking a resumption member function for a coroutine
-that is not suspended results in undefined behavior\wordingcomment{\ubdef{dcl.fct.def.coroutine.resume.not.suspended}}.
+that is not suspended results in undefined behavior\wordingcomment{\stdstablename{dcl.fct.def.coroutine.resume.not.suspended}}.
 %WORDINGNOTE: ubdef --- dcl.fct.def.coroutine.resume.not.suspended
 %
 %  runtime-checkable: Yes
@@ -7549,7 +7549,7 @@ to be transferred out of the function\iref{stmt.dcl}.
 The storage for the coroutine state is released by calling a
 non-array deallocation function\iref{basic.stc.dynamic.deallocation}.
 If \tcode{destroy} is called for a coroutine that is not suspended, the
-program has undefined behavior\wordingcomment{\ubdef{dcl.fct.def.coroutine.destroy.not.suspended}}.
+program has undefined behavior\wordingcomment{\stdstablename{dcl.fct.def.coroutine.destroy.not.suspended}}.
 %WORDINGNOTE: ubdef --- dcl.fct.def.coroutine.destroy.not.suspended
 %
 %  runtime-checkable: Yes
@@ -9788,7 +9788,7 @@ If the converted expression would evaluate to \tcode{true}
 at the point where the assumption appears,
 the assumption has no effect.
 There is an implicit precondition assertion
-that this does not occur\iref{basic.contract.implicit}\wordingcomment{\ubdef{dcl.attr.assume.false}}.
+that this does not occur\iref{basic.contract.implicit}\wordingcomment{\stdstablename{dcl.attr.assume.false}}.
 %WORDINGNOTE: ubdef --- dcl.attr.assume.false
 %
 %  runtime-checkable: No
@@ -10234,7 +10234,7 @@ translation unit, the program is ill-formed, no diagnostic required.
 \pnum
 If a function \tcode{f} is invoked where \tcode{f} was previously declared with the \tcode{noreturn}
 attribute and that invocation eventually returns,
-the behavior is runtime-undefined\wordingcomment{\ubdef{dcl.attr.noreturn.eventually.returns}}.
+the behavior is runtime-undefined\wordingcomment{\stdstablename{dcl.attr.noreturn.eventually.returns}}.
 %WORDINGNOTE: ubdef --- dcl.attr.noreturn.eventually.returns
 %
 %  runtime-checkable: Yes
