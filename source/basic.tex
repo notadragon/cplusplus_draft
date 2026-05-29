@@ -1649,7 +1649,7 @@ Each
 \grammarterm{assertion-control-specifier}\iref{basic.contract.control}
 and
 \grammarterm{assertion-control-expression}\iref{expr.contract.control}
-introduces a \defnadj{assertion-control}{scope}
+introduces an \defnadj{assertion-control}{scope}
 that includes
 its \grammarterm{constant-expression}.
 
@@ -2031,7 +2031,7 @@ A \grammarterm{using-directive} $U$ is
 $U$ precedes $P$ and inhabits either $S$ or
 the scope of a namespace nominated by a \grammarterm{using-directive}
 that is active in $S$ at $P$, and
-\item if $S$ has the \keyword{contract_control} keyword
+\item if $U$ has the \keyword{contract_control} keyword
 then $P$ is within an assertion-control scope.
 \end{itemize}
 
@@ -7886,7 +7886,7 @@ that is a constexpr variable.
 \item
 If $C$ has
 an \grammarterm{assertion-control-specifier} $S$
-then it has an assertion-control-object $O$
+then it has an assertion control object $O$
 whose type is deduced from $S$
 and which is initialized by $S$.
 The type of $O$ must be an assertion-control type.
@@ -8273,7 +8273,7 @@ without having to terminate the program.
 
 \pnum
 If contract-violation handling
-during  the evaluation of a function contract assertion\iref{dcl.contract.func}
+during the evaluation of a function contract assertion\iref{dcl.contract.func}
 exits via an exception,
 the behavior is as if
 the function body exits via that same exception.
