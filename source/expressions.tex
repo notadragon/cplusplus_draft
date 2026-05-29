@@ -727,13 +727,9 @@ pointer value\iref{basic.compound}, the behavior is
 \item Otherwise, if the bits in the value representation of
 the object to which the glvalue refers
 are not valid for the object's type,
-
-\begin{itemize}
-\item
-if the object is of scalar type,
-the object is initialized with an erroneous value
-and there is an implicit precondition that this does not occur\iref{basic.contract.implicit},
-\item otherwise the behavior is undefined\wordingcomment{\stdstablename{conv.lval.valid.representation}}.
+the prvalue result is erroneous value,
+and there is an implicit precondition
+that this does not occur\iref{basic.contract.implicit}\wordingcomment{\stdstablename{conv.lval.valid.representation}}.
 %WORDINGNOTE: ubdef --- conv.lval.valid.representation
 %
 %  runtime-checkable: Yes
@@ -743,7 +739,6 @@ and there is an implicit precondition that this does not occur\iref{basic.contra
 %  checking: Track whether storage is associated with an object of correct type within its lifetime
 %
 %  replacement: Coerce invalid value representations into erroneous values
-\end{itemize}
 \begin{example}
 \begin{codeblock}
 bool f() {

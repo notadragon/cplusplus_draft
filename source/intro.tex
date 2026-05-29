@@ -677,15 +677,6 @@ issuance of a diagnostic message). Many incorrect program constructs do
 not engender undefined behavior; they are required to be diagnosed.
 Evaluation of a constant expression\iref{expr.const.core} never exhibits behavior explicitly
 specified as undefined in \ref{intro} through \ref{\lastcorechapter}.
-All undefined behavior
-except that introduced by evaluating a contract assertion with the
-assume semantic
-has an implicit precondition assertion\iref{basic.contract.implicit}
-that it does not occur, although that assertion
-may be evaluated with the assume
-contract evaluation semantic\iref{basic.contract.eval}
-and there is no guarantee that there is a way to
-select any particular semantic.
 \end{defnote}
 
 \indexdefn{behavior!unspecified}%
@@ -1008,6 +999,18 @@ may produce arbitrary additional observable behavior afterwards.
 If the execution of an operation is specified as having erroneous behavior,
 the implementation is permitted to issue a diagnostic and
 is permitted to terminate the execution of the program.
+
+\begin{note}
+All undefined behavior
+except that introduced by evaluating a contract assertion with the
+assume semantic
+has an implicit precondition assertion\iref{basic.contract.implicit}
+that it does not occur, although that assertion
+may be evaluated with the assume
+contract evaluation semantic\iref{basic.contract.eval}
+and there is no guarantee that there is a way to
+select any particular semantic.
+\end{note}
 
 \pnum
 \recommended

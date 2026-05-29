@@ -8008,20 +8008,26 @@ certain points during execution.
 \grammarterm{postcondition-specifier}s\iref{dcl.contract.func}, and
 \grammarterm{assertion-statement}s\iref{stmt.contract.assert}.
 \defnadj{Implicit}{contract assertions} are introduced
-as components of other language contracts.
+as parts of other statements and expressions.
 
 \pnum
-Each contract assertion has a \defnadjx{contract-assertion}{predicate}{predicate},
+Each explicit contract assertion
+has a \defnadjx{contract-assertion}{predicate}{predicate},
 which is an expression of type \tcode{bool}.
+
+\pnum
+Each implicit contract assertion
+has a \defnadjx{contract-assertion}{condition}{condition}
+under which it is considered satisfied.
 
 \begin{note}
 If it is determined
 during program execution
 that the predicate does not evaluate
 to \tcode{true},
+or that the condition of an implicit contract assertion
+indicates that the contract assertion is not satisfied,
 a contract violation occurs.
-A contract violation is always
-the consequence of incorrect program code.
 \end{note}
 
 \pnum
@@ -8058,11 +8064,14 @@ Observe, enforce, and quick-enforce are \defnx{checking semantics}{contract eval
 enforce and quick-enforce are \defnx{terminating semantics}{contract evaluation semantics!terminating}.
 
 \pnum
-It is
+Except that
+explicit contract assertions
+are never evaluated
+with the assume semantic,
+it is
 \impldef{evaluation semantic used for the evaluation of a contract assertion}
 which evaluation semantic is used
 for any given evaluation of a contract assertion.
-Explicit contract assertions are never evaluated with the assume semantic.
 \begin{note}
 The range and flexibility of available choices of
 evaluation semantics depends on the implementation
@@ -8089,23 +8098,25 @@ The evaluation of a contract assertion using the ignore semantic has no effect.
 \pnum
 If the predicate of
 a contract assertion evaluated with the assume semantic
-would evaluate to \tcode{true}
-the evaluation
-has no effect;
-otherwise, the evaluation has undefined behavior.
+would not evaluate to \tcode{true},
+or the condition of such a contract assertion
+is not satisfied,
+the evaluation has undefined behavior;
+otherwise the evaluation has no effect.
 
 \pnum
 \begin{note}
 The predicate of a contract assertion
 evaluated with the ignore or assume semantic
-is potentially evaluated\iref{basic.def.odr}
+is potentially evaluated\iref{basic.def.odr},
 but not evaluated.
 \end{note}
 
 \pnum
 The evaluation $A$ of a contract assertion
+with a predicate
 using a checking semantic
-determines the value of the predicate.
+determines the value of the predicate
 It is unspecified
 whether the predicate is evaluated.
 Let $B$ be the value that would result from evaluating the predicate.
@@ -8142,6 +8153,9 @@ also happens before $C$.
 A \defn{contract violation} occurs when
 \begin{itemize}
 \item
+the contract assertion has a condition
+that is not satisifed,
+\item
 $B$ is \keyword{false},
 \item
 the evaluation of the predicate
@@ -8156,6 +8170,8 @@ is not a core constant expression.
 
 \begin{note}
 If $B$ is \keyword{true},
+or the contract assertion has a condition
+that is satisfied,
 no contract violation occurs and
 control flow continues normally
 after the point of evaluation of the contract assertion.
@@ -8448,7 +8464,7 @@ if the operation
 is reached during execution.
 There are no further requirements on the behavior if
 control continues after the evaluation of the
-contract assertion.
+contract assertion\iref{intro.abstract}.
 \end{note}
 
 \pnum
