@@ -6066,7 +6066,7 @@ when the initialization of all subobjects is complete.%
 For an object with a non-trivial constructor, referring to any non-static member
 or base class of the object before the constructor begins execution results in
 undefined behavior\wordingcomment{\stdstablename{class.cdtor.before.ctor}}.
-%WORDINGNOTE: ubdef --- class.cdtor.after.dtor
+%WORDINGNOTE: ubdef --- class.cdtor.before.ctor
 %
 %  runtime-checkable: Yes
 %
@@ -6078,7 +6078,7 @@ undefined behavior\wordingcomment{\stdstablename{class.cdtor.before.ctor}}.
 For an object with a non-trivial destructor, referring to
 any non-static member or base class of the object after the destructor finishes
 execution results in undefined behavior\wordingcomment{\stdstablename{class.cdtor.after.dtor}}.
-%WORDINGNOTE: ubdef --- class.cdtor.before.ctor
+%WORDINGNOTE: ubdef --- class.cdtor.after.dtor
 %
 %  runtime-checkable: Yes
 %
