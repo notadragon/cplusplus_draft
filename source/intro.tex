@@ -659,22 +659,48 @@ function templates to manipulate objects of types for which they are instantiate
 \definition{unblock}{defns.unblock}
 satisfy a condition that one or more \termref{defns.block}{blocked}{} threads of execution are waiting for
 
-\indexdefn{behavior!undefined}%
-\definition{undefined behavior}{defns.undefined}
+\indexdefn{behavior!unconstrained}%
+\definition{unconstrained behavior}{defns.unconstrained}
 behavior for which this document
 imposes no requirements
+
+\begin{defnote}
+Unconstrained behavior is expected whenever
+a contract assertion with the assume semantic
+is violated
+or when control continues after the
+guarding contract assertion
+of undefined behavior.
+\end{defnote}
+\begin{defnote}
+Permissible unconstrained behavior ranges
+from ignoring the situation completely with unpredictable results, to
+behaving during translation or program execution in a documented manner
+characteristic of the environment (with or without the issuance of a
+\termref{defns.diagnostic}{diagnostic message}{}), to terminating a translation or execution (with the
+issuance of a diagnostic message).
+\end{defnote}
+
+
+\indexdefn{behavior!undefined}%
+\definition{undefined behavior}{defns.undefined}
+behavior that begins with
+an implicit contract assertion
+that the behavior cannot occur\iref{basic.contract.implicit}
+and, if control continues after the contract assertion,
+has unconstrained behavior.
 
 \begin{defnote}
 Undefined behavior may be expected when
 this document omits any explicit
 definition of behavior or when a program uses an incorrect construct or invalid data.
-Permissible undefined behavior ranges
-from ignoring the situation completely with unpredictable results, to
-behaving during translation or program execution in a documented manner
-characteristic of the environment (with or without the issuance of a
-\termref{defns.diagnostic}{diagnostic message}{}), to terminating a translation or execution (with the
-issuance of a diagnostic message). Many incorrect program constructs do
+Many incorrect program constructs do
 not engender undefined behavior; they are required to be diagnosed.
+There is no requirement that any particular semantic choice
+be available for the implicit contract assertion.
+\end{defnote}
+
+\begin{defnote}
 Evaluation of a constant expression\iref{expr.const.core} never exhibits behavior explicitly
 specified as undefined in \ref{intro} through \ref{\lastcorechapter}.
 \end{defnote}
@@ -743,7 +769,7 @@ The set of
 consists of all syntactic and semantic rules in this document
 except for those rules containing an explicit notation that
 ``no diagnostic is required'' or which are described as resulting in
-``undefined behavior''.
+``unconstrained behavior''.
 
 \pnum
 \indextext{conformance requirements!method of description}%
@@ -757,7 +783,8 @@ If a program contains no violations of the rules in
 \ref{lex} through \ref{\lastlibchapter} as well as those specified in \ref{depr},
 a conforming implementation shall accept and correctly execute
 \begin{footnote}
-``Correct execution'' can include undefined behavior
+``Correct execution'' can include undefined behavior,
+unconstrained behavior,
 and erroneous behavior, depending on
 the data being processed; see \ref{intro.defs} and~\ref{intro.execution}.
 \end{footnote}
@@ -956,9 +983,23 @@ for a given program and a given input.
 
 \pnum
 \indextext{behavior!undefined}%
-Certain other operations are described in this document as
+Certain operations are described in this document as
 undefined behavior (for example, the effect of
 attempting to modify a const object).
+Such operations
+evaluate a \defnadj{guarding}{contract assertion},
+which is an implicit contract assertion
+that they do not occur\iref{basic.contract.implicit}.
+If control continues normally
+after a guarding contract assertion,
+the behavior is unconstrained.
+
+\pnum
+\indextext{behavior!unconstrained}%
+Certain operations are described in this document as
+unconstrained behavior (for example, control continuing
+after evaluating the implicit contract assertion
+that guards undefined behavior\iref{basic.contract.implicit}).
 
 \pnum
 Certain events in the execution of a program
@@ -969,13 +1010,19 @@ is an observable checkpoint,
 as are certain parts of
 the evaluation of contract assertions\iref{basic.contract}.
 \end{note}
+\begin{note}
+Undefined behavior
+whose guarding contract assertion
+is evaluated with the ignore or assume semantic
+does not imply an observable checkpoint.
+\end{note}
 
 \pnum
 \indextext{program!well-formed}%
 \indextext{behavior!observable}%
 The \defnadj{defined}{prefix} of an execution
 comprises the operations $O$
-for which for every undefined operation $U$
+for which for every unconstrained operation $U$
 there is an observable checkpoint $C$
 such that $O$ happens before $C$ and
 $C$ happens before $U$.
@@ -993,24 +1040,12 @@ of the corresponding instance
 of the abstract machine with the
 same program and the same input.
 \indextext{behavior!undefined}%
-If the selected execution contains an undefined operation,
+If the selected execution contains an unconstrained operation,
 the implementation executing that program with that input
 may produce arbitrary additional observable behavior afterwards.
 If the execution of an operation is specified as having erroneous behavior,
 the implementation is permitted to issue a diagnostic and
 is permitted to terminate the execution of the program.
-
-\begin{note}
-All undefined behavior
-except that introduced by evaluating a contract assertion with the
-assume semantic
-has an implicit precondition assertion\iref{basic.contract.implicit}
-that it does not occur, although that assertion
-can be evaluated with the assume
-contract evaluation semantic\iref{basic.contract.eval}
-and there is no guarantee that there is a way to
-select any particular semantic.
-\end{note}
 
 \pnum
 \recommended

@@ -8435,47 +8435,41 @@ after the evaluation of
 all operands of $O$.
 
 \pnum
-A built-in operation $O$
-may have an
-\defn{implicit postcondition assertion} $C$ applied to it.
-If so,
-the evaluation of $C$
-is sequenced after
-the evaluation of $O$.
-
-\pnum
-All undefined behavior
-except the violation of a contract assertion
-evaluated with the assume semantic
-has an implicit precondition assertion
-that it does not occur.
-
-%WORDINGNOTE: The above exception is not strictly needed, but it is
-%      here to avoid the perception of an infinite recursion in
-%      the specification.
+All undefined behavior has a
+guarding contract assertion
+that is an implicit contract assertion
+whose condition is never satisfied.
 
 \pnum
 \begin{note}
-The implicit precondition assertion
-that an operation with undefined behavior
-does not occur
-will be evaluated (and thus violated)
-if the operation
-is reached during execution.
-There are no further requirements on the behavior if
-control continues after the evaluation of the
-contract assertion\iref{intro.abstract}.
+If the guarding contract assertion
+of undefined behavior
+is
+\begin{itemize}
+\item evaluated with the ignore semantic,
+\item evaluated with the assume semantic, or
+\item evaluated with the observe semantic
+and the contract-violation handler returns normally
+\end{itemize}
+then the behavior is unconstrained\iref{intro.abstract}.
 \end{note}
 
 \pnum
 \begin{note}
 Erroneous behavior with
 an implicit precondition assertion that it does not occur
-is equivalent to undefined behavior
+results in unconstrained behavior
 when that assertion is evaluated with the
 assume semantic\iref{basic.contract.eval}
 but in all other cases specifies behavior.
 \end{note}
+
+%WORDINGNOTE: The above note makes it clear that the places where we
+% have replaced what was previously undefined behavior with
+% erroneous behavior that has an implicit precondition can be
+% implemented in a conforming manner by current compilers by
+% dictating that the associated guarding contract assertion is
+% evaluated with the assume semantic.
 
 \rSec2[basic.contract.handler]{Contract-violation handler}
 
