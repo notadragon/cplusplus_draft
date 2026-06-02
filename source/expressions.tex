@@ -64,7 +64,7 @@ see~\ref{over.match.oper}, \ref{over.built}.
 \indextext{zero!remainder undefined}%
 If during the evaluation of an expression, the result is not
 mathematically defined or not in the range of representable values for
-its type, the result is an erroneous value
+its type, the result is an unspecified erroneous value
 with an implicit precondition assertion
 that it does not occur\iref{basic.contract.implicit}.
 \begin{note}
@@ -727,7 +727,7 @@ pointer value\iref{basic.compound}, the behavior is
 \item Otherwise, if the bits in the value representation of
 the object to which the glvalue refers
 are not valid for the object's type,
-the prvalue result is an erroneous value,
+the prvalue result is an unspecified erroneous value,
 and there is an implicit precondition
 that this does not occur\iref{basic.contract.implicit}\wordingcomment{\stdstablename{conv.lval.valid.representation}}.
 %WORDINGNOTE: ubdef --- conv.lval.valid.representation
@@ -1041,7 +1041,7 @@ represented in the destination type, the result of the conversion is
 that exact representation. If the source value is between two adjacent
 destination values, the result of the conversion is an
 \impldef{result of inexact floating-point conversion} choice of either of those values.
-Otherwise, the result is an erroneous value
+Otherwise, the result is an unspecified erroneous value
 with an implicit precondition that this does not occur.\wordingcomment{\stdstablename{conv.double.out.of.range}}.
 %WORDINGNOTE: ubdef --- conv.double.out.of.range
 %
@@ -1065,7 +1065,7 @@ A prvalue of a floating-point type can be converted to a prvalue of an
 integer type. The conversion truncates; that is, the fractional part is
 discarded.
 \indextext{value!undefined unrepresentable integral}%
-An erroneous value is produced
+An unspecified erroneous value is produced
 if the truncated value cannot be represented\wordingcomment{\stdstablename{conv.fpint.float.not.represented}}
 %WORDINGNOTE: ubdef --- conv.fpint.float.not.represented
 %
@@ -1100,7 +1100,7 @@ exactly as a value of the floating-point type.
 \end{note}
 If the value being converted is
 outside the range of values that can be represented,
-an erroneous value is produced
+an unspecified erroneous value is produced
 with an implicit precondition that this does not occur\wordingcomment{\stdstablename{conv.fpint.int.not.represented}}.
 %WORDINGNOTE: ubdef --- conv.fpint.int.not.represented
 %
@@ -4984,7 +4984,7 @@ If the enumeration type does not have a fixed underlying type,
 the value is unchanged
 if the original value is within the range
 of the enumeration values\iref{dcl.enum}, and
-otherwise, an erroneous value is produced with
+otherwise, an unspecified erroneous value is produced with
 an implicit precondition that this does not occur\iref{basic.contract.implicit}
 \wordingcomment{\stdstablename{expr.static.cast.enum.outside.range}}.
 %WORDINGNOTE: ubdef --- expr.static.cast.enum.outside.range
@@ -5010,7 +5010,7 @@ If the source value is between two adjacent destination values,
 the result of the conversion is
 an \impldef{result of inexact floating-point conversion} choice of
 either of those values.
-Otherwise, an erroneous value is produced
+Otherwise, an unspecified erroneous value is produced
 with an implicit precondition that this does not occur\iref{basic.contract.implicit}\wordingcomment{\stdstablename{expr.static.cast.fp.outside.range}}.
 %WORDINGNOTE: ubdef --- expr.static.cast.fp.outside.range
 %
@@ -7484,8 +7484,12 @@ The binary \tcode{/} operator yields the quotient, and the binary
 \tcode{\%} operator yields the remainder from the division of the first
 expression by the second.
 \indextext{zero!undefined division by}%
-There is an implicit precondition that
-the second operand of \tcode{/} or \tcode{\%} is not zero\wordingcomment{\stdstablename{expr.mul.div.by.zero}},
+If the second operand of
+\tcode{/} or \tcode{\%}
+is zero,
+then the operator yields an unspecified erroneous value
+and there is an implicit precondition that
+this does not occur\wordingcomment{\stdstablename{expr.mul.div.by.zero}}.
 %WORDINGNOTE: ubdef --- expr.mul.div.by.zero
 %
 %  runtime-checkable: Yes
@@ -7495,7 +7499,6 @@ the second operand of \tcode{/} or \tcode{\%} is not zero\wordingcomment{\stdsta
 %  checking: Insert a check of whether the second operand is zero
 %
 %  replacement: Coerce into erroneous value
-and if it is then the operator yields an erroneous value.
 For integral operands, the \tcode{/} operator yields the algebraic quotient with
 any fractional part discarded;
 \begin{footnote}
@@ -7503,7 +7506,7 @@ This is often called truncation towards zero.
 \end{footnote}
 if the quotient \tcode{a/b} is representable in the type of the result,
 \tcode{(a/b)*b + a\%b} is equal to \tcode{a}; otherwise,
-the operator yields an erroneous value
+the operator yields an unspecified erroneous value
 and there is an implicit precondition that
 this does not occur\iref{basic.contract.implicit}\wordingcomment{\stdstablename{expr.mul.representable.type.result}}.
 %WORDINGNOTE: ubdef --- expr.mul.representable.type.result
@@ -7693,7 +7696,7 @@ left operand.
 There is an implicit precondition that
 the right operand is nonnegative and
 less than the width of the promoted left operand\iref{basic.contract.implicit};
-if not, an erroneous value is produced\wordingcomment{\stdstablename{expr.shift.neg.and.width}}.
+if not, an unspecified erroneous value is produced\wordingcomment{\stdstablename{expr.shift.neg.and.width}}.
 %WORDINGNOTE: ubdef --- expr.shift.neg.and.width
 %
 %  runtime-checkable: Yes
