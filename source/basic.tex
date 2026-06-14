@@ -79,6 +79,10 @@ Every name is introduced by a \defn{declaration}, which is a
 in a structured binding declaration\iref{dcl.struct.bind},
 \item
 \grammarterm{identifier}
+in a \grammarterm{postcondition-capture}
+in a postcondition assertion\iref{dcl.contract.capture},
+\item
+\grammarterm{identifier}
 in a \grammarterm{result-name-introducer}
 in a postcondition assertion\iref{dcl.contract.res},
 \item
@@ -1378,6 +1382,11 @@ template<class T
 \end{example}
 
 \pnum
+The locus of a \grammarterm{postcondition-capture}\iref{dcl.contract.capture}
+is the start of the predicate
+of the associated postcondition assertion.
+
+\pnum
 The locus of a \grammarterm{result-name-introducer}\iref{dcl.contract.res}
 is immediately after it.
 
@@ -1625,7 +1634,14 @@ a template parameter scope as a parent scope.
 \pnum
 Each contract assertion\iref{basic.contract}
 $C$ introduces a \defnadj{contract-assertion}{scope}
-that includes $C$.
+that includes
+\begin{itemize}
+\item the predicate of $C$, and
+\item the initializer of any postcondition-captures of $C$.
+\end{itemize}
+%WORDINGNOTE: The above bulletted list is broken down to avoid conflicts with
+% P3400, which will introduce an expression as part of a contract assertion
+% that is explicitly not part of the contract-assertion scope.
 
 \pnum
 If a \grammarterm{result-name-introducer}\iref{dcl.contract.res}
@@ -4174,15 +4190,20 @@ storage duration and if \tcode{T} has a non-trivial destructor,
 \begin{footnote}
 That
 is, an object for which a destructor will be called
-implicitly---upon exit from the block for an object with
+implicitly---upon
+exit from the block,
+completion of the full expression,
+or completion of the postcondition assertion execution
+for an object with
 automatic storage duration, upon exit from the thread for an object with
 thread storage duration, or upon exit from the program for an object
 with static storage duration.
 \end{footnote}
 and another object of the original type does not occupy
 that same storage location when the implicit destructor call takes
-place, the behavior of the program is undefined\ubdef{original.type.implicit.destructor}. This is true
-even if the block is exited with an exception.
+place, the behavior of the program is undefined\ubdef{original.type.implicit.destructor}.
+This is true
+even if the destruction occurs as part of stack unwinding.
 \begin{example}
 \begin{codeblock}
 class T { };
@@ -4460,13 +4481,19 @@ These variables are initialized and destroyed as described in~\ref{stmt.dcl}.
 Variables that belong to a parameter scope also have automatic storage duration.
 The storage for a function parameter lasts until
 immediately after its destruction\iref{expr.call}.
+Postcondition captures also have automatic storage duration.
+The storage for a postcondition capture lasts until
+immediately after the execution of the associated postcondition
+completes\iref{basic.contract.capture,basic.contract.eval}.
 
 \pnum
 If a variable with automatic storage duration has initialization or a destructor with side
-effects, an implementation shall not destroy it before the end of its block
+effects, an implementation shall not destroy it except when specified
 nor eliminate it as an optimization, even if it appears to be
 unused, except that a class object or its copy/move may be eliminated as
 specified in~\ref{class.copy.elision}.
+%WORDINGNOTE: Ths reads as "we will do the things we say we will do.
+%  It is possible this paragraph should be made a note instead.
 
 \rSec3[basic.stc.dynamic]{Dynamic storage duration}%
 
@@ -6669,12 +6696,12 @@ When invoking a function \placeholder{f} (whether or not the function is inline)
 every argument expression and
 the postfix expression designating \placeholder{f}
 are sequenced before
-every precondition assertion of the function call\iref{expr.call},
+every precondition evaluation of the function call\iref{expr.call},
 which in turn are sequenced before
 every expression or statement
 in the body of \placeholder{f},
 which in turn are sequenced before
-every postcondition assertion of the function call.
+every postcondition evaluation of the function call.
 
 \pnum
 For each
@@ -7865,25 +7892,62 @@ By default,
 evaluations of contract assertions should use the enforce semantic.
 
 \pnum
-The evaluation of a contract assertion using the ignore semantic has no effect.
+The \defnadj{execution of a}{contract assertion} $A$
+consists of a (possibly empty) sequence of evaluations
+that are sequenced in order.
+The evaluations
+are determined by the evaluation semantic
+as described below.
+
+\pnum
+All of the evaluations
+that are part of
+an execution of a contract assertion
+form a block
+that is suspended
+between the evaluations.
+\begin{note}
+Each execution, therefore,
+has its own instance of
+each object declared
+by any postcondition captures
+associated with the contract assertion.
+\end{note}
+
+\pnum
+The execution of $A$ using the ignore semantic
+consists of a single evaluation that has no effect.
 \begin{note}
 The predicate is potentially evaluated\iref{basic.def.odr},
 but not evaluated.
 \end{note}
 
 \pnum
-The evaluation $A$ of a contract assertion
+The execution of $A$
+using a checking semantic
+consists of
+\begin{itemize}
+\item the initialization of each postcondition capture of $A$, in order,
+\item the evaluation of the predicate of $A$,
+\item the occurrence of a contract violation based on the result of $A$, and
+\item the destruction of each postcondition capture of $A$, in reverse order.
+\end{itemize}
+
+\pnum
+The execution of $A$
 using a checking semantic
 determines the value of the predicate.
 It is unspecified
-whether the predicate is evaluated.
-Let $B$ be the value that would result from evaluating the predicate.
+whether the evaluations of the contract assertion
+other than a potential contract violation are performed.
+Let $B$ be the value of the predicate that would result from
+performing the evaluations of the contract assertion.
 \begin{note}
 To determine whether a predicate would evaluate
 to \keyword{true} or \keyword{false},
-an alternative evaluation
-that produces the same value as the predicate
-but has no side effects
+alternative evaluations
+that produce the same result as the predicate
+but have no side effects
 can occur.
 \begin{example}
 \begin{codeblock}
@@ -7901,39 +7965,41 @@ void g()
 \end{note}
 
 \pnum
-There is an observable checkpoint\iref{intro.abstract} $C$
-that happens before $A$
+There is an observable checkpoint\iref{intro.abstract} $O$
+that happens before each of the evaluations of $A$
 such that any other evaluation
-that happens before $A$
-also happens before $C$.
+that happens before that evaluation
+also happens before $O$.
 
 \pnum
-A \defn{contract violation} occurs when
+A \defn{contract violation} of $A$ occurs when
 \begin{itemize}
 \item
 $B$ is \keyword{false},
 \item
-the evaluation of the predicate
+any evaluation of $A$
 exits via an exception, or
 \item
-the evaluation of the predicate
+any evaluation of $A$
 is performed in a context that is
 manifestly constant-evaluated\iref{expr.const.defns}
-and the predicate
+and that evaluation
 is not a core constant expression.
 \end{itemize}
 
 \begin{note}
 If $B$ is \keyword{true},
 no contract violation occurs and
-control flow continues normally
-after the point of evaluation of the contract assertion.
+control flow continues normally.
 The evaluation of the predicate
 can fail to produce a value
 without causing a contract violation,
 for example,
 by calling \tcode{longjmp}\iref{csetjmp.syn}
 or terminating the program.
+Destruction of postcondition captures can result in
+a contract violation even after
+$B$ was determined to be \keyword{true}.
 \end{note}
 
 \pnum
@@ -8028,7 +8094,7 @@ of the invocation of the contract-violation handler.
 
 \pnum
 If the contract violation occurred
-because the evaluation of the predicate
+because an evaluation
 exited via an exception,
 the contract-violation handler is invoked
 from within an active implicit handler
@@ -8038,6 +8104,10 @@ returns normally
 and the evaluation semantic is observe,
 that implicit handler
 is no longer considered active.
+No further evaluations
+that are part of the current execution of that contract assertion
+other than the destruction of postcondition captures that have already been initialized
+are performed.
 
 \begin{note}
 The exception can be inspected or rethrown within the contract-violation handler.
@@ -8095,7 +8165,7 @@ without having to terminate the program.
 
 \pnum
 If a contract-violation handler
-invoked from the evaluation of a function contract assertion\iref{dcl.contract.func}
+invoked from an evaluation of a function contract assertion\iref{dcl.contract.func}
 exits via an exception,
 the behavior is as if
 the function body exits via that same exception.
@@ -8118,10 +8188,8 @@ continues from the execution of that statement.
 \end{note}
 
 \pnum
-To \defn{evaluate in sequence} a list $R$ of contract assertions:
-\begin{itemize}
-\item
-Construct a list of contract assertions $S$ such that
+The \defn{evaluation sequence} of a list $R$ of contract assertions
+is a list $S$ such that
 \begin{itemize}
 \item
 all elements of $R$ are in $S$,
@@ -8139,15 +8207,6 @@ then the
 first occurrence of $A$
 precedes the first occurrence of $B$
 in $S$.
-\end{itemize}
-\item
-Evaluate each element of $S$ such that,
-if a contract assertion $A$
-precedes a contract assertion $B$
-in $S$,
-then the evaluation of $A$
-is sequenced before
-the evaluation of $B$.
 \end{itemize}
 
 \begin{example}

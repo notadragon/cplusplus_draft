@@ -425,6 +425,11 @@ resulting in the destruction of the returned object,
 followed by the destruction of the local variable \tcode{a}.
 Finally, the returned object is constructed again at \#2.
 \end{example}
+%WORDINGNOTE: The above code handles destroying objects during stack
+% unwinding, but it is not immediately obvious which actual automatic objects
+% are destroyed by this process.  (All of them everywhere?   Probably not.)
+% We want to be sure to include those created by postcondition captures, but
+% it is not clear exactly how to accomplish that.
 
 \pnum
 If the initialization of an object
