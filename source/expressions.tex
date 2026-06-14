@@ -3924,15 +3924,82 @@ void t() {
 \pnum
 The \defn{precondition evaluations}
 and \defn{postcondition evaluations}
-of a function call are determined as follows:
+of a function call
+consist of the evaluations of an
+execution of a contract assertion $C$ for
+every $C$ in
+the precondition assertions and
+the postcondition assertions
+of the function call.
+For each such evaluation,
+it is in the precondition evaluations
+of the function call if
 \begin{itemize}
-\item TODO
+\item
+it is the evaluation of
+the predicate of a precondition asssertion,
+\item
+it is the occurence of
+a contract violation based on the result of
+a precondition assertion, or
+\item
+it is the initialization of
+a postcondition capture,
 \end{itemize}
-%WORDINGTODO: build up these two lists based on the
-% assertions
+otherwise it is in the postcondition evaluations.
+\begin{note}
+An evaluation is in the postcondition evaluations if
+\begin{itemize}
+\item
+it is the evaluation of
+the predicate of a postcondition assertion, 
+\item
+it is the occurence of
+a contract violation based on the result of
+a postcondition assertion, or
+\item
+it is the destruction of
+a postcondition capture.
+\end{itemize}
+\end{note}
 
-%WORDINGTODO: make sure we destroy captures properly when we
-% restart
+\pnum
+The order of
+the precondition evaluations and
+the postcondition evaluations
+of a function call
+have the following constraints:
+\begin{itemize}
+\item
+The evaluations associated with
+a single execution of a contract assertion
+are in the same order that they
+are specified\iref{basic.contract.eval}.
+\item
+The evaluation of a predicate of a contract assertion
+and the occurrence of a contract violation of a contract assertion
+are in the same order as
+the corresponding contract assertions
+in the precondition assertions and postcondition assertions
+of the function call.
+\item
+The initialization of a postcondition capture
+associated with a postcondition assertion $A$
+shall be after
+the first evaluation
+associated with a precondition assertion $B$
+for any $B$ is in the precondition assertions of the function call
+that preceeds $A$ in lexical order.
+\item
+The evaluation of the predicate
+of a precondition assertion $B$
+shall be after
+the first evaluation of
+the initialization of any postcondition capture
+associated with a postcondition assertion $A$
+for any $A$ in the postcondition assertions of the function call
+that preceeds $B$ in lexical order.
+\end{itemize}
 
 \pnum
 A type $\tcode{T}_\text{call}$ is

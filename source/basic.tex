@@ -1380,7 +1380,7 @@ template<class T
 \end{example}
 
 \pnum
-The locus of a \grammarterm{postcondition-capture}\iref{basic.contract.capture}
+The locus of a \grammarterm{postcondition-capture}\iref{dcl.contract.capture}
 is the start of the predicate
 of the associated postcondition assertion.
 
@@ -7872,7 +7872,7 @@ as described below.
 
 \pnum
 The execution of a contract assertion using the ignore semantic
-consists of no evaluations.
+consists of a single evaluation that has no effect.
 \begin{note}
 The predicate is potentially evaluated\iref{basic.def.odr},
 but not evaluated.
@@ -7883,10 +7883,10 @@ The execution of a contract assertion $C$
 using a checking semantic
 consists of
 \begin{itemize}
-\item the initialization of any postcondition captures of $C$, 
+\item the initializations of each postcondition captures of $C$, in order,
 \item the evaluation of the predicate of $C$,
 \item the occurance of a contract violation based on the result of $C$, and
-\item the destruction of any postcondition captures that were initialized.
+\item the destruction of each postcondition capture of $C$, in reverse order.
 \end{itemize}
 
 \pnum
@@ -8060,6 +8060,10 @@ returns normally
 and the evaluation semantic is observe,
 that implicit handler
 is no longer considered active.
+No further evaluations
+that are part of the current execution of that contract assertion
+other than the destruction of postcondition captures that have already been initialized
+are evaluated.
 
 \begin{note}
 The exception can be inspected or rethrown within the contract-violation handler.
