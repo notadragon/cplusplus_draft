@@ -79,6 +79,10 @@ Every name is introduced by a \defn{declaration}, which is a
 in a structured binding declaration\iref{dcl.struct.bind},
 \item
 \grammarterm{identifier}
+in a \grammarterm{postcondition-capture}
+in a postcondition assertion\iref{dcl.contract.capture}
+\item
+\grammarterm{identifier}
 in a \grammarterm{result-name-introducer}
 in a postcondition assertion\iref{dcl.contract.res},
 \item
@@ -1376,6 +1380,11 @@ template<class T
 \end{example}
 
 \pnum
+The locus of a \grammarterm{postcondition-capture}\iref{basic.contract.capture}
+is the start of the predicate
+of the associated postcondition assertion.
+
+\pnum
 The locus of a \grammarterm{result-name-introducer}\iref{dcl.contract.res}
 is immediately after it.
 
@@ -1623,7 +1632,14 @@ a template parameter scope as a parent scope.
 \pnum
 Each contract assertion\iref{basic.contract}
 $C$ introduces a \defnadj{contract-assertion}{scope}
-that includes $C$.
+that includes
+\begin{itemize}
+\item the predicate of $C$, and
+\item the initializer of any postcondition-captures of $C$.
+\end{itemize}
+%WORDINGNOTE: The above bulletted list is broken down to avoid conflicts with
+% P3400, which will introduce an expression as part of a contract assertoin
+% that is explicitly not part of the contract-assertion scope.
 
 \pnum
 If a \grammarterm{result-name-introducer}\iref{dcl.contract.res}
@@ -6655,12 +6671,12 @@ When invoking a function \placeholder{f} (whether or not the function is inline)
 every argument expression and
 the postfix expression designating \placeholder{f}
 are sequenced before
-every precondition assertion of \placeholder{f}\iref{dcl.contract.func},
+every precondition evaluation of the function call\iref{expr.call},
 which in turn are sequenced before
 every expression or statement
 in the body of \placeholder{f},
 which in turn are sequenced before
-every postcondition assertion of \placeholder{f}.
+every postcondition evaluation of the function call.
 
 \pnum
 For each
@@ -7847,25 +7863,47 @@ By default,
 evaluations of contract assertions should use the enforce semantic.
 
 \pnum
-The evaluation of a contract assertion using the ignore semantic has no effect.
+The \defnadj{execution of a}{contract assertion}
+consists of a (possibly empty) sequence of evaluations
+that are sequenced in order.
+The evaluations
+are determined by the evaluation semantic
+as described below.
+
+\pnum
+The execution of a contract assertion using the ignore semantic
+consists of no evaluations.
 \begin{note}
 The predicate is potentially evaluated\iref{basic.def.odr},
 but not evaluated.
 \end{note}
 
 \pnum
-The evaluation $A$ of a contract assertion
+The execution of a contract assertion $C$
+using a checking semantic
+consists of
+\begin{itemize}
+\item the initialization of any postcondition captures of $C$, 
+\item the evaluation of the predicate of $C$,
+\item the occurance of a contract violation based on the result of $C$, and
+\item the destruction of any postcondition captures that were initialized.
+\end{itemize}
+
+\pnum
+The execution of a contract assertion
 using a checking semantic
 determines the value of the predicate.
 It is unspecified
-whether the predicate is evaluated.
-Let $B$ be the value that would result from evaluating the predicate.
+whether the evaluations of the contract assertion
+other than a potential contract violation are evaluated.
+Let $B$ be the value of the predicate that would result from
+performing the evaluations of the contract assertion.
 \begin{note}
 To determine whether a predicate would evaluate
 to \keyword{true} or \keyword{false},
-an alternative evaluation
+a alternative evaluations
 that produces the same value as the predicate
-but has no side effects
+but have no side effects
 can occur.
 \begin{example}
 \begin{codeblock}
@@ -7884,38 +7922,40 @@ void g()
 
 \pnum
 There is an observable checkpoint\iref{intro.abstract} $C$
-that happens before $A$
+that happens before each evaluation of $A$
 such that any other evaluation
-that happens before $A$
+that happens before that evaluation
 also happens before $C$.
 
 \pnum
-A \defn{contract violation} occurs when
+A \defn{contract violation} of $C$ occurs when
 \begin{itemize}
 \item
 $B$ is \keyword{false},
 \item
-the evaluation of the predicate
+any evaluation of $A$
 exits via an exception, or
 \item
-the evaluation of the predicate
+any evaluation of $A$
 is performed in a context that is
 manifestly constant-evaluated\iref{expr.const.defns}
-and the predicate
+and that evaluation
 is not a core constant expression.
 \end{itemize}
 
 \begin{note}
 If $B$ is \keyword{true},
 no contract violation occurs and
-control flow continues normally
-after the point of evaluation of the contract assertion.
+control flow continues normally.
 The evaluation of the predicate
 can fail to produce a value
 without causing a contract violation,
 for example,
 by calling \tcode{longjmp}\iref{csetjmp.syn}
 or terminating the program.
+Destruction of postcondition captures may result in
+a contract violation even after
+the $B$ was determined to be \keyword{true}.
 \end{note}
 
 \pnum
@@ -8010,7 +8050,7 @@ of the invocation of the contract-violation handler.
 
 \pnum
 If the contract violation occurred
-because the evaluation of the predicate
+because an evaluation
 exited via an exception,
 the contract-violation handler is invoked
 from within an active implicit handler
@@ -8077,7 +8117,7 @@ without having to terminate the program.
 
 \pnum
 If a contract-violation handler
-invoked from the evaluation of a function contract assertion\iref{dcl.contract.func}
+invoked from an evaluation of a function contract assertion\iref{dcl.contract.func}
 exits via an exception,
 the behavior is as if
 the function body exits via that same exception.
@@ -8100,10 +8140,8 @@ continues from the execution of that statement.
 \end{note}
 
 \pnum
-To \defn{evaluate in sequence} a list $R$ of contract assertions:
-\begin{itemize}
-\item
-Construct a list of contract assertions $S$ such that
+The \defn{evaluation sequence} of a list $R$ of contract assertions
+is a list $S$ such that
 \begin{itemize}
 \item
 all elements of $R$ are in $S$,
@@ -8121,15 +8159,6 @@ then the
 first occurrence of $A$
 precedes the first occurrence of $B$
 in $S$.
-\end{itemize}
-\item
-Evaluate each element of $S$ such that,
-if a contract assertion $A$
-precedes a contract assertion $B$
-in $S$,
-then the evaluation of $A$
-is sequenced before
-the evaluation of $B$.
 \end{itemize}
 
 \begin{example}

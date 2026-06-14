@@ -3200,6 +3200,34 @@ foo(1);                         // \tcode{xs} contains one \grammarterm{init-cap
 \end{example}
 
 \pnum
+A \defnx{\grammarterm{postcondition-capture} pack}{postcondition-capture pack@\fakegrammarterm{postcondition-capture} pack}
+is a \grammarterm{postcondition-capture}
+that introduces a \grammarterm{postcondition-capture}
+for each of the elements
+in the pack expansion of
+its \grammarterm{initializer}.
+
+\begin{note}
+The initializer of a
+\grammarterm{postcondition-simple-capture}
+is its \grammarterm{identifier}
+and will denote a function parameter pack.
+\end{note}
+
+\begin{example}
+\begin{codeblock}
+template <typename T> T transform(const T& t);
+template <typename... Ts> bool check(Ts... ts);
+
+template <typename... Args>
+void foo(Args... args)
+  post [ ...args ] (check(args...))     // \tcode{args} in predicate refer to captures of each function parameter
+  post [ targs...=transform(args) ]
+                   (check(targs...));   // \tcode{targs} is a pack of one capture for each element of \tcode{args}.
+\end{codeblock}
+\end{example}
+
+\pnum
 A \defn{structured binding pack} is an \grammarterm{sb-identifier}
 that introduces zero or more structured bindings\iref{dcl.struct.bind}.
 \begin{example}

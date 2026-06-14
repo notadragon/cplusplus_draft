@@ -1410,8 +1410,13 @@ the unary \tcode{\&} operator\iref{expr.unary.op},
 the \grammarterm{id-expression} is transformed into
 a class member access expression using \tcode{(*this)} as the object expression.
 If this transformation occurs
-in the predicate of a precondition assertion of a constructor of \tcode{X}
-or a postcondition assertion of a destructor of \tcode{X},
+in
+\begin{itemize}
+\item the predicate of a precondition assertion, or
+\item the initializer of a postcondition capture
+\end{itemize}
+of a constructor of \tcode{X},
+or the predicate of a postcondition assertion of a destructor of \tcode{X},
 the expression is ill-formed.
 \begin{note}
 If \tcode{C} is not \tcode{X} or a base class of \tcode{X},
@@ -1659,7 +1664,12 @@ the type of the expression is \tcode{const U}.
 \pnum
 Otherwise,
 if the \grammarterm{unqualified-id}
-appears in the predicate of a contract assertion $C$\iref{basic.contract}
+appears in
+\begin{itemize}
+\item the predicate, or
+\item the initializer of a postcondition capture
+\end{itemize}
+of a contract assertion $C$\iref{basic.contract}
 and the entity is
 \begin{itemize}
 \item
@@ -1677,6 +1687,8 @@ whose corresponding variable
 is declared outside of $C$,
 \end{itemize}
 then the type of the expression is \keyword{const}~\tcode{T}.
+%WORDINGNOTE: If we choose to apply \tcode{const}-ification to postconidition
+% captures we would add that as a separate bullet here.
 
 \pnum
 \begin{example}
@@ -1767,27 +1779,27 @@ and the implementation introduces any temporary objects
 to hold the value of that parameter as specified in \ref{class.temporary},
 \begin{itemize}
 \item
-if the contract assertion
-is a precondition assertion
-and the evaluation of the precondition assertion
+if the evaluation
+is a precondition evaluation that
 is sequenced before the initialization of the parameter object,
 $E$ refers to the most recently initialized such temporary object, and
 \item
-if the contract assertion
-is a postcondition assertion,
+if the evaluation
+is a postcondition evaluation,
 it is unspecified whether $E$ refers to
 one of the temporary objects or the parameter object;
-the choice is consistent within a single evaluation of a postcondition assertion.
+the choice is consistent within a complete evaluation
+of a postcondition assertion.
 \end{itemize}
 
 \pnum
 If an \grammarterm{id-expression} $E$
-names a result binding
-in a postcondition assertion
+names a result binding $R$
 and the implementation introduces any temporary objects
 to hold the result object as specified in \ref{class.temporary},
-and the postcondition assertion
-is sequenced before the initialization of the result object\iref{expr.call},
+then any evaluation of $E$
+that is sequenced before
+the initialization of the result object denoted by $R$\iref{expr.call},
 $E$ refers to the most recently initialized such temporary object.
 
 \pnum
@@ -1980,8 +1992,13 @@ The result of a \grammarterm{qualified-id} $Q$ is
 the entity it denotes\iref{basic.lookup.qual}.
 
 \pnum
-If $Q$ appears
-in the predicate of a contract assertion $C$\iref{basic.contract}
+If $Q$
+appears in
+\begin{itemize}
+\item the predicate, or
+\item the initializer of a postcondition capture
+\end{itemize}
+of a contract assertion $C$\iref{basic.contract}
 and the entity is
 \begin{itemize}
 \item
@@ -1998,7 +2015,8 @@ whose corresponding variable
 is declared outside of $C$,
 \end{itemize}
 then the type of the expression is \keyword{const}~\tcode{T}.
-
+%WORDINGNOTE: If we choose to apply \tcode{const}-ification to postconidition
+% captures we would add that as a separate bullet here.
 
 \pnum
 Otherwise, the type of the expression is the type of the result.
@@ -3848,6 +3866,74 @@ the object of scalar type
 denoted by the object expression
 of the class member access\iref{expr.ref,basic.life}.
 
+
+\pnum
+The precondition assertions of a function call are,
+in order:
+\begin{itemize}
+\item
+if the \grammarterm{postfix-expression}
+is a (possibly implicit) class member access expression
+and the call
+is a virtual function call,
+the precondition assertions\iref{dcl.contract.func}
+of the statically chosen function;
+\item
+the precondition assertions
+of the function actually called.
+\end{itemize}
+The postcondition assertions of a function call are,
+in order:
+\begin{itemize}
+\item
+the postcondition assertions
+of the function actually called;
+\item
+if the \grammarterm{postfix-expression}
+is a (possibly implicit) class member access expression
+and the call
+is a virtual function call,
+the postcondition assertions
+of the statically chosen function.
+\end{itemize}
+\begin{example}
+\begin{codeblock}
+struct X1 { virtual void f()         pre(a) post(b) {} };
+struct X2 { virtual void f()         pre(c) post(d) {} };
+struct Y : X1    { void f() override pre(e) post(f) {} };
+struct Z : Y, X2 { void f() override pre(g) post(h) {} };
+
+void t() {
+  Z z;
+  z.f();                        // asserts g, h
+  static_cast<Y*>(&z)->f();     // asserts e, g, h, f
+
+  X1& x1ref = z;
+  X2& x2ref = z;
+  x1ref.f();                    // asserts a, g, h, b
+  x2ref.f();                    // asserts c, g, h, d
+  x1ref.X1::f();                // asserts a, b
+  x1ref.[:^^X1::f:]();          // asserts a, g, h, b
+
+  void (X1::*pmf)() = &X1::f;
+  (x1ref.*pmf)();               // asserts g, h
+}
+\end{codeblock}
+\end{example}
+
+\pnum
+The \defn{precondition evaluations}
+and \defn{postcondition evaluations}
+of a function call are determined as follows:
+\begin{itemize}
+\item TODO
+\end{itemize}
+%WORDINGTODO: build up these two lists based on the
+% assertions
+
+%WORDINGTODO: make sure we destroy captures properly when we
+% restart
+
 \pnum
 A type $\tcode{T}_\text{call}$ is
 \defn{call-compatible} with a function type $\tcode{T}_\text{func}$
@@ -3875,8 +3961,7 @@ and the function types are otherwise the same.
 When a function is called, each parameter\iref{dcl.fct} is
 initialized\iref{dcl.init,class.copy.ctor} with
 its corresponding argument,
-and each precondition assertion of the function
-is evaluated\iref{dcl.contract.func}.
+and each precondition evaluation of the function occurs\iref{dcl.contract.func}.
 If the function is an explicit object member function and
 there is an implied object argument\iref{over.call.func},
 the list of provided arguments is preceded by the implied object argument
@@ -3944,8 +4029,7 @@ including every associated value computation and side effect,
 is indeterminately sequenced with respect to that of any other parameter.
 These evaluations are
 sequenced before
-the evaluation of the precondition assertions of the function,
-which are evaluated in sequence\iref{dcl.contract.func}.
+the precondition evaluations of the function.
 For any temporaries
 introduced to hold the values of function parameters,
 the initialization of the parameter objects from those temporaries
@@ -3998,11 +4082,10 @@ converted to the return type of the statically chosen function.
 
 \pnum
 When the called function exits normally\iref{stmt.return,expr.await},
-all postcondition assertions of the function
-are evaluated in sequence\iref{dcl.contract.func}.
+all postcondition evaluations of the function occur\iref{dcl.contract.func}.
 If the implementation introduces any temporary objects
 to hold the result value as specified in \ref{class.temporary},
-the evaluation of each postcondition assertion
+each postcondition evaluation
 is indeterminately sequenced with respect to
 the initialization of any of those temporaries or the result object.
 These evaluations, in turn, are sequenced before

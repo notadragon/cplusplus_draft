@@ -4383,7 +4383,8 @@ namespace std::contracts {
   enum class assertion_kind : @\unspec@ {
     pre = 1,
     post = 2,
-    assert = 3
+    assert = 3,
+    post_capture = 4
   };
 
   enum class evaluation_semantic : @\unspec@ {
@@ -4435,10 +4436,11 @@ with meanings listed in Table~\ref{tab:support.contract.enum.kind}.
 \begin{floattable}{Enum \tcode{assertion_kind}}{support.contract.enum.kind}
 {ll}
 \topline
-\lhdr{Name}    & \rhdr{Meaning}                        \\ \capsep
-\tcode{pre}    & A precondition assertion              \\ \rowsep
-\tcode{post}   & A postcondition assertion             \\ \rowsep
-\tcode{assert} & An \grammarterm{assertion-statement}  \\ \rowsep
+\lhdr{Name}          & \rhdr{Meaning}                                         \\ \capsep
+\tcode{pre}          & A precondition assertion                               \\ \rowsep
+\tcode{post}         & A postcondition assertion                              \\ \rowsep
+\tcode{assert}       & An \grammarterm{assertion-statement}                   \\ \rowsep
+\tcode{post_capture} & Construction or destruction of a postcondition capture \\ \rowsep
 \end{floattable}
 
 \pnum

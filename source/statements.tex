@@ -1143,8 +1143,9 @@ These operations
 are sequenced before the destruction of local variables
 in each remaining enclosing block of the function\iref{stmt.dcl},
 which, in turn,
-is sequenced before the evaluation of
-postcondition assertions of the function\iref{dcl.contract.func},
+is sequenced before the
+postcondition evaluations
+of the function call\iref{dcl.contract.func},
 which, in turn,
 is sequenced before the destruction of function parameters\iref{expr.call}.
 \end{note}
@@ -1260,8 +1261,9 @@ contextually converted to \tcode{bool}.
 
 \pnum
 The evaluation of consecutive \grammarterm{assertion-statement}s
-is an evaluation in sequence\iref{basic.contract.eval} of
-the contract assertions introduced
+executes all evaluations of each contract assertion
+in an evaluation sequence\iref{basic.contract.eval}
+of the contract assertions introduced
 by those \grammarterm{assertion-statement}s.
 \begin{note}
 A sequence of \grammarterm{assertion-statement}s
