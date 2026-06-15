@@ -4618,7 +4618,7 @@ void m() {
 
 \begin{bnf}
 \nontermdef{postcondition-specifier}\br
-  \terminal{post} \opt{attribute-specifier-seq} \opt{postcondition-captures} \terminal{(} \opt{result-name-introducer} conditional-expression \terminal{)}
+  \terminal{post} \opt{attribute-specifier-seq} \opt{postcondition-captures-clause} \terminal{(} \opt{result-name-introducer} conditional-expression \terminal{)}
 \end{bnf}
 
 \pnum
@@ -4702,13 +4702,11 @@ whose name and type
 are the same as
 the result binding.
 \item
-A \keyword{if} statement
+An \keyword{if} statement
 whose condition
 is the predicate of
 the contract assertion.
 \end{itemize}
-
-
 
 \pnum
 A \grammarterm{function-contract-specifier-seq} $S_1$
@@ -4848,7 +4846,7 @@ void g()
 \rSec2[dcl.contract.capture]{Postcondition Captures}
 
 \begin{bnf}
-\nontermdef{postcondition-capture-clause}\br
+\nontermdef{postcondition-captures-clause}\br
   \terminal{[} postcondition-capture-list \terminal{]}
 \end{bnf}
 
@@ -4859,13 +4857,13 @@ void g()
 \end{bnf}
 
 \begin{bnf}
-\nontermdef{postcondition-capture}
-  postcondition-param-capture\br
+\nontermdef{postcondition-capture}\br
+  postcondition-parameter-capture\br
   postcondition-init-capture
 \end{bnf}
 
 \begin{bnf}
-\nontermdef{postcondition-simple-capture}\br
+\nontermdef{postcondition-parameter-capture}\br
   identifier \opt{\terminal{...}}
 \end{bnf}
 
@@ -4908,7 +4906,7 @@ will refer to the function parameter
 and not the capture.
 \end{note}
 
-Each postcodition capture
+Each postcondition capture
 introduces a variable
 with automatic storage duration
 whose placeholder type is \keyword{auto}

@@ -3209,7 +3209,7 @@ its \grammarterm{initializer}.
 
 \begin{note}
 The initializer of a
-\grammarterm{postcondition-simple-capture}
+\grammarterm{postcondition-parameter-capture}
 is its \grammarterm{identifier}
 and will denote a function parameter pack.
 \end{note}
@@ -3221,8 +3221,8 @@ template <typename... Ts> bool check(Ts... ts);
 
 template <typename... Args>
 void foo(Args... args)
-  post [ ...args ] (check(args...))     // \tcode{args} in predicate refer to captures of each function parameter
-  post [ targs...=transform(args) ]
+  post [ args... ] (check(args...))     // \tcode{args} in predicate refer to captures of each function parameter
+  post [ ...targs=transform(args) ]
                    (check(targs...));   // \tcode{targs} is a pack of one capture for each element of \tcode{args}.
 \end{codeblock}
 \end{example}

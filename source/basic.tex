@@ -1638,7 +1638,7 @@ that includes
 \item the initializer of any postcondition-captures of $C$.
 \end{itemize}
 %WORDINGNOTE: The above bulletted list is broken down to avoid conflicts with
-% P3400, which will introduce an expression as part of a contract assertoin
+% P3400, which will introduce an expression as part of a contract assertion
 % that is explicitly not part of the contract-assertion scope.
 
 \pnum
@@ -7863,7 +7863,7 @@ By default,
 evaluations of contract assertions should use the enforce semantic.
 
 \pnum
-The \defnadj{execution of a}{contract assertion}
+The \defnadj{execution of a}{contract assertion} $A$
 consists of a (possibly empty) sequence of evaluations
 that are sequenced in order.
 The evaluations
@@ -7871,7 +7871,7 @@ are determined by the evaluation semantic
 as described below.
 
 \pnum
-The execution of a contract assertion using the ignore semantic
+The execution of $A$ using the ignore semantic
 consists of a single evaluation that has no effect.
 \begin{note}
 The predicate is potentially evaluated\iref{basic.def.odr},
@@ -7879,18 +7879,18 @@ but not evaluated.
 \end{note}
 
 \pnum
-The execution of a contract assertion $C$
+The execution of $A$
 using a checking semantic
 consists of
 \begin{itemize}
-\item the initializations of each postcondition captures of $C$, in order,
-\item the evaluation of the predicate of $C$,
-\item the occurance of a contract violation based on the result of $C$, and
-\item the destruction of each postcondition capture of $C$, in reverse order.
+\item the initialization of each postcondition capture of $A$, in order,
+\item the evaluation of the predicate of $A$,
+\item the occurrence of a contract violation based on the result of $A$, and
+\item the destruction of each postcondition capture of $A$, in reverse order.
 \end{itemize}
 
 \pnum
-The execution of a contract assertion
+The execution of $A$
 using a checking semantic
 determines the value of the predicate.
 It is unspecified
@@ -7901,8 +7901,8 @@ performing the evaluations of the contract assertion.
 \begin{note}
 To determine whether a predicate would evaluate
 to \keyword{true} or \keyword{false},
-a alternative evaluations
-that produces the same value as the predicate
+alternative evaluations
+that produce the same result as the predicate
 but have no side effects
 can occur.
 \begin{example}
@@ -7921,14 +7921,14 @@ void g()
 \end{note}
 
 \pnum
-There is an observable checkpoint\iref{intro.abstract} $C$
-that happens before each evaluation of $A$
+There is an observable checkpoint\iref{intro.abstract} $O$
+that happens before each of the evaluations of $A$
 such that any other evaluation
 that happens before that evaluation
-also happens before $C$.
+also happens before $O$.
 
 \pnum
-A \defn{contract violation} of $C$ occurs when
+A \defn{contract violation} of $A$ occurs when
 \begin{itemize}
 \item
 $B$ is \keyword{false},
@@ -7953,7 +7953,7 @@ without causing a contract violation,
 for example,
 by calling \tcode{longjmp}\iref{csetjmp.syn}
 or terminating the program.
-Destruction of postcondition captures may result in
+Destruction of postcondition captures can result in
 a contract violation even after
 the $B$ was determined to be \keyword{true}.
 \end{note}

@@ -1687,7 +1687,7 @@ whose corresponding variable
 is declared outside of $C$,
 \end{itemize}
 then the type of the expression is \keyword{const}~\tcode{T}.
-%WORDINGNOTE: If we choose to apply \tcode{const}-ification to postconidition
+%WORDINGNOTE: If we choose to apply \tcode{const}-ification to postcondition
 % captures we would add that as a separate bullet here.
 
 \pnum
@@ -2015,7 +2015,7 @@ whose corresponding variable
 is declared outside of $C$,
 \end{itemize}
 then the type of the expression is \keyword{const}~\tcode{T}.
-%WORDINGNOTE: If we choose to apply \tcode{const}-ification to postconidition
+%WORDINGNOTE: If we choose to apply \tcode{const}-ification to postcondition
 % captures we would add that as a separate bullet here.
 
 \pnum
@@ -3928,18 +3928,18 @@ of a function call
 consist of the evaluations of an
 execution of a contract assertion $C$ for
 every $C$ in
-the precondition assertions and
-the postcondition assertions
+an evaluation sequence $X$ of the precondition assertions and
+an evaluation sequence $Y$ of the postcondition assertions
 of the function call.
-For each such evaluation,
-it is in the precondition evaluations
+Each such evaluation 
+is in the precondition evaluations
 of the function call if
 \begin{itemize}
 \item
 it is the evaluation of
-the predicate of a precondition asssertion,
+the predicate of a precondition assertion,
 \item
-it is the occurence of
+it is the occurrence of
 a contract violation based on the result of
 a precondition assertion, or
 \item
@@ -3952,9 +3952,9 @@ An evaluation is in the postcondition evaluations if
 \begin{itemize}
 \item
 it is the evaluation of
-the predicate of a postcondition assertion, 
+the predicate of a postcondition assertion,
 \item
-it is the occurence of
+it is the occurrence of
 a contract violation based on the result of
 a postcondition assertion, or
 \item
@@ -3980,25 +3980,33 @@ The evaluation of a predicate of a contract assertion
 and the occurrence of a contract violation of a contract assertion
 are in the same order as
 the corresponding contract assertions
-in the precondition assertions and postcondition assertions
-of the function call.
-\item
-The initialization of a postcondition capture
-associated with a postcondition assertion $A$
-shall be after
-the first evaluation
-associated with a precondition assertion $B$
-for any $B$ is in the precondition assertions of the function call
-that preceeds $A$ in lexical order.
+in $X$ or $Y$.
 \item
 The evaluation of the predicate
-of a precondition assertion $B$
+of a precondition assertion $A$
 shall be after
 the first evaluation of
 the initialization of any postcondition capture
-associated with a postcondition assertion $A$
-for any $A$ in the postcondition assertions of the function call
-that preceeds $B$ in lexical order.
+associated with a postcondition assertion $B$
+for any $B$ in $Y$
+that precedes $A$ in lexical order.
+\item
+The initialization of a postcondition capture
+associated with a postcondition assertion $B$
+shall be after
+the first evaluation
+associated with a precondition assertion $A$
+for any $A$ in $X$
+that precedes $B$ in lexical order.
+\begin{note}
+The evaluation of
+the destruction of postcondition captures
+happens in the reverse order
+of their initialization,
+but it can be interleaved
+with the evaluations of
+the predicates of other postcondition assertions.
+\end{note}
 \end{itemize}
 
 \pnum
