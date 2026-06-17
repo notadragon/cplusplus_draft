@@ -4185,7 +4185,11 @@ storage duration and if \tcode{T} has a non-trivial destructor,
 \begin{footnote}
 That
 is, an object for which a destructor will be called
-implicitly---upon exit from the block for an object with
+implicitly---upon
+exit from the block,
+completion of the full expression,
+or completion of the postcondition assertion execution
+for an object with
 automatic storage duration, upon exit from the thread for an object with
 thread storage duration, or upon exit from the program for an object
 with static storage duration.
@@ -4193,7 +4197,7 @@ with static storage duration.
 and another object of the original type does not occupy
 that same storage location when the implicit destructor call takes
 place, the behavior of the program is undefined. This is true
-even if the block is exited with an exception.
+even if the destruction occurs as part of stack unwinding.
 \begin{example}
 \begin{codeblock}
 class T { };
@@ -4471,13 +4475,19 @@ These variables are initialized and destroyed as described in~\ref{stmt.dcl}.
 Variables that belong to a parameter scope also have automatic storage duration.
 The storage for a function parameter lasts until
 immediately after its destruction\iref{expr.call}.
+Postcondition captures also have automatic storage duration.
+The storage for a postcondition capture lasts until
+immediate after the execution of the associated postcondition
+completes\iref{basic.contract.capture,basic.contract.eval}.
 
 \pnum
 If a variable with automatic storage duration has initialization or a destructor with side
-effects, an implementation shall not destroy it before the end of its block
+effects, an implementation shall not destroy it except when specified
 nor eliminate it as an optimization, even if it appears to be
 unused, except that a class object or its copy/move may be eliminated as
 specified in~\ref{class.copy.elision}.
+%WORDINGNOTE: Ths reads as "we will do the things we say we will do.
+%  It is possible this paragraph should be made a note instead.
 
 \rSec3[basic.stc.dynamic]{Dynamic storage duration}%
 
@@ -7869,6 +7879,21 @@ that are sequenced in order.
 The evaluations
 are determined by the evaluation semantic
 as described below.
+
+\pnum
+All of the evaluations
+that are part of
+an execution of a contract assertion
+form a block
+that is suspended
+between the evaluations.
+\begin{note}
+Each execution, therefore,
+has its own instance of
+each object declared
+by any postcondition captures
+associated with the contract assertion.
+\end{note}
 
 \pnum
 The execution of $A$ using the ignore semantic
