@@ -1241,8 +1241,9 @@ label\iref{stmt.label} located in the current function.
 
 \begin{bnf}
 \nontermdef{assertion-statement}\br
-    \terminal{contract_assert} \opt{attribute-specifier-seq} \terminal{(} conditional-expression \terminal{)} \terminal{;}\br
-    \terminal{contract_assert} \opt{attribute-specifier-seq} \terminal{(} conditional-expression \terminal{,} diagnostic-message \terminal{)} \terminal{;}
+  \terminal{contract_assert} \opt{attribute-specifier-seq} \terminal{(} conditional-expression \terminal{)} \terminal{;}\br
+  \terminal{contract_assert} \opt{attribute-specifier-seq} \terminal{(} conditional-expression \terminal{,} \br
+  \bnfindent diagnostic-message \terminal{)} \terminal{;}
 \end{bnf}
 
 \pnum

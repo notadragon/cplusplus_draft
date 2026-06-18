@@ -9639,7 +9639,8 @@ int q = p + f();                                        // \tcode{m} is 17 for t
 \end{example}
 \end{itemize}
 \begin{note}
-Except for a \grammarterm{static_assert-message},
+Except for a \grammarterm{diagnostic-message}
+that is itself specified as an unevaluated operand,
 a manifestly constant-evaluated expression
 is evaluated even in an unevaluated operand\iref{term.unevaluated.operand}.
 \end{note}

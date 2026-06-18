@@ -319,7 +319,7 @@ the program is ill-formed.
 \recommended
 When a \grammarterm{static_assert-declaration} fails,
 the resulting diagnostic message should include the text of
-the \grammarterm{static_assert-message}, if one is supplied.
+the \grammarterm{diagnostic-message}, if one is supplied.
 \begin{example}
 \begin{codeblock}
 static_assert(sizeof(int) == sizeof(void*), "wrong pointer size");
@@ -4574,7 +4574,8 @@ void m() {
 \begin{bnf}
 \nontermdef{postcondition-specifier}\br
   \terminal{post} \opt{attribute-specifier-seq} \terminal{(} \opt{result-name-introducer} conditional-expression \terminal{)}\br
-  \terminal{post} \opt{attribute-specifier-seq} \terminal{(} \opt{result-name-introducer} conditional-expression \terminal{,} diagnostic-message \terminal{)}
+  \terminal{post} \opt{attribute-specifier-seq} \terminal{(} \opt{result-name-introducer} conditional-expression \terminal{,} \br
+  \bnfindent diagnostic-message \terminal{)}
 \end{bnf}
 
 \pnum

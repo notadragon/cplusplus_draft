@@ -7764,7 +7764,7 @@ the functions passed to \tcode{std::atexit()} or \tcode{std::at_quick_exit()}.%
 \indextext{program!termination|)}
 \indextext{program execution|)}
 
-\rSec1[basic.message]{Diagnostic Messages}
+\rSec1[basic.message]{Diagnostic Messages}%
 
 \begin{bnf}
 \nontermdef{diagnostic-message}\br
@@ -7773,9 +7773,8 @@ the functions passed to \tcode{std::atexit()} or \tcode{std::at_quick_exit()}.%
 \end{bnf}
 
 \pnum
-
 A \grammarterm{diagnostic-message}
-is a user-supplied string-like object
+is a user-supplied string-like construct
 for the purposes of specifying
 a diagnostic message.
 If a \grammarterm{diagnostic-message}
@@ -7785,9 +7784,18 @@ and the text of the \grammarterm{diagnostic-message}
 is the text of the \grammarterm{unevaluated-string}.
 Otherwise, a \grammarterm{diagnostic-message}
 shall be
-a \grammarterm{constant-expression} $M$,
-and the text of the \grammarterm{diagnostic-message}
-is determined as follows:
+a \grammarterm{constant-expression} $M$
+such that
+\begin{itemize}
+\item
+the expression \tcode{$M$.size()} is
+implicitly convertible to the type \tcode{std::size_t}, and
+\item
+the expression \tcode{$M$.data()} is
+implicitly convertible to the type ``pointer to \tcode{\keyword{const} \keyword{char}}''.
+\end{itemize}
+When the \grammarterm{diagnostic-message}
+is not an unevaluated operand,
 \begin{itemize}
 \item
 \tcode{$M$.size()} shall be a converted constant expression of
@@ -7801,10 +7809,19 @@ shall be a core constant expression and let $D$ denote the converted expression,
 for each $i$ where $0 \le i < N$,
 \tcode{$D$[$i$]} shall be an integral constant expression, and
 \item
-the text of the \grammarterm{static_assert-message} is formed by
+the text of the \grammarterm{diagnostic-message} is formed by
 the sequence of $N$ code units, starting at $D$, of
 the ordinary literal encoding\iref{lex.charset}.
 \end{itemize}
+\begin{note}
+An immediate invocation\iref{expr.const.imm}
+that is a potentially-evaluated subexpressions\iref{intro.execution}
+of the \grammarterm{diagnostic-message}
+is evaluated at the point
+where the \grammarterm{diagnostic-message} appers.
+\end{note}
+%WORDINGNOTE: The structure above is new, but the bullets have all been moved 
+%  (with minimal changes) from [dcl.pre].
 
 \rSec1[basic.contract]{Contract assertions}%
 \indextext{contract assertion|(}%
@@ -7835,6 +7852,11 @@ expected.
 Each contract assertion
 has an optionally supplied
 \grammarterm{diagnostic-message}\iref{basic.message}.
+The \grammarterm{diagnostic-message},
+if any,
+is evaluated at the point of the
+declaration or statement
+it is part of.
 
 \pnum
 An invocation of the macro \tcode{va_start}\iref{cstdarg.syn}
