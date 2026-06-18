@@ -7764,6 +7764,48 @@ the functions passed to \tcode{std::atexit()} or \tcode{std::at_quick_exit()}.%
 \indextext{program!termination|)}
 \indextext{program execution|)}
 
+\rSec1[basic.message]{Diagnostic Messages}
+
+\begin{bnf}
+\nontermdef{diagnostic-message}\br
+  unevaluated-string\br
+  constant-expression
+\end{bnf}
+
+\pnum
+
+A \grammarterm{diagnostic-message}
+is a user-supplied string-like object
+for the purposes of specifying
+a diagnostic message.
+If a \grammarterm{diagnostic-message}
+matches the syntactic requirements of \grammarterm{unevaluated-string},
+it is an \grammarterm{unevaluated-string}
+and the text of the \grammarterm{diagnostic-message}
+is the text of the \grammarterm{unevaluated-string}.
+Otherwise, a \grammarterm{diagnostic-message}
+shall be
+a \grammarterm{constant-expression} $M$,
+and the text of the \grammarterm{diagnostic-message}
+is determined as follows:
+\begin{itemize}
+\item
+\tcode{$M$.size()} shall be a converted constant expression of
+type \tcode{std::size_t} and
+let $N$ denote the value of that expression,
+\item
+\tcode{$M$.data()}, implicitly converted to
+the type ``pointer to \tcode{\keyword{const} \keyword{char}}'',
+shall be a core constant expression and let $D$ denote the converted expression,
+\item
+for each $i$ where $0 \le i < N$,
+\tcode{$D$[$i$]} shall be an integral constant expression, and
+\item
+the text of the \grammarterm{static_assert-message} is formed by
+the sequence of $N$ code units, starting at $D$, of
+the ordinary literal encoding\iref{lex.charset}.
+\end{itemize}
+
 \rSec1[basic.contract]{Contract assertions}%
 \indextext{contract assertion|(}%
 
@@ -7788,6 +7830,11 @@ which is an expression of type \tcode{bool}.
 The value of the predicate is used to identify program states that are
 expected.
 \end{note}
+
+\pnum
+Each contract assertion
+has an optionally supplied
+\grammarterm{diagnostic-message}\iref{basic.message}.
 
 \pnum
 An invocation of the macro \tcode{va_start}\iref{cstdarg.syn}
@@ -8190,6 +8237,11 @@ of the \tcode{std::contracts::contract_violation} object,
 rate-limited for potentially repeated violations
 of observed contract assertions,
 and then return normally.
+The diagnostic output
+should include
+the text of the \grammarterm{diagnostic-message}
+of the violated contract assertion,
+if one is supplied.
 
 \pnum
 It is
