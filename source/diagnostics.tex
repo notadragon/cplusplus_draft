@@ -485,6 +485,11 @@ has the following effects:
 \begin{itemize}
 \item
 \mname{VA_ARGS} is evaluated and contextually converted to \tcode{bool}.
+\begin{note}
+If an exception escapes
+the evaluation of \mname{VA_ARGS},
+it propagates normally.
+\end{note}
 \item
 If the evaluation yields \tcode{true} there are no further effects.
 \item
@@ -493,8 +498,17 @@ is defined as a macro name
 at the point in the source file where
 \tcode{<cassert>} or \tcode{<assert.h>}
 is included,
-the \tcode{assert} macro's expansion
-invokes the contract-violation handler\iref{basic.contract.handler}.
+the \tcode{assert} macro's expression
+\begin{itemize}
+\item
+invokes the contract-violation handler\iref{basic.contract.handler}, and
+\item
+then, if the contract-violation handler
+returns normally
+or
+exits via an exception,
+calls \tcode{abort()}.
+\end{itemize}
 The \tcode{contract_violation} object
 passed to the handler
 will be populated as follows:
