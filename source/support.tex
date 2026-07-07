@@ -4391,6 +4391,8 @@ namespace std::contracts {
     observe = 2,
     enforce = 3,
     quick_enforce = 4
+    noexcept_observe = 5
+    noexcept_enforce = 6,
   };
 
   enum class detection_mode : @\unspec@ {
@@ -4451,11 +4453,13 @@ with meanings listed in Table~\ref{tab:support.contract.enum.semantic}.
 \begin{floattable}{Enum \tcode{evaluation_semantic}}{support.contract.enum.semantic}
 {ll}
 \topline
-\lhdr{Name}           & \rhdr{Meaning}                    \\ \capsep
-\tcode{ignore}        & Ignore evaluation semantic        \\ \rowsep
-\tcode{observe}       & Observe evaluation semantic       \\ \rowsep
-\tcode{enforce}       & Enforce evaluation semantic       \\ \rowsep
-\tcode{quick_enforce} & Quick-enforce evaluation semantic \\ \rowsep
+\lhdr{Name}              & \rhdr{Meaning}                               \\ \capsep
+\tcode{ignore}           & Ignore evaluation semantic                   \\ \rowsep
+\tcode{observe}          & Observe evaluation semantic                  \\ \rowsep
+\tcode{enforce}          & Enforce evaluation semantic                  \\ \rowsep
+\tcode{quick_enforce}    & Quick-enforce evaluation semantic            \\ \rowsep
+\tcode{noexcept_observe} & \tcode{noexcept}-Observe evaluation semantic \\ \rowsep
+\tcode{noexcept_enforce} & \tcode{noexcept}-Enforce evaluation semantic \\ \rowsep
 \end{floattable}
 
 \pnum

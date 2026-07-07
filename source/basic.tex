@@ -7813,13 +7813,19 @@ if a \grammarterm{result-name-introducer}\iref{dcl.contract.res} has been specif
 \indexdefn{checking semantics|see{contract evaluation semantics!checking}}%
 \indexdefn{terminating semantics|see{contract evaluation semantics!terminating}}%
 An evaluation of a contract assertion
-uses one of the following four \defn{evaluation semantics}:
+uses one of the following six \defn{evaluation semantics}:
 \defnx{ignore}{contract evaluation semantics!ignore},
 \defnx{observe}{contract evaluation semantics!observe},
+\defnx{\tcode{noexcept}-observe}{contract evaluation semantics!noexcept-observe},
 \defnx{enforce}{contract evaluation semantics!enforce}, or
+\defnx{\tcode{noexcept}-enforce}{contract evaluation semantics!noexcept-enforce}, or
 \defnx{quick-enforce}{contract evaluation semantics!quick-enforce}.
-Observe, enforce, and quick-enforce are \defnx{checking semantics}{contract evaluation semantics!checking};
-enforce and quick-enforce are \defnx{terminating semantics}{contract evaluation semantics!terminating}.
+Observe, enforce, \tcode{noexcept}-observe, \tcode{noexcept}-enforce, and quick-enforce
+are \defnx{checking semantics}{contract evaluation semantics!checking};
+enforce, \tcode{noexcept}-enforce, and quick-enforce
+are \defnx{terminating semantics}{contract evaluation semantics!terminating};
+ignore, \tcode{noexcept}-observe, \tcode{noexcept}-enforce, and quick-enforce
+are \defnx{nonthrowing semantics}{contract-evaluation semantics!nonthrowing}.
 
 \pnum
 It is
@@ -7982,6 +7988,7 @@ contract-termination\iref{intro.abstract}.
 
 \pnum
 \indextext{contract evaluation semantics!enforce}%
+\indextext{contract evaluation semantics!\tcode{noexcept}-enforce}%
 \indextext{contract evaluation semantics!quick-enforce}%
 If a contract violation occurs
 in a context that is not manifestly constant-evaluated
@@ -7995,7 +8002,8 @@ the program is contract-terminated.
 \indexlibraryglobal{contract_violation}%
 If a contract violation occurs
 in a context that is not manifestly constant-evaluated
-and the evaluation semantic is enforce or observe,
+and the evaluation semantic is
+enforce, observe, \tcode{noexcept}-enforce, or \tcode{noexcept}-observe
 the contract-violation handler\iref{basic.contract.handler}
 is invoked with an lvalue referring to
 an object \tcode{v}
@@ -8029,7 +8037,7 @@ The exception can be inspected or rethrown within the contract-violation handler
 \indextext{contract evaluation semantics!enforce}%
 If the contract-violation handler
 returns normally
-and the evaluation semantic is enforce,
+and the evaluation semantic is enforce or \tcode{noexcept}-enforce,
 the program is contract-terminated;
 if violation occurred
 as the result of an uncaught exception
@@ -8059,7 +8067,8 @@ also happens after $C$.
 The terminating semantics terminate the program
 if execution would otherwise continue normally
 past a contract violation:
-the enforce semantic provides the opportunity to
+the enforce and \tcode{noexcept}-enforce semantics
+provide the opportunity to
 log information about the contract violation
 before terminating the program
 or to throw an exception to avoid termination,
@@ -8069,7 +8078,7 @@ as well as
 to minimize the impact of contract checks
 on the generated code size.
 Conversely,
-the observe semantic
+the observe and \tcode{noexcept}-observe semantics
 provides the opportunity to
 log information about the contract violation
 without having to terminate the program.
@@ -8077,8 +8086,15 @@ without having to terminate the program.
 
 \pnum
 If a contract-violation handler
-invoked from the evaluation of a function contract assertion\iref{dcl.contract.func}
+invoked from the evaluation of a contract assertion
 exits via an exception,
+and the semantic is a nonthrowing semantic,
+the function \tcode{std::terminate} is invoked\iref{except.terminate}.
+
+\pnum
+If a contract-violation handler
+invoked from the evaluation of a function contract assertion\iref{dcl.contract.func}
+exits via an exception, 
 the behavior is as if
 the function body exits via that same exception.
 \begin{note}
