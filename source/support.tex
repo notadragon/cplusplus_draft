@@ -4423,7 +4423,7 @@ namespace std::contracts {
 
   [[noreturn]] void handle_enforced_contract_violation(
       const char* comment,
-      const std::source_location &location
+      const std::source_location& location
           = std::source_location::current());
   [[noreturn]] void handle_enforced_contract_violation(
       std::nothrow_t,
@@ -4433,7 +4433,7 @@ namespace std::contracts {
 
   void handle_observed_contract_violation(
       const char* comment,
-      const std::source_location &location
+      const std::source_location& location
           = std::source_location::current());
   void handle_observed_contract_violation(
       std::nothrow_t,
@@ -4644,12 +4644,12 @@ with the argument \tcode{v}.
 
 \end{itemdescr}
 
-\rSec2[support.contract.handle]{Violation Invocation}
+\rSec2[support.contract.handle]{Manual violation-handler invocation}
 
 \begin{itemdecl}
   [[noreturn]] void handle_enforced_contract_violation(
       const char* comment,
-      const std::source_location &location
+      const std::source_location& location
           = std::source_location::current());
   [[noreturn]] void handle_enforced_contract_violation(
       std::nothrow_t,
@@ -4701,7 +4701,7 @@ with the argument \tcode{v}.
 \begin{itemdecl}
   void handle_observed_contract_violation(
       const char* comment,
-      const std::source_location &location
+      const std::source_location& location
           = std::source_location::current());
   void handle_observed_contract_violation(
       std::nothrow_t,
