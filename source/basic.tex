@@ -7875,6 +7875,18 @@ if a \grammarterm{result-name-introducer}\iref{dcl.contract.res} has been specif
 %     for things like various aspects of the coroutine promise object.
 
 \pnum
+The \grammarterm{constant-expression}
+is parsed as a \grammarterm{template-argument-list}\iref{temp.names}.
+\begin{note}
+A \tcode{>} in the \grammarterm{constant-expression}
+is treated as the closing delimeter, and
+a \tcode{>>}
+is treated as
+two consecutive but distinct
+\tcode{>} tokens.
+\end{note}
+
+\pnum
 A type is an \defnadj{assertion}{control type} if the search for the name
 \tcode{assertion_control_object} in its scope finds a declaration of a type.
 

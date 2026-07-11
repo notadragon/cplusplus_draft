@@ -6983,8 +6983,10 @@ constexpr std::meta::info f = ^^Z;              // OK, represents the type alias
 
 \pnum
 An \grammarterm{assertion-control-expression}
-yields the same value and has the same value category
-as its \grammarterm{constant-expression}.
+is an lvalue denoting a constexpr object
+with a deduced type
+initialized by its
+\grammarterm{constant-expression}.
 
 \begin{note}
 The \grammarterm{constant-expression} is
