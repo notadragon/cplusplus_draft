@@ -7812,12 +7812,13 @@ if a \grammarterm{result-name-introducer}\iref{dcl.contract.res} has been specif
 \indexdefn{evaluation semantics|see{contract evaluation semantics}}%
 \indexdefn{checking semantics|see{contract evaluation semantics!checking}}%
 \indexdefn{terminating semantics|see{contract evaluation semantics!terminating}}%
+\indexdefn{nonthrowing semantics|see{contract evaluation semantics!nonthrowing}}%
 An evaluation of a contract assertion
 uses one of the following six \defn{evaluation semantics}:
 \defnx{ignore}{contract evaluation semantics!ignore},
 \defnx{observe}{contract evaluation semantics!observe},
 \defnx{\tcode{noexcept}-observe}{contract evaluation semantics!noexcept-observe},
-\defnx{enforce}{contract evaluation semantics!enforce}, or
+\defnx{enforce}{contract evaluation semantics!enforce},
 \defnx{\tcode{noexcept}-enforce}{contract evaluation semantics!noexcept-enforce}, or
 \defnx{quick-enforce}{contract evaluation semantics!quick-enforce}.
 Observe, enforce, \tcode{noexcept}-observe, \tcode{noexcept}-enforce, and quick-enforce
@@ -7825,7 +7826,7 @@ are \defnx{checking semantics}{contract evaluation semantics!checking};
 enforce, \tcode{noexcept}-enforce, and quick-enforce
 are \defnx{terminating semantics}{contract evaluation semantics!terminating};
 ignore, \tcode{noexcept}-observe, \tcode{noexcept}-enforce, and quick-enforce
-are \defnx{nonthrowing semantics}{contract-evaluation semantics!nonthrowing}.
+are \defnx{nonthrowing semantics}{contract evaluation semantics!nonthrowing}.
 
 \pnum
 It is
@@ -8005,7 +8006,7 @@ the program is contract-terminated.
 If a contract violation occurs
 in a context that is not manifestly constant-evaluated
 and the evaluation semantic is
-enforce, observe, \tcode{noexcept}-enforce, or \tcode{noexcept}-observe
+enforce, observe, \tcode{noexcept}-enforce, or \tcode{noexcept}-observe,
 the contract-violation handler\iref{basic.contract.handler}
 is invoked with an lvalue referring to
 an object \tcode{v}
@@ -8081,7 +8082,7 @@ to minimize the impact of contract checks
 on the generated code size.
 Conversely,
 the observe and \tcode{noexcept}-observe semantics
-provides the opportunity to
+provide the opportunity to
 log information about the contract violation
 without having to terminate the program.
 \end{note}
@@ -8090,13 +8091,14 @@ without having to terminate the program.
 If a contract-violation handler
 invoked from the evaluation of a contract assertion
 exits via an exception,
-and the semantic is a nonthrowing semantic,
+and the evaluation semantic is a nonthrowing semantic,
 the function \tcode{std::terminate} is invoked\iref{except.terminate}.
 
 \pnum
 If a contract-violation handler
 invoked from the evaluation of a function contract assertion\iref{dcl.contract.func}
-exits via an exception, 
+exits via an exception,
+and the evaluation semantic is not a nonthrowing semantic,
 the behavior is as if
 the function body exits via that same exception.
 \begin{note}
@@ -8113,6 +8115,7 @@ the function \tcode{std::terminate} is invoked\iref{except.terminate}.
 If a contract-violation handler
 invoked from an \grammarterm{assertion-statement}\iref{stmt.contract.assert}
 exits via an exception,
+and the evaluation semantic is not a nonthrowing semantic,
 the search for a handler
 continues from the execution of that statement.
 \end{note}
