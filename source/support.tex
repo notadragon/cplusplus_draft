@@ -4696,6 +4696,14 @@ with the argument \tcode{v}.
   If the violation handler returns normally,
   the program is contract-terminated\iref{basic.contract.eval}.
 \end{itemize}
+
+\pnum
+\throws
+Nothing if the \tcode{nothrow_t} overload is selected,
+otherwise
+any exception thrown
+from the contract-violation handler.
+
 \end{itemdescr}
 
 \begin{itemdecl}
@@ -4745,6 +4753,13 @@ with the argument \tcode{v}.
     \tcode{observe}.
   \end{itemize}
 \end{itemize}
+
+\pnum
+\throws
+Nothing if the \tcode{nothrow_t} overload is selected,
+otherwise
+any exception thrown
+from the contract-violation handler.
 \end{itemdescr}
 
 \begin{itemdecl}
