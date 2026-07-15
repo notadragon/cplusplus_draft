@@ -7879,7 +7879,7 @@ The \grammarterm{constant-expression}
 is parsed as a \grammarterm{template-argument-list}\iref{temp.names}.
 \begin{note}
 A \tcode{>} in the \grammarterm{constant-expression}
-is treated as the closing delimeter, and
+is treated as the closing delimiter, and
 a \tcode{>>}
 is treated as
 two consecutive but distinct
@@ -7931,7 +7931,7 @@ A type is an \defnadj{allowed-semantics}{control type} if
 \end{itemize}
 
 \pnum
-A type \placeholder{T} is an \defnadj{computed-semantics}{control type} if
+A type \placeholder{T} is a \defnadj{computed-semantics}{control type} if
 \begin{itemize}
 \item it is an assertion-control type, and
 \item the expression \tcode{o.compute_semantic(s)}
@@ -8012,7 +8012,7 @@ for an evaluation $E$ of a contract assertion $C$ is
 of $E$ if
 \begin{itemize}
 \item $C$ has no assertion-control object, or
-\item if the assertion control object $O$ of $C$
+\item the assertion control object $O$ of $C$
 is not a computed-semantics control type\iref{basic.contract.control},
 \end{itemize}
 or
@@ -8212,7 +8212,7 @@ equivalent to \tcode{std::contracts::violation_handled::handled}
 then contract-violation handling is complete.
 \item
 The contract-violation handler is invoked
-with a \tcode{const} lvalue referring to \tcode{v}.
+with \tcode{v}.
 \end{itemize}
 
 \pnum
