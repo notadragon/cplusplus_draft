@@ -5112,7 +5112,8 @@ by converting one or more pointer values\iref{basic.compound}
 to an integral type,
 the result is an unspecified choice among all such values
 that would result in the program having defined behavior.
-If no such value exists, the behavior is undefined.
+If no such value exists,
+the behavior is undefined\ubdef{expr.reinterpret.cast.invalid.pointer.value}.
 \begin{note}
 It is possible for the result
 to be an invalid pointer value or
@@ -7495,12 +7496,10 @@ the value is 0.
 array elements $i$ and $j$
 of the same array object \tcode{x},
 the expression \tcode{P - Q} has the value $i - j$.
-\begin{note}
 If the value $i - j$
 is not in the range of representable values
 of type \tcode{std::ptrdiff_t},
-the behavior is undefined\iref{expr.pre}.
-\end{note}
+the behavior is undefined\ubdef{expr.sub.pointers.representable}.
 \item Otherwise, the behavior is undefined\ubdef{expr.add.sub.diff.pointers}.
 \end{itemize}
 
@@ -9159,7 +9158,7 @@ the innermost declaration that contains $E$ or
 \item
 the defining declaration of the variable
 \end{itemize}
-is reachable from the other.
+is reachable from the other\ifndrdef{expr.const.const.immediate.var.def}.
 
 \pnum
 A core constant expression
