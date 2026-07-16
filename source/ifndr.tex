@@ -152,7 +152,7 @@ of a definable item \tcode{D}
 where
 \begin{itemize}
 \item \tcode{D} is not defined by an injected declaration\iref{expr.const.reflect},
-\item \tcode{D} is not an inline or templated function or variable, and
+\item \tcode{D} is an inline or templated function or variable, and
 \item \tcode{D} is not attached to a named module or the declarations are not reachable from one another,
 \end{itemize}
 that do not satisfy the matching rules described in \ref{basic.def.odr},
@@ -161,16 +161,20 @@ the program is ill-formed, no diagnostic required.
 \pnum
 \begin{example}
 \begin{codeblocktu}{Translation unit \#1}
-inline void f() {}          // \#1
-inline void g() {}          // \#2
-inline void h() {[]{}();}   // \#3
+inline void f() {}                                      // \#1
+inline void g() {}                                      // \#2
+inline void h(bool cond, void (*p)() = []{}) {
+  if (cond) h(false);
+}                                                       // \#3
 namespace { int i = 0; }
-inline void j() {++i;}      // \#4
+inline void j() {++i;}                                  // \#4
 \end{codeblocktu}
 \begin{codeblocktu}{Translation unit \#2}
 inline void f() {}          // OK, same as \#1
 inline void g() {;}         // IFNDR, different sequence of tokens than \#2
-inline void h() {[]{}();}   // IFNDR, closure has different type than \#3
+inline void h(bool cond, void (*p)() = []{}) {
+  if (cond) h(false);
+}                           // IFNDR, closure in default argument has different type than \#3
 namespace { int i = 0; }
 inline void j() {++i; }     // IFNDR, \tcode{i} refers to different entity than in \#4
 \end{codeblocktu}
@@ -297,10 +301,39 @@ the program is ill-formed; no diagnostic required.
 \begin{example}
 \begin{codeblock}
 template <typename T> concept C = requires {
-  new int[-(int)sizeof(T)];     // IFNDR, the size of the allocation is required to be greater
-                                // than zero but can never be
+  new decltype((void)T{});  // IFNDR, invalid use of \tcode{void} in all instantiations
 };
 \end{codeblock}
+\end{example}
+
+\ifndrdescription{expr.const.const.immediate.var.def}
+
+\pnum
+A variable that
+declares or refers to
+an immediate object
+must be odr-used
+only from
+immediate function contexts.
+No diagnostic is required
+if the odr-use cannot reach
+the defining declaration
+of the variable
+or the defining declaration
+cannot reach
+the odr-use.
+
+\pnum
+\begin{example}
+\begin{codeblocktu}{Translation unit \#1}
+struct S { decltype(^^::) d = ^^::; };
+constexpr S s;                  // \#1
+\end{codeblocktu}
+\begin{codeblocktu}{Translation unit \#2}
+struct S;
+extern const S s;
+const void* p = &s;             // IFNDR, cannot reach defining declaration that is immediate object
+\end{codeblocktu}
 \end{example}
 
 \rSec1[ifndr.stmt]{\ref*{stmt}: Statements}

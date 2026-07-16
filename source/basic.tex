@@ -6084,7 +6084,7 @@ to have\iref{basic.types.trivial} a pointer value
 to or past the end of an object $O$ and
 happens before the beginning of the duration
 of the region of storage for $O$,
-the behavior is undefined.
+the behavior is undefined\ubdef{basic.compound.pointer.before.storage.duration}.
 \begin{note}
 Relaxed atomic operations\iref{atomics.order} can produce such values.
 Conversions from integers avoid producing them\iref{expr.reinterpret.cast}.
